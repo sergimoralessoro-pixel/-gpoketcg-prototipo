@@ -259,7 +259,7 @@ function renderAuthState(){
   if(logged){profile.name=session.name||profile.name;store('gptcg_profile',profile);renderProfile()}
 }
 function logout(){session=null;localStorage.removeItem('gptcg_session');renderAuthState();closeDrawer();toast('Sesión cerrada')}
-$('.authTab').forEach(b=>b.onclick=()=>{$('.authTab').forEach(x=>x.classList.toggle('on',x===b));$('.authPane').forEach(x=>x.classList.toggle('on',x.id===b.dataset.auth))});
+document.querySelectorAll('.authTab').forEach(b=>b.onclick=()=>{document.querySelectorAll('.authTab').forEach(x=>x.classList.toggle('on',x===b));document.querySelectorAll('.authPane').forEach(x=>x.classList.toggle('on',x.id===b.dataset.auth))});
 $('#loginBtn').onclick=()=>{let email=$('#loginEmail').value.trim().toLowerCase(),pass=$('#loginPassword').value;if(email===ADMIN_EMAIL&&pass===ADMIN_PASS){session={name:'Administrador GPokeTCG',email:ADMIN_EMAIL,role:'admin'};store('gptcg_session',session);renderAuthState();toast('Sesión de administrador iniciada');return}let acc=demoAccounts.find(a=>(a.email.toLowerCase()===email||a.name.toLowerCase()===email)&&a.password===pass);if(!acc)return toast('Usuario o contraseña incorrectos');session={name:acc.name,email:acc.email,role:'user'};store('gptcg_session',session);renderAuthState();toast('Sesión iniciada')};
 $('#registerBtn').onclick=()=>{let name=$('#registerName').value.trim(),email=$('#registerEmail').value.trim().toLowerCase(),password=$('#registerPassword').value;if(!name||!email||!password)return toast('Completa todos los campos');if(email===ADMIN_EMAIL||demoAccounts.some(a=>a.email.toLowerCase()===email))return toast('Ese correo ya existe');demoAccounts.push({name,email,password});store('gptcg_accounts',demoAccounts);session={name,email,role:'user'};store('gptcg_session',session);renderAuthState();toast('Cuenta demo creada')};
 $('#logoutBtn').onclick=logout;$('#drawerLogout').onclick=logout;
@@ -341,6 +341,6 @@ let offers=load('gptcg_offers',[]);
 function renderOffers(){$('#offerList').innerHTML=offers.length?offers.map((o,i)=>'<div class="adminItem"><div><b>'+o.name+'</b><div class="small">'+o.state+' · Solicita '+o.price+' € · '+o.contact+'</div><div>'+o.message+'</div></div><button class="btn dark" onclick="deleteOffer('+i+')">Archivar</button></div>').join(''):'<p class="muted">No hay propuestas guardadas todavía.</p>'}
 $('#sendOffer').onclick=()=>{if(!isLogged())return renderAuthState();let name=$('#sellName').value.trim();if(!name)return toast('Pon el nombre de la carta');offers.push({name,price:$('#sellPrice').value||'—',state:$('#sellState').value,contact:$('#sellContact').value||'Sin contacto',message:$('#sellMessage').value||''});store('gptcg_offers',offers);renderOffers();toast('Propuesta guardada para el administrador')};window.deleteOffer=i=>{offers.splice(i,1);store('gptcg_offers',offers);renderOffers()};renderOffers();
 
-$('.adminTab').forEach(b=>b.onclick=()=>{$('.adminTab').forEach(x=>x.classList.toggle('on',x===b));$('.adminPane').forEach(x=>x.classList.toggle('on',x.id===b.dataset.admin))});renderAuthState();
+document.querySelectorAll('.adminTab').forEach(b=>b.onclick=()=>{document.querySelectorAll('.adminTab').forEach(x=>x.classList.toggle('on',x===b));document.querySelectorAll('.adminPane').forEach(x=>x.classList.toggle('on',x.id===b.dataset.admin))});renderAuthState();
 </script>
 </body></html>
