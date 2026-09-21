@@ -103,13 +103,8 @@ const ADMIN_EMAILS=['sergimoralessoro@gmail.com','gpoketcg@gmail.com'];
 let session=null;
 let accounts=[];
 let profile=load('gp_profile',{orders:0});
-let products=load('gp_products',[
-{id:1,name:'Umbreon VMAX Alt Art · PSA 10',price:2499,state:'PSA 10',stock:1,desc:'Carta graduada de colección.'},
-{id:2,name:'Pokémon 151 Booster Bundle',price:89.9,state:'Sellado',stock:6,desc:'Producto sellado Pokémon 151.'},
-{id:3,name:'Evolving Skies Booster Box',price:599.9,state:'Sellado',stock:2,desc:'Booster Box sellada.'},
-{id:4,name:'Charizard ex · PSA 10',price:1999,state:'PSA 10',stock:1,desc:'Carta graduada de alto valor.'}
-]);
-products=products.map(p=>Object.assign({photo:'',desc:''},p));
+let products=[];
+let productsChannel=null;
 let cart=load('gp_cart',[]);
 let auctions=[];
 let presenceChannel=null;
@@ -134,6 +129,21 @@ async function setupPresence(){
  presenceChannel=sb.channel('gpoketcg-online',{config:{presence:{key:session.user.id}}});
  presenceChannel.on('presence',{event:'sync'},()=>renderLiveStats());
  presenceChannel.subscribe(async status=>{if(status==='SUBSCRIBED'){await presenceChannel.track({user_id:session.user.id,username:session.name,online_at:new Date().toISOString()});renderLiveStats()}});
+}
+async function loadProducts(){
+ const {data,error}=await sb.from('products').select('*').order('created_at',{ascending:false});
+ if(error){console.error(error);toast('No se pudieron cargar los productos');return}
+ products=(data||[]).map(p=>({id:p.id,name:p.name,price:Number(p.price),state:p.state,stock:p.stock,desc:p.description||'',photo:p.photo_url||'',active:p.active}));
+ renderProducts();
+}
+function subscribeProducts(){
+ if(productsChannel)sb.removeChannel(productsChannel);
+ productsChannel=sb.channel('gpoketcg-products').on('postgres_changes',{event:'*',schema:'public',table:'products'},()=>loadProducts()).subscribe();
+}
+async function loadOrderCount(){
+ if(!logged())return;
+ const {count,error}=await sb.from('orders').select('id',{count:'exact',head:true}).eq('user_id',session.id);
+ if(!error){profile.orders=count||0;renderProfile()}
 }
 async function loadAuctions(){
  const {data,error}=await sb.from('auctions').select('*').order('created_at',{ascending:false});
@@ -160,8 +170,8 @@ q('#menuBtn').onclick=()=>{q('#drawer').classList.add('open');q('#drawerBack').c
 q('#profileBtn').onclick=()=>go('perfil');q('#inboxBtn').onclick=()=>go('mensajes');q('#adminBtn').onclick=()=>go('adminPage');q('#drawerAdmin').onclick=()=>go('adminPage');
 async function logout(){await sb.auth.signOut();session=null;if(presenceChannel){await sb.removeChannel(presenceChannel);presenceChannel=null}renderAuth();closeDrawer()}q('#logoutBtn').onclick=logout;q('#drawerLogout').onclick=logout;
 qa('[data-auth]').forEach(b=>b.onclick=()=>{qa('[data-auth]').forEach(x=>x.classList.toggle('active',x===b));qa('.authPane').forEach(x=>x.classList.toggle('active',x.id===b.dataset.auth))});
-q('#loginBtn').onclick=async()=>{const email=q('#loginEmail').value.trim().toLowerCase(),password=q('#loginPassword').value;if(!email||!password)return toast('Completa correo y contraseña');const {data,error}=await sb.auth.signInWithPassword({email,password});if(error)return toast(error.message==='Invalid login credentials'?'Correo o contraseña incorrectos':error.message);await setSessionFromUser(data.user);renderAll();setupPresence();subscribeAuctions();loadAuctions();toast('Sesión iniciada')};
-q('#registerBtn').onclick=async()=>{const name=q('#regName').value.trim(),email=q('#regEmail').value.trim().toLowerCase(),password=q('#regPassword').value;if(!name||!email||!password)return toast('Completa todos los campos');if(password.length<6)return toast('La contraseña debe tener al menos 6 caracteres');const {data,error}=await sb.auth.signUp({email,password,options:{data:{username:name}}});if(error)return toast(error.message);if(!data.session){toast('Cuenta creada. Revisa tu correo para confirmar la cuenta.');return}await setSessionFromUser(data.user);renderAll();setupPresence();subscribeAuctions();loadAuctions();toast('Cuenta creada')};
+q('#loginBtn').onclick=async()=>{const email=q('#loginEmail').value.trim().toLowerCase(),password=q('#loginPassword').value;if(!email||!password)return toast('Completa correo y contraseña');const {data,error}=await sb.auth.signInWithPassword({email,password});if(error)return toast(error.message==='Invalid login credentials'?'Correo o contraseña incorrectos':error.message);await setSessionFromUser(data.user);renderAll();setupPresence();subscribeAuctions();subscribeProducts();Promise.all([loadAuctions(),loadProducts(),loadOrderCount()]);toast('Sesión iniciada')};
+q('#registerBtn').onclick=async()=>{const name=q('#regName').value.trim(),email=q('#regEmail').value.trim().toLowerCase(),password=q('#regPassword').value;if(!name||!email||!password)return toast('Completa todos los campos');if(password.length<6)return toast('La contraseña debe tener al menos 6 caracteres');const {data,error}=await sb.auth.signUp({email,password,options:{data:{username:name}}});if(error)return toast(error.message);if(!data.session){toast('Cuenta creada. Revisa tu correo para confirmar la cuenta.');return}await setSessionFromUser(data.user);renderAll();setupPresence();subscribeAuctions();subscribeProducts();Promise.all([loadAuctions(),loadProducts(),loadOrderCount()]);toast('Cuenta creada')};
 async function setSessionFromUser(user){
  if(!user){session=null;return}
  let name=user.user_metadata?.username||user.email?.split('@')[0]||'Usuario';
@@ -175,13 +185,13 @@ function renderProfile(){q('#profileName').textContent=session?session.name:'Inv
 function renderProducts(){
  q('#shopGrid').innerHTML=products.map(p=>'<div class="card"><div class="productArt">'+(p.photo?'<img src="'+p.photo+'" alt="">':'🃏')+'</div><h3>'+esc(p.name)+'</h3><div class="price">'+money(p.price)+'</div><p class="muted">'+esc(p.state)+' · Stock '+p.stock+'</p><p class="muted">'+esc(p.desc||'')+'</p><button class="btn dark viewProduct" data-id="'+p.id+'">Ver producto</button></div>').join('');
  qa('.viewProduct').forEach(b=>b.onclick=()=>{selectedProduct=products.find(p=>p.id===Number(b.dataset.id));q('#detailName').textContent=selectedProduct.name;q('#detailPrice').textContent=money(selectedProduct.price);q('#detailState').textContent=selectedProduct.state;q('#detailStock').textContent=selectedProduct.stock;q('#detailDesc').textContent=selectedProduct.desc||'Sin descripción adicional.';const art=q('#productModal .productArt');art.innerHTML=selectedProduct.photo?'<img src="'+selectedProduct.photo+'" alt="">':'🃏';openModal('productModal')});
- q('#adminProducts').innerHTML=products.map(p=>'<div class="adminItem"><div class="itemRow"><span><b>'+esc(p.name)+'</b><br><small>'+money(p.price)+' · '+esc(p.state)+' · Stock '+p.stock+'</small></span><span><button class="btn dark editProd" data-id="'+p.id+'">Editar datos</button> <button class="btn dark delProd" data-id="'+p.id+'">Eliminar</button></span></div><div class="upload" style="margin-top:8px"><small>Cambiar foto</small><input type="file" accept="image/*" class="editProdPhoto" data-id="'+p.id+'"></div></div>').join('');
- qa('.editProd').forEach(b=>b.onclick=async()=>{const p=products.find(x=>x.id===Number(b.dataset.id));const name=prompt('Nombre del producto',p.name);if(name===null)return;const price=prompt('Precio (€)',p.price);if(price===null)return;const state=prompt('Estado',p.state);if(state===null)return;const stock=prompt('Stock',p.stock);if(stock===null)return;const desc=prompt('Descripción / detalles',p.desc||'');if(desc===null)return;p.name=name.trim()||p.name;p.price=Number(price)||p.price;p.state=state.trim()||p.state;p.stock=Math.max(0,Number(stock)||0);p.desc=desc;save('gp_products',products);renderProducts();toast('Producto editado')});
- qa('.editProdPhoto').forEach(inp=>inp.onchange=async()=>{const p=products.find(x=>x.id===Number(inp.dataset.id)),photo=await fileData(inp);if(!photo)return;p.photo=photo;save('gp_products',products);renderProducts();toast('Foto del producto actualizada')});qa('.delProd').forEach(b=>b.onclick=()=>{products=products.filter(x=>x.id!==Number(b.dataset.id));save('gp_products',products);renderProducts()})
+ q('#adminProducts').innerHTML=products.map(p=>'<div class="adminItem"><div class="itemRow"><span><b>'+esc(p.name)+'</b><br><small>'+money(p.price)+' · '+esc(p.state)+' · Stock '+p.stock+'</small></span><span><button class="btn dark editProd" data-id="'+p.id+'">Editar datos</button> <button class="btn dark delProd" data-id="'+p.id+'">Eliminar</button></span></div></div>').join('');
+ qa('.editProd').forEach(b=>b.onclick=async()=>{if(!isAdmin())return;const p=products.find(x=>x.id===Number(b.dataset.id));const name=prompt('Nombre del producto',p.name);if(name===null)return;const price=prompt('Precio (€)',p.price);if(price===null)return;const state=prompt('Estado',p.state);if(state===null)return;const stock=prompt('Stock',p.stock);if(stock===null)return;const desc=prompt('Descripción / detalles',p.desc||'');if(desc===null)return;const {error}=await sb.from('products').update({name:name.trim()||p.name,price:Number(price)||p.price,state:state.trim()||p.state,stock:Math.max(0,Number(stock)||0),description:desc}).eq('id',p.id);if(error)return toast('No se pudo editar el producto');await loadProducts();toast('Producto editado')});
+ qa('.delProd').forEach(b=>b.onclick=async()=>{if(!isAdmin())return;const {error}=await sb.from('products').update({active:false}).eq('id',Number(b.dataset.id));if(error)return toast('No se pudo eliminar');await loadProducts();toast('Producto retirado')})
 }
-q('#addProduct').onclick=async()=>{const name=q('#pName').value.trim(),price=Number(q('#pPrice').value);if(!name||!price)return toast('Completa nombre y precio');const photo=await fileData(q('#pPhoto'));products.push({id:Date.now(),name,price,state:q('#pState').value.trim()||'Near Mint',stock:Number(q('#pStock').value)||1,desc:q('#pDesc').value.trim(),photo});save('gp_products',products);renderProducts();toast('Producto añadido con sus datos y foto')};
+q('#addProduct').onclick=async()=>{if(!isAdmin())return toast('Solo administrador');const name=q('#pName').value.trim(),price=Number(q('#pPrice').value);if(!name||!price)return toast('Completa nombre y precio');const photo=await fileData(q('#pPhoto'));const {error}=await sb.from('products').insert({name,price,state:q('#pState').value.trim()||'Near Mint',stock:Number(q('#pStock').value)||1,description:q('#pDesc').value.trim(),photo_url:photo||null,active:true});if(error)return toast('No se pudo añadir el producto');q('#pName').value='';q('#pPrice').value='';q('#pDesc').value='';q('#pPhoto').value='';await loadProducts();toast('Producto añadido')};
 function renderCart(){q('#cartCount').textContent=cart.reduce((s,x)=>s+x.qty,0);q('#cartRows').innerHTML=cart.length?cart.map((x,i)=>'<div class="item itemRow"><span>'+x.name+' × '+x.qty+'</span><span>'+money(x.price*x.qty)+' <button class="btn dark removeCart" data-i="'+i+'">Quitar</button></span></div>').join(''):'<p class="muted">Carrito vacío.</p>';q('#cartTotal').textContent='Total: '+money(cart.reduce((s,x)=>s+x.price*x.qty,0));qa('.removeCart').forEach(b=>b.onclick=()=>{cart.splice(Number(b.dataset.i),1);save('gp_cart',cart);renderCart()})}
-q('#cartBtn').onclick=()=>{renderCart();openModal('cartModal')};q('#addToCart').onclick=()=>{if(!selectedProduct)return;const x=cart.find(c=>c.id===selectedProduct.id);if(x)x.qty++;else cart.push({id:selectedProduct.id,name:selectedProduct.name,price:selectedProduct.price,qty:1});save('gp_cart',cart);renderCart();closeModal('productModal');toast('Añadido al carrito')};q('#checkoutBtn').onclick=()=>{if(!cart.length)return toast('Carrito vacío');profile.orders=(profile.orders||0)+1;save('gp_profile',profile);cart=[];save('gp_cart',cart);renderCart();renderProfile();closeModal('cartModal');toast('Compra simulada completada')};
+q('#cartBtn').onclick=()=>{renderCart();openModal('cartModal')};q('#addToCart').onclick=()=>{if(!selectedProduct)return;if(selectedProduct.stock<=0)return toast('Producto sin stock');const x=cart.find(c=>c.id===selectedProduct.id);if(x){if(x.qty>=selectedProduct.stock)return toast('No queda más stock');x.qty++}else cart.push({id:selectedProduct.id,name:selectedProduct.name,price:selectedProduct.price,qty:1});save('gp_cart',cart);renderCart();closeModal('productModal');toast('Añadido al carrito')};q('#checkoutBtn').onclick=async()=>{if(!cart.length)return toast('Carrito vacío');const btn=q('#checkoutBtn');btn.disabled=true;const {data,error}=await sb.rpc('create_order',{p_items:cart.map(x=>({id:x.id,qty:x.qty}))});btn.disabled=false;if(error)return toast(error.message.includes('Stock insuficiente')?'No queda suficiente stock de uno de los productos':'No se pudo crear el pedido');cart=[];save('gp_cart',cart);renderCart();await loadProducts();await loadOrderCount();closeModal('cartModal');toast('Pedido #'+data+' creado. Pago pendiente')};
 function auctionLeft(a){return Math.max(0,new Date(a.endAt).getTime()-Date.now())}
 function formatCountdown(ms){const s=Math.max(0,Math.floor(ms/1000)),h=Math.floor(s/3600),m=Math.floor((s%3600)/60),sec=s%60;return String(h).padStart(2,'0')+':'+String(m).padStart(2,'0')+':'+String(sec).padStart(2,'0')}
 function refreshAuctionClocks(){let rerender=false;qa('.auctionClock').forEach(el=>{const a=auctions.find(x=>x.id===Number(el.dataset.id));if(!a)return;const left=auctionLeft(a);el.textContent=formatCountdown(left);if(left<=0)rerender=true});if(rerender)renderAuctions()}
@@ -244,10 +254,10 @@ qa('.adminTab').forEach(b=>b.onclick=()=>{qa('.adminTab').forEach(x=>x.classList
 function renderAll(){renderAuth();renderLiveStats();renderProfile();renderProducts();renderCart();renderAuctions();renderRaffle();renderChats();renderCommunity();renderOffers();renderMessages()}
 (async function boot(){
  const {data:{session:authSession}}=await sb.auth.getSession();
- if(authSession?.user){await setSessionFromUser(authSession.user);setupPresence();subscribeAuctions();await loadAuctions()}
+ if(authSession?.user){await setSessionFromUser(authSession.user);setupPresence();subscribeAuctions();subscribeProducts();await Promise.all([loadAuctions(),loadProducts(),loadOrderCount()])}
  renderAll();
  migrateHeavyPhotos().then(()=>{renderProducts();renderRaffle()});
- sb.auth.onAuthStateChange(async(event,newSession)=>{if(newSession?.user){await setSessionFromUser(newSession.user);setupPresence();subscribeAuctions();await loadAuctions();renderAll()}else if(event==='SIGNED_OUT'){session=null;renderAll()}});
+ sb.auth.onAuthStateChange(async(event,newSession)=>{if(newSession?.user){await setSessionFromUser(newSession.user);setupPresence();subscribeAuctions();subscribeProducts();await Promise.all([loadAuctions(),loadProducts(),loadOrderCount()]);renderAll()}else if(event==='SIGNED_OUT'){session=null;renderAll()}});
 })();
 });
 </script>
