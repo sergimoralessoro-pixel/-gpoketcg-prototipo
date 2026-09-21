@@ -90,14 +90,18 @@ header{position:sticky;top:0;z-index:30;background:#06111df2;border-bottom:1px s
 <div class="modal" id="raffleModal"><div class="box"><h2>Comprar números · DEMO</h2><input id="raffleBuyer" placeholder="Usuario"><input id="raffleQty" type="number" value="1" min="1" max="20" style="margin-top:8px"><div class="actions" style="margin-top:10px"><button class="btn" id="confirmRaffle">Simular pago</button><button class="btn dark" data-close="raffleModal">Cancelar</button></div></div></div>
 <div class="toast" id="toast"></div>
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
 document.addEventListener('DOMContentLoaded',function(){
 const q=s=>document.querySelector(s), qa=s=>Array.from(document.querySelectorAll(s));
 const save=(k,v)=>{try{localStorage.setItem(k,JSON.stringify(v));return true}catch(e){console.error(e);alert('No se pudo guardar. He reducido las fotos para evitar que el almacenamiento de la demo se llene. Prueba de nuevo.');return false}};
 const load=(k,f)=>{try{const v=JSON.parse(localStorage.getItem(k));return v==null?f:v}catch(e){return f}};
-const ADMIN_EMAIL='admin@gpoketcg.demo',ADMIN_PASS='demo';
-let session=load('gp_session',null);
-let accounts=load('gp_accounts',[]);
+const SUPABASE_URL='https://pekinkmbiyoihniaywag.supabase.co';
+const SUPABASE_KEY='sb_publishable_2A6zQlBjD77uSIBY-dHDiw_HORqsDSu';
+const sb=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
+const ADMIN_EMAIL='sergimoralessoro@gmail.com';
+let session=null;
+let accounts=[];
 let profile=load('gp_profile',{orders:0});
 let products=load('gp_products',[
 {id:1,name:'Umbreon VMAX Alt Art · PSA 10',price:2499,state:'PSA 10',stock:1,desc:'Carta graduada de colección.'},
@@ -107,13 +111,9 @@ let products=load('gp_products',[
 ]);
 products=products.map(p=>Object.assign({photo:'',desc:''},p));
 let cart=load('gp_cart',[]);
-let auctions=load('gp_auctions',[
-{id:1,name:'Charizard ex SIR PSA 10',price:1250,increment:5,leader:'DarkMew',photo:'',endAt:new Date(Date.now()+2*60*60*1000).toISOString()},
-{id:2,name:'Umbreon VMAX Alt Art PSA 10',price:2180,increment:10,leader:'CollectorMario',photo:'',endAt:new Date(Date.now()+5*60*60*1000).toISOString()},
-{id:3,name:'Lote Pokémon 151 sellado',price:420,increment:5,leader:'PikaHunter',photo:'',endAt:new Date(Date.now()+24*60*60*1000).toISOString()}
-]).map((a,i)=>Object.assign({increment:5,photo:'',closed:false,endAt:new Date(Date.now()+(i+2)*60*60*1000).toISOString()},a));
-let auctionMigration=false;auctions.forEach((a,i)=>{if(!a.endAt){a.endAt=new Date(Date.now()+(i+2)*60*60*1000).toISOString();a.closed=false;auctionMigration=true}});if(auctionMigration)save('gp_auctions',auctions);
-const TAB_ID='tab_'+Date.now()+'_'+Math.random().toString(36).slice(2);let presence=load('gp_presence',{});
+let auctions=[];
+let presenceChannel=null;
+let auctionsChannel=null;
 let raffle=Object.assign({title:'Charizard ex · PSA 10',price:5,slots:250,desc:'Rifa de demostración de GPokeTCG',photo:''},load('gp_raffle',{}));
 let participants=load('gp_participants',[{alias:'PokeAlex',qty:5,status:'Pagado'},{alias:'MartaTCG',qty:1,status:'Pagado'},{alias:'CharizardBoy',qty:3,status:'Pagado'}]);
 let raffleChat=load('gp_raffle_chat',[{u:'PokeAlex',m:'¡Vamos! 🔥'},{u:'MartaTCG',m:'Suerte 🍀'}]);
@@ -123,10 +123,28 @@ let events=load('gp_events',[{title:'Rifa Charizard PSA 10',date:'Sábado · 20:
 let offers=load('gp_offers',[]);let privateMessages=load('gp_private_messages',[]);let activeConversation=null;
 let selectedProduct=null,wheelAngle=0,spinning=false;
 function money(n){return Number(n).toLocaleString('es-ES',{minimumFractionDigits:2,maximumFractionDigits:2})+' €'}
-function updatePresence(){const now=Date.now();presence=load('gp_presence',{});Object.keys(presence).forEach(k=>{if(now-Number(presence[k])>15000)delete presence[k]});presence[TAB_ID]=now;try{localStorage.setItem('gp_presence',JSON.stringify(presence))}catch(e){};renderLiveStats()}
-function removePresence(){presence=load('gp_presence',{});delete presence[TAB_ID];try{localStorage.setItem('gp_presence',JSON.stringify(presence))}catch(e){}}
-function renderLiveStats(){const r=q('#registeredCount'),o=q('#onlineCount');if(r)r.textContent=accounts.length;if(o){const now=Date.now(),p=load('gp_presence',{});o.textContent=Object.values(p).filter(t=>now-Number(t)<=15000).length}}
-window.addEventListener('beforeunload',removePresence);window.addEventListener('pagehide',removePresence);window.addEventListener('storage',e=>{if(e.key==='gp_presence'||e.key==='gp_accounts')renderLiveStats()});updatePresence();setInterval(updatePresence,5000);
+async function renderLiveStats(){
+ const r=q('#registeredCount'),o=q('#onlineCount');
+ if(r&&logged()){const {data,error}=await sb.rpc('registered_user_count');if(!error)r.textContent=data??0}
+ if(o&&presenceChannel){const st=presenceChannel.presenceState();o.textContent=Object.keys(st||{}).length}
+}
+async function setupPresence(){
+ if(!session||!session.user)return;
+ if(presenceChannel){await sb.removeChannel(presenceChannel)}
+ presenceChannel=sb.channel('gpoketcg-online',{config:{presence:{key:session.user.id}}});
+ presenceChannel.on('presence',{event:'sync'},()=>renderLiveStats());
+ presenceChannel.subscribe(async status=>{if(status==='SUBSCRIBED'){await presenceChannel.track({user_id:session.user.id,username:session.name,online_at:new Date().toISOString()});renderLiveStats()}});
+}
+async function loadAuctions(){
+ const {data,error}=await sb.from('auctions').select('*').order('created_at',{ascending:false});
+ if(error){console.error(error);toast('No se pudieron cargar las subastas');return}
+ auctions=(data||[]).map(a=>({id:a.id,name:a.name,photo:a.photo_url||'',price:Number(a.current_price),increment:Number(a.min_increment),leader:a.leader_name||'Sin pujas',endAt:a.ends_at,closed:a.closed}));
+ renderAuctions();
+}
+function subscribeAuctions(){
+ if(auctionsChannel)sb.removeChannel(auctionsChannel);
+ auctionsChannel=sb.channel('gpoketcg-auctions').on('postgres_changes',{event:'*',schema:'public',table:'auctions'},()=>loadAuctions()).subscribe();
+}
 function compressDataUrl(src,maxW=900,maxH=900,quality=.78){return new Promise(resolve=>{if(!src)return resolve('');const img=new Image();img.onload=()=>{let w=img.naturalWidth,h=img.naturalHeight,scale=Math.min(1,maxW/w,maxH/h);w=Math.max(1,Math.round(w*scale));h=Math.max(1,Math.round(h*scale));const cv=document.createElement('canvas');cv.width=w;cv.height=h;cv.getContext('2d').drawImage(img,0,0,w,h);resolve(cv.toDataURL('image/jpeg',quality))};img.onerror=()=>resolve(src);img.src=src})}
 function fileData(input){return new Promise(resolve=>{const file=input.files&&input.files[0];if(!file)return resolve('');const r=new FileReader();r.onload=async()=>resolve(await compressDataUrl(r.result));r.onerror=()=>resolve('');r.readAsDataURL(file)})}
 async function migrateHeavyPhotos(){let changed=false;for(const p of products){if(p.photo&&p.photo.length>300000){p.photo=await compressDataUrl(p.photo);changed=true}}if(changed)save('gp_products',products);changed=false;for(const a of auctions){if(a.photo&&a.photo.length>300000){a.photo=await compressDataUrl(a.photo);changed=true}}if(changed)save('gp_auctions',auctions);if(raffle.photo&&raffle.photo.length>300000){raffle.photo=await compressDataUrl(raffle.photo);save('gp_raffle',raffle)}}
@@ -140,10 +158,18 @@ function closeDrawer(){q('#drawer').classList.remove('open');q('#drawerBack').cl
 qa('[data-page]').forEach(b=>b.addEventListener('click',()=>go(b.dataset.page)));qa('[data-go]').forEach(b=>b.addEventListener('click',()=>go(b.dataset.go)));qa('[data-close]').forEach(b=>b.addEventListener('click',()=>closeModal(b.dataset.close)));
 q('#menuBtn').onclick=()=>{q('#drawer').classList.add('open');q('#drawerBack').classList.add('open')};q('#drawerBack').onclick=closeDrawer;
 q('#profileBtn').onclick=()=>go('perfil');q('#inboxBtn').onclick=()=>go('mensajes');q('#adminBtn').onclick=()=>go('adminPage');q('#drawerAdmin').onclick=()=>go('adminPage');
-function logout(){session=null;localStorage.removeItem('gp_session');renderAuth();closeDrawer()}q('#logoutBtn').onclick=logout;q('#drawerLogout').onclick=logout;
+async function logout(){await sb.auth.signOut();session=null;if(presenceChannel){await sb.removeChannel(presenceChannel);presenceChannel=null}renderAuth();closeDrawer()}q('#logoutBtn').onclick=logout;q('#drawerLogout').onclick=logout;
 qa('[data-auth]').forEach(b=>b.onclick=()=>{qa('[data-auth]').forEach(x=>x.classList.toggle('active',x===b));qa('.authPane').forEach(x=>x.classList.toggle('active',x.id===b.dataset.auth))});
-q('#loginBtn').onclick=()=>{const id=q('#loginEmail').value.trim().toLowerCase(),pass=q('#loginPassword').value;if(id===ADMIN_EMAIL&&pass===ADMIN_PASS){session={name:'Administrador GPokeTCG',email:ADMIN_EMAIL,role:'admin'};save('gp_session',session);renderAll();toast('Administrador conectado');return}const a=accounts.find(x=>(x.email.toLowerCase()===id||x.name.toLowerCase()===id)&&x.password===pass);if(!a)return toast('Usuario o contraseña incorrectos');session={name:a.name,email:a.email,role:'user'};save('gp_session',session);renderAll();toast('Sesión iniciada')};
-q('#registerBtn').onclick=()=>{const name=q('#regName').value.trim(),email=q('#regEmail').value.trim().toLowerCase(),password=q('#regPassword').value;if(!name||!email||!password)return toast('Completa todos los campos');if(email===ADMIN_EMAIL||accounts.some(a=>a.email===email))return toast('Ese correo ya existe');accounts.push({name,email,password});save('gp_accounts',accounts);session={name,email,role:'user'};save('gp_session',session);renderAll();renderLiveStats();toast('Cuenta creada')};
+q('#loginBtn').onclick=async()=>{const email=q('#loginEmail').value.trim().toLowerCase(),password=q('#loginPassword').value;if(!email||!password)return toast('Completa correo y contraseña');const {data,error}=await sb.auth.signInWithPassword({email,password});if(error)return toast(error.message==='Invalid login credentials'?'Correo o contraseña incorrectos':error.message);await setSessionFromUser(data.user);renderAll();setupPresence();subscribeAuctions();loadAuctions();toast('Sesión iniciada')};
+q('#registerBtn').onclick=async()=>{const name=q('#regName').value.trim(),email=q('#regEmail').value.trim().toLowerCase(),password=q('#regPassword').value;if(!name||!email||!password)return toast('Completa todos los campos');if(password.length<6)return toast('La contraseña debe tener al menos 6 caracteres');const {data,error}=await sb.auth.signUp({email,password,options:{data:{username:name}}});if(error)return toast(error.message);if(!data.session){toast('Cuenta creada. Revisa tu correo para confirmar la cuenta.');return}await setSessionFromUser(data.user);renderAll();setupPresence();subscribeAuctions();loadAuctions();toast('Cuenta creada')};
+async function setSessionFromUser(user){
+ if(!user){session=null;return}
+ let name=user.user_metadata?.username||user.email?.split('@')[0]||'Usuario';
+ let role=user.email?.toLowerCase()===ADMIN_EMAIL?'admin':'user';
+ const {data:p}=await sb.from('profiles').select('username,role').eq('id',user.id).maybeSingle();
+ if(p){name=p.username||name;if(p.role==='admin')role='admin'}
+ session={user,id:user.id,name,email:user.email,role};
+}
 function renderAuth(){q('#authGate').classList.toggle('open',!logged());q('#adminBtn').style.display=isAdmin()?'inline-block':'none';q('#drawerAdmin').style.display=isAdmin()?'block':'none';q('#spinBtn').style.display=isAdmin()?'inline-block':'none';q('#spinNote').style.display=isAdmin()?'none':'block';q('#roleText').textContent=!logged()?'Invitado':(isAdmin()?'Administrador':session.name)}
 function renderProfile(){q('#profileName').textContent=session?session.name:'Invitado';q('#profileEmail').textContent=session?session.email:'';q('#profileOrders').textContent=profile.orders||0;q('#profileRole').textContent=isAdmin()?'Administrador':'Usuario';q('#profileRoleBig').textContent=isAdmin()?'Admin':'Usuario'}
 function renderProducts(){
@@ -158,16 +184,19 @@ function renderCart(){q('#cartCount').textContent=cart.reduce((s,x)=>s+x.qty,0);
 q('#cartBtn').onclick=()=>{renderCart();openModal('cartModal')};q('#addToCart').onclick=()=>{if(!selectedProduct)return;const x=cart.find(c=>c.id===selectedProduct.id);if(x)x.qty++;else cart.push({id:selectedProduct.id,name:selectedProduct.name,price:selectedProduct.price,qty:1});save('gp_cart',cart);renderCart();closeModal('productModal');toast('Añadido al carrito')};q('#checkoutBtn').onclick=()=>{if(!cart.length)return toast('Carrito vacío');profile.orders=(profile.orders||0)+1;save('gp_profile',profile);cart=[];save('gp_cart',cart);renderCart();renderProfile();closeModal('cartModal');toast('Compra simulada completada')};
 function auctionLeft(a){return Math.max(0,new Date(a.endAt).getTime()-Date.now())}
 function formatCountdown(ms){const s=Math.max(0,Math.floor(ms/1000)),h=Math.floor(s/3600),m=Math.floor((s%3600)/60),sec=s%60;return String(h).padStart(2,'0')+':'+String(m).padStart(2,'0')+':'+String(sec).padStart(2,'0')}
-function closeExpiredAuctions(){let changed=false;auctions.forEach(a=>{if(!a.closed&&a.endAt&&auctionLeft(a)<=0){a.closed=true;a.finishedAt=new Date().toISOString();changed=true}});if(changed)save('gp_auctions',auctions);return changed}
-function refreshAuctionClocks(){let expired=false;qa('.auctionClock').forEach(el=>{const a=auctions.find(x=>x.id===Number(el.dataset.id));if(!a)return;const left=auctionLeft(a);el.textContent=formatCountdown(left);if(left<=0&&!a.closed)expired=true});if(expired){closeExpiredAuctions();renderAuctions()}}
+function refreshAuctionClocks(){let rerender=false;qa('.auctionClock').forEach(el=>{const a=auctions.find(x=>x.id===Number(el.dataset.id));if(!a)return;const left=auctionLeft(a);el.textContent=formatCountdown(left);if(left<=0)rerender=true});if(rerender)renderAuctions()}
 function renderAuctions(){
- closeExpiredAuctions();
  q('#auctionGrid').innerHTML=auctions.map(a=>{const closed=a.closed||auctionLeft(a)<=0;return '<div class="card"><div class="productArt">'+(a.photo?'<img src="'+a.photo+'" alt="">':'🔨')+'</div><h3>'+esc(a.name)+'</h3><div class="auctionMeta"><div class="price">'+money(a.price)+'</div>'+(closed?'<span class="badge">FINALIZADA</span>':'<span class="tag">EN DIRECTO</span>')+'</div>'+(closed?'<div class="finished" style="margin-top:10px">Subasta finalizada<br>Ganador: '+esc(a.leader&&a.leader!=='Sin pujas'?a.leader:'Sin ganador')+' · '+money(a.price)+'</div>':'<div class="countdown auctionClock" data-id="'+a.id+'">'+formatCountdown(auctionLeft(a))+'</div><p><b>Va ganando:</b> <span style="color:var(--green)">'+esc(a.leader||'Sin pujas')+'</span></p><p class="muted">Incremento mínimo: '+money(a.increment)+'</p><input class="bidAmount" data-id="'+a.id+'" type="number" step="0.01" placeholder="Tu puja total (mín. '+(Number(a.price)+Number(a.increment)).toFixed(2)+' €)"><button class="btn bidBtn" data-id="'+a.id+'" style="margin-top:9px">Hacer puja</button>')+'</div>'}).join('');
- qa('.bidBtn').forEach(b=>b.onclick=()=>{const id=Number(b.dataset.id),a=auctions.find(x=>x.id===id);if(!a||a.closed||auctionLeft(a)<=0){if(a){a.closed=true;save('gp_auctions',auctions)}renderAuctions();return toast('La subasta ya ha finalizado')}const amount=Number(q('.bidAmount[data-id="'+id+'"]').value),min=Number(a.price)+Number(a.increment);if(!amount||amount<min)return toast('La puja mínima ahora es '+money(min));a.price=amount;a.leader=session.name;save('gp_auctions',auctions);renderAuctions();toast(session.name+' va primero con '+money(amount))});
+ qa('.bidBtn').forEach(b=>b.onclick=async()=>{const id=Number(b.dataset.id),a=auctions.find(x=>x.id===id);if(!a||a.closed||auctionLeft(a)<=0)return toast('La subasta ya ha finalizado');const amount=Number(q('.bidAmount[data-id="'+id+'"]').value),min=Number(a.price)+Number(a.increment);if(!amount||amount<min)return toast('La puja mínima ahora es '+money(min));b.disabled=true;const {error}=await sb.rpc('place_bid',{p_auction_id:id,p_amount:amount});b.disabled=false;if(error)return toast(error.message.includes('finalizado')?'La subasta ya ha finalizado':error.message.includes('insuficiente')?'La puja ya ha sido superada. Actualizando...':'No se pudo registrar la puja');await loadAuctions();toast(session.name+' va primero con '+money(amount))});
  renderAdminAuctions()
 }
-function renderAdminAuctions(){q('#adminAuctionsList').innerHTML=auctions.map(a=>'<div class="adminItem"><div class="itemRow"><span><b>'+esc(a.name)+'</b><br><small>Actual '+money(a.price)+' · incremento mín. '+money(a.increment)+'<br>Finaliza: '+new Date(a.endAt).toLocaleString('es-ES')+(a.closed?' · FINALIZADA':'')+'</small></span><span><button class="btn dark editAuction" data-id="'+a.id+'">Editar</button> <button class="btn dark delAuction" data-id="'+a.id+'">Retirar</button></span></div><div class="upload" style="margin-top:8px"><small>Cambiar foto</small><input type="file" accept="image/*" class="editAuctionPhoto" data-id="'+a.id+'"></div></div>').join('');qa('.editAuction').forEach(b=>b.onclick=()=>{const a=auctions.find(x=>x.id===Number(b.dataset.id));const name=prompt('Producto subastado',a.name);if(name===null)return;const price=prompt('Precio actual/inicial',a.price);if(price===null)return;const inc=prompt('Incremento mínimo obligatorio',a.increment);if(inc===null)return;const end=prompt('Fecha y hora final (AAAA-MM-DDTHH:MM)',new Date(a.endAt).toISOString().slice(0,16));if(end===null)return;const endMs=new Date(end).getTime();if(!Number.isFinite(endMs))return toast('Fecha de finalización no válida');a.name=name.trim()||a.name;a.price=Number(price)||a.price;a.increment=Math.max(.01,Number(inc)||a.increment);a.endAt=new Date(endMs).toISOString();a.closed=Date.now()>=endMs;a.leader='Sin pujas';save('gp_auctions',auctions);renderAuctions();toast('Subasta editada')});qa('.editAuctionPhoto').forEach(inp=>inp.onchange=async()=>{const a=auctions.find(x=>x.id===Number(inp.dataset.id)),photo=await fileData(inp);if(!photo)return;a.photo=photo;save('gp_auctions',auctions);renderAuctions();toast('Foto de subasta actualizada')});qa('.delAuction').forEach(b=>b.onclick=()=>{auctions=auctions.filter(x=>x.id!==Number(b.dataset.id));save('gp_auctions',auctions);renderAuctions()})}
-q('#addAuction').onclick=async()=>{try{const name=q('#auName').value.trim(),price=Number(q('#auStart').value),increment=Number(q('#auIncrement').value),endRaw=q('#auEnd').value,endMs=new Date(endRaw).getTime();if(!name||price<=0||increment<=0||!endRaw||!Number.isFinite(endMs)||endMs<=Date.now())return toast('Completa producto, precio, incremento y una fecha futura de finalización');const photo=await fileData(q('#auPhoto'));auctions.push({id:Date.now(),name,price,increment,leader:'Sin pujas',photo,endAt:new Date(endMs).toISOString(),closed:false});if(!save('gp_auctions',auctions)){auctions.pop();return}renderAuctions();q('#auName').value='';q('#auStart').value='';q('#auIncrement').value='';q('#auEnd').value='';q('#auPhoto').value='';toast('Subasta creada correctamente')}catch(e){console.error(e);toast('No se pudo crear la subasta')}};
+function renderAdminAuctions(){
+ const box=q('#adminAuctionsList');if(!box)return;
+ box.innerHTML=auctions.map(a=>'<div class="adminItem"><div class="itemRow"><span><b>'+esc(a.name)+'</b><br><small>Actual '+money(a.price)+' · incremento mín. '+money(a.increment)+'<br>Finaliza: '+new Date(a.endAt).toLocaleString('es-ES')+((a.closed||auctionLeft(a)<=0)?' · FINALIZADA':'')+'</small></span><span><button class="btn dark editAuction" data-id="'+a.id+'">Editar</button> <button class="btn dark delAuction" data-id="'+a.id+'">Retirar</button></span></div></div>').join('');
+ qa('.editAuction').forEach(b=>b.onclick=async()=>{if(!isAdmin())return;const a=auctions.find(x=>x.id===Number(b.dataset.id));const name=prompt('Producto subastado',a.name);if(name===null)return;const price=prompt('Precio actual/inicial',a.price);if(price===null)return;const inc=prompt('Incremento mínimo obligatorio',a.increment);if(inc===null)return;const end=prompt('Fecha y hora final (AAAA-MM-DDTHH:MM)',new Date(a.endAt).toISOString().slice(0,16));if(end===null)return;const endMs=new Date(end).getTime();if(!Number.isFinite(endMs))return toast('Fecha de finalización no válida');const {error}=await sb.from('auctions').update({name:name.trim()||a.name,current_price:Number(price)||a.price,min_increment:Math.max(.01,Number(inc)||a.increment),ends_at:new Date(endMs).toISOString(),closed:Date.now()>=endMs,leader_user_id:null,leader_name:null}).eq('id',a.id);if(error)return toast('No se pudo editar');await loadAuctions();toast('Subasta editada')});
+ qa('.delAuction').forEach(b=>b.onclick=async()=>{if(!isAdmin())return;const {error}=await sb.from('auctions').delete().eq('id',Number(b.dataset.id));if(error)return toast('No se pudo retirar');await loadAuctions();toast('Subasta retirada')})
+}
+q('#addAuction').onclick=async()=>{try{if(!isAdmin())return toast('Solo administrador');const name=q('#auName').value.trim(),price=Number(q('#auStart').value),increment=Number(q('#auIncrement').value),endRaw=q('#auEnd').value,endMs=new Date(endRaw).getTime();if(!name||price<=0||increment<=0||!endRaw||!Number.isFinite(endMs)||endMs<=Date.now())return toast('Completa producto, precio, incremento y una fecha futura de finalización');const photo=await fileData(q('#auPhoto'));const {error}=await sb.from('auctions').insert({name,photo_url:photo||null,current_price:price,min_increment:increment,leader_name:null,ends_at:new Date(endMs).toISOString(),closed:false});if(error)return toast('No se pudo crear la subasta');await loadAuctions();q('#auName').value='';q('#auStart').value='';q('#auIncrement').value='';q('#auEnd').value='';q('#auPhoto').value='';toast('Subasta creada correctamente')}catch(e){console.error(e);toast('No se pudo crear la subasta')}};
 setInterval(refreshAuctionClocks,1000);
 function paidEntries(){const e=[];participants.filter(p=>p.status==='Pagado').forEach(p=>{for(let i=0;i<p.qty;i++)e.push(p.alias)});return e}
 function drawWheel(){const c=q('#wheel'),ctx=c.getContext('2d'),e=paidEntries();ctx.clearRect(0,0,600,600);if(!e.length){ctx.fillStyle='#ffd92e';ctx.font='bold 28px system-ui';ctx.textAlign='center';ctx.fillText('Sin participantes',300,305);return}const n=e.length;ctx.save();ctx.translate(300,300);ctx.rotate(wheelAngle);e.forEach((name,i)=>{const a0=i*2*Math.PI/n,a1=(i+1)*2*Math.PI/n;ctx.beginPath();ctx.moveTo(0,0);ctx.arc(0,0,280,a0,a1);ctx.closePath();ctx.fillStyle='hsl('+((i*53)%360)+' 68% 48%)';ctx.fill();ctx.strokeStyle='#07131f';ctx.stroke();if(n<=30){ctx.save();ctx.rotate((a0+a1)/2);ctx.textAlign='right';ctx.fillStyle='#fff';ctx.font='bold 13px system-ui';ctx.fillText(name.slice(0,13),260,4);ctx.restore()}});ctx.restore();ctx.fillStyle='#07131f';ctx.beginPath();ctx.arc(300,300,70,0,Math.PI*2);ctx.fill();ctx.fillStyle='#ffd92e';ctx.font='900 22px system-ui';ctx.textAlign='center';ctx.fillText('GPokeTCG',300,307);ctx.save();ctx.fillStyle='#ffd92e';ctx.strokeStyle='#07131f';ctx.lineWidth=6;ctx.beginPath();ctx.moveTo(276,8);ctx.lineTo(324,8);ctx.lineTo(300,58);ctx.closePath();ctx.fill();ctx.stroke();ctx.restore()}
@@ -213,7 +242,13 @@ function renderMessages(){
 q('#sendPrivateReply').onclick=()=>{const text=q('#privateReply').value.trim();if(!text||!activeConversation)return toast('Selecciona una oferta/conversación y escribe un mensaje');const off=offerByThread(activeConversation);let to,toName;if(isAdmin()){if(!off)return toast('Selecciona una oferta concreta');to=off.senderEmail||off.contact;toName=off.sender||off.contact}else{to=ADMIN_EMAIL;toName='Administrador GPokeTCG'}privateMessages.push({id:Date.now(),from:session.email,fromName:session.name,to,toName,text,read:false,thread:activeConversation,time:Date.now()});if(!save('gp_private_messages',privateMessages)){privateMessages.pop();return}if(isAdmin()&&off){off.status='Respondida';save('gp_offers',offers)}q('#privateReply').value='';renderOffers();renderMessages();toast('Mensaje privado enviado')};
 qa('.adminTab').forEach(b=>b.onclick=()=>{qa('.adminTab').forEach(x=>x.classList.toggle('active',x===b));qa('.adminPane').forEach(x=>x.classList.toggle('active',x.id===b.dataset.admin))});
 function renderAll(){renderAuth();renderLiveStats();renderProfile();renderProducts();renderCart();renderAuctions();renderRaffle();renderChats();renderCommunity();renderOffers();renderMessages()}
-renderAll();migrateHeavyPhotos().then(()=>{renderProducts();renderAuctions();renderRaffle()});
+(async function boot(){
+ const {data:{session:authSession}}=await sb.auth.getSession();
+ if(authSession?.user){await setSessionFromUser(authSession.user);setupPresence();subscribeAuctions();await loadAuctions()}
+ renderAll();
+ migrateHeavyPhotos().then(()=>{renderProducts();renderRaffle()});
+ sb.auth.onAuthStateChange(async(event,newSession)=>{if(newSession?.user){await setSessionFromUser(newSession.user);setupPresence();subscribeAuctions();await loadAuctions();renderAll()}else if(event==='SIGNED_OUT'){session=null;renderAll()}});
+})();
 });
 </script>
 </body></html>
