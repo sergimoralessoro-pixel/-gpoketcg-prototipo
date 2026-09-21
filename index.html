@@ -99,7 +99,7 @@ const load=(k,f)=>{try{const v=JSON.parse(localStorage.getItem(k));return v==nul
 const SUPABASE_URL='https://pekinkmbiyoihniaywag.supabase.co';
 const SUPABASE_KEY='sb_publishable_2A6zQlBjD77uSIBY-dHDiw_HORqsDSu';
 const sb=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
-const ADMIN_EMAIL='sergimoralessoro@gmail.com';
+const ADMIN_EMAILS=['sergimoralessoro@gmail.com','gpoketcg@gmail.com'];
 let session=null;
 let accounts=[];
 let profile=load('gp_profile',{orders:0});
@@ -165,7 +165,7 @@ q('#registerBtn').onclick=async()=>{const name=q('#regName').value.trim(),email=
 async function setSessionFromUser(user){
  if(!user){session=null;return}
  let name=user.user_metadata?.username||user.email?.split('@')[0]||'Usuario';
- let role=user.email?.toLowerCase()===ADMIN_EMAIL?'admin':'user';
+ let role=ADMIN_EMAILS.includes(user.email?.toLowerCase())?'admin':'user';
  const {data:p}=await sb.from('profiles').select('username,role').eq('id',user.id).maybeSingle();
  if(p){name=p.username||name;if(p.role==='admin')role='admin'}
  session={user,id:user.id,name,email:user.email,role};
