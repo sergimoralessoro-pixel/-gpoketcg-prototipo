@@ -52,7 +52,7 @@ header{position:sticky;top:0;z-index:30;background:#06111df2;border-bottom:1px s
 <div class="card"><h3>Chat de la rifa</h3><div class="chat" id="raffleChat"></div><div class="chatbar"><input id="raffleChatInput" placeholder="Mensaje"><button class="btn blue" id="raffleChatSend">Enviar</button></div></div>
 </div></section>
 
-<section class="page" id="comunidad"><div class="title"><h2>Comunidad</h2><span class="tag">Noticias · Eventos · Chat</span></div><div class="two">
+<section class="page" id="comunidad"><div class="title"><h2>Comunidad</h2><span class="tag">Noticias · Eventos · Chat en directo</span></div><div class="two">
 <div><div class="card"><h3>📢 Noticias</h3><div class="list" id="newsFeed"></div></div><div class="card" style="margin-top:12px"><h3>📅 Eventos</h3><div class="list" id="eventsFeed"></div></div></div>
 <div class="card"><h3>💬 Chat general</h3><div class="chat" id="communityChat"></div><div class="chatbar"><input id="communityInput" placeholder="Escribe..."><button class="btn blue" id="communitySend">Enviar</button></div></div>
 </div></section>
@@ -61,7 +61,7 @@ header{position:sticky;top:0;z-index:30;background:#06111df2;border-bottom:1px s
 
 <section class="page" id="ranking"><div class="title"><h2>Ranking</h2><span class="tag">Demo</span></div><div class="grid3"><div class="card"><h3>🏆 Ganadores</h3><div class="list"><div class="item">PokeAlex · 24</div><div class="item">MartaTCG · 18</div><div class="item">CharizardBoy · 16</div></div></div><div class="card"><h3>🔥 Racha</h3><div class="list"><div class="item">DarkMew · 5</div><div class="item">PokeAlex · 4</div></div></div><div class="card"><h3>🔨 Mayores pujadores</h3><div class="list"><div class="item">DarkMew · 12.450 €</div><div class="item">CollectorMario · 9.320 €</div></div></div></div></section>
 
-<section class="page" id="perfil"><div class="title"><h2>Mi perfil</h2><span class="tag" id="profileRole"></span></div><div class="two"><div class="card"><h2 id="profileName"></h2><p class="muted" id="profileEmail"></p><div class="stats"><div class="stat"><small>Compras</small><b id="profileOrders">0</b></div><div class="stat"><small>Rol</small><b id="profileRoleBig"></b></div><div class="stat"><small>Estado</small><b>Activo</b></div></div></div><div class="card"><h3>Cuenta demo</h3><p class="muted">La cuenta, productos, subastas, pedidos y rifas ya están conectados a la base de datos.</p><button class="btn blue" data-go="mensajes">Ver mensajes y notificaciones</button></div></div></section>
+<section class="page" id="perfil"><div class="title"><h2>Mi perfil</h2><span class="tag" id="profileRole"></span></div><div class="two"><div class="card"><h2 id="profileName"></h2><p class="muted" id="profileEmail"></p><div class="stats"><div class="stat"><small>Compras</small><b id="profileOrders">0</b></div><div class="stat"><small>Rol</small><b id="profileRoleBig"></b></div><div class="stat"><small>Estado</small><b>Activo</b></div></div></div><div class="card"><h3>Mi cuenta</h3><p class="muted">La cuenta, productos, subastas, pedidos y rifas ya están conectados a la base de datos.</p><button class="btn blue" data-go="mensajes">Ver mensajes y notificaciones</button></div></div></section>
 
 <section class="page" id="mensajes"><div class="title"><h2>Mensajes y notificaciones</h2><span class="tag" id="messageRoleTag"></span></div>
   <div class="two">
@@ -81,12 +81,12 @@ header{position:sticky;top:0;z-index:30;background:#06111df2;border-bottom:1px s
 </main>
 
 <div class="auth open" id="authGate"><div class="box"><h1>GPokeTCG</h1><p class="muted">Debes iniciar sesión para usar el prototipo.</p><div class="tabs"><button class="tab active" data-auth="loginPane">Iniciar sesión</button><button class="tab" data-auth="registerPane">Crear cuenta</button></div>
-<div class="authPane active" id="loginPane"><input id="loginEmail" placeholder="Correo o usuario"><input id="loginPassword" type="password" placeholder="Contraseña" style="margin-top:8px"><button class="btn" id="loginBtn" style="width:100%;margin-top:10px">Entrar</button><p class="muted" style="font-size:12px">Demo: no uses tu contraseña real.</p></div>
-<div class="authPane" id="registerPane"><input id="regName" placeholder="Nombre de usuario"><input id="regEmail" type="email" placeholder="Correo" style="margin-top:8px"><input id="regPassword" type="password" placeholder="Contraseña de prueba" style="margin-top:8px"><button class="btn blue" id="registerBtn" style="width:100%;margin-top:10px">Crear cuenta demo</button></div>
+<div class="authPane active" id="loginPane"><input id="loginEmail" placeholder="Correo o usuario"><input id="loginPassword" type="password" placeholder="Contraseña" style="margin-top:8px"><button class="btn" id="loginBtn" style="width:100%;margin-top:10px">Entrar</button><p class="muted" style="font-size:12px">Acceso seguro mediante Supabase.</p></div>
+<div class="authPane" id="registerPane"><input id="regName" placeholder="Nombre de usuario"><input id="regEmail" type="email" placeholder="Correo" style="margin-top:8px"><input id="regPassword" type="password" placeholder="Contraseña de prueba" style="margin-top:8px"><button class="btn blue" id="registerBtn" style="width:100%;margin-top:10px">Crear cuenta</button></div>
 </div></div>
 
 <div class="modal" id="productModal"><div class="box"><div class="productArt">🃏</div><h2 id="detailName"></h2><div class="price" id="detailPrice"></div><p><b>Estado:</b> <span id="detailState"></span></p><p><b>Stock:</b> <span id="detailStock"></span></p><p><b>Detalles:</b></p><p class="muted" id="detailDesc"></p><div class="actions"><button class="btn" id="addToCart">Añadir al carrito</button><button class="btn dark" data-close="productModal">Cerrar</button></div></div></div>
-<div class="modal" id="cartModal"><div class="box"><h2>Carrito</h2><div id="cartRows"></div><div class="price" id="cartTotal"></div><div class="actions" style="margin-top:12px"><button class="btn" id="checkoutBtn">Simular compra</button><button class="btn dark" data-close="cartModal">Cerrar</button></div></div></div>
+<div class="modal" id="cartModal"><div class="box"><h2>Carrito</h2><div id="cartRows"></div><div class="price" id="cartTotal"></div><div class="actions" style="margin-top:12px"><button class="btn" id="checkoutBtn">Crear pedido</button><button class="btn dark" data-close="cartModal">Cerrar</button></div></div></div>
 <div class="modal" id="raffleModal"><div class="box"><h2>Reservar números</h2><input id="raffleBuyer" placeholder="Usuario"><input id="raffleQty" type="number" value="1" min="1" max="20" style="margin-top:8px"><div class="actions" style="margin-top:10px"><button class="btn" id="confirmRaffle">Reservar números</button><button class="btn dark" data-close="raffleModal">Cancelar</button></div></div></div>
 <div class="toast" id="toast"></div>
 
@@ -113,11 +113,15 @@ let raffle={id:null,title:'',price:0,slots:0,desc:'',photo:'',status:'active',wi
 let participants=[];
 let raffleChannel=null;
 let raffleEntriesChannel=null;
-let raffleChat=load('gp_raffle_chat',[{u:'PokeAlex',m:'¡Vamos! 🔥'},{u:'MartaTCG',m:'Suerte 🍀'}]);
-let communityChat=load('gp_community_chat',[{u:'AdminGPokeTCG',m:'Bienvenidos al chat general 👋'}]);
-let news=load('gp_news',[{title:'Bienvenidos a GPokeTCG',date:'Hoy',text:'Aquí aparecerán las noticias publicadas por el administrador.'}]);
-let events=load('gp_events',[{title:'Rifa Charizard PSA 10',date:'Sábado · 20:00',text:'Sorteo de demostración.'}]);
-let offers=load('gp_offers',[]);let privateMessages=load('gp_private_messages',[]);let activeConversation=null;
+let raffleChat=[];
+let communityChat=[];
+let news=[];
+let events=[];
+let offers=[];
+let privateMessages=[];
+let messageReads=new Set();
+let activeConversation=null;
+let communityChannel=null;
 let selectedProduct=null,wheelAngle=0,spinning=false;
 function money(n){return Number(n).toLocaleString('es-ES',{minimumFractionDigits:2,maximumFractionDigits:2})+' €'}
 async function renderLiveStats(){
@@ -173,6 +177,36 @@ function subscribeRaffle(){
  raffleChannel=sb.channel('gpoketcg-raffle').on('postgres_changes',{event:'*',schema:'public',table:'raffles'},()=>loadRaffle()).subscribe();
  raffleEntriesChannel=sb.channel('gpoketcg-raffle-entries').on('postgres_changes',{event:'*',schema:'public',table:'raffle_entries'},()=>loadRaffle()).subscribe();
 }
+async function loadCommunityData(){
+ if(!logged())return;
+ const [chatRes,newsRes,eventRes,offerRes,msgRes,readRes]=await Promise.all([
+   sb.from('chat_messages').select('*').order('created_at',{ascending:true}).limit(300),
+   sb.from('news').select('*').order('created_at',{ascending:false}),
+   sb.from('events').select('*').order('created_at',{ascending:false}),
+   sb.from('offers').select('*').order('created_at',{ascending:false}),
+   sb.from('offer_messages').select('*').order('created_at',{ascending:true}),
+   sb.from('offer_message_reads').select('message_id').eq('user_id',session.id)
+ ]);
+ if(chatRes.error||newsRes.error||eventRes.error||offerRes.error||msgRes.error){console.error(chatRes.error||newsRes.error||eventRes.error||offerRes.error||msgRes.error);return}
+ raffleChat=(chatRes.data||[]).filter(x=>x.channel==='raffle'&&(!raffle.id||x.raffle_id===raffle.id)).map(x=>({id:x.id,u:x.username,m:x.message,time:new Date(x.created_at).getTime()}));
+ communityChat=(chatRes.data||[]).filter(x=>x.channel==='community').map(x=>({id:x.id,u:x.username,m:x.message,time:new Date(x.created_at).getTime()}));
+ news=(newsRes.data||[]).map(x=>({id:x.id,title:x.title,date:x.label,text:x.body}));
+ events=(eventRes.data||[]).map(x=>({id:x.id,title:x.title,date:x.event_label,text:x.body}));
+ offers=(offerRes.data||[]).map(o=>({id:o.id,user_id:o.user_id,name:o.card_name,price:o.requested_price??'—',state:o.card_state,contact:o.contact,message:o.message,sender:o.sender_name,senderEmail:o.sender_email,status:o.status,created:new Date(o.created_at).getTime()}));
+ privateMessages=(msgRes.data||[]).map(m=>({id:m.id,offer_id:m.offer_id,from_user_id:m.sender_user_id,fromName:m.sender_name,text:m.message,time:new Date(m.created_at).getTime()}));
+ messageReads=new Set((readRes.data||[]).map(r=>Number(r.message_id)));
+ renderChats();renderCommunity();renderOffers();renderMessages();
+}
+function subscribeCommunity(){
+ if(communityChannel)sb.removeChannel(communityChannel);
+ communityChannel=sb.channel('gpoketcg-community-live')
+   .on('postgres_changes',{event:'*',schema:'public',table:'chat_messages'},()=>loadCommunityData())
+   .on('postgres_changes',{event:'*',schema:'public',table:'news'},()=>loadCommunityData())
+   .on('postgres_changes',{event:'*',schema:'public',table:'events'},()=>loadCommunityData())
+   .on('postgres_changes',{event:'*',schema:'public',table:'offers'},()=>loadCommunityData())
+   .on('postgres_changes',{event:'*',schema:'public',table:'offer_messages'},()=>loadCommunityData())
+   .subscribe();
+}
 function compressDataUrl(src,maxW=900,maxH=900,quality=.78){return new Promise(resolve=>{if(!src)return resolve('');const img=new Image();img.onload=()=>{let w=img.naturalWidth,h=img.naturalHeight,scale=Math.min(1,maxW/w,maxH/h);w=Math.max(1,Math.round(w*scale));h=Math.max(1,Math.round(h*scale));const cv=document.createElement('canvas');cv.width=w;cv.height=h;cv.getContext('2d').drawImage(img,0,0,w,h);resolve(cv.toDataURL('image/jpeg',quality))};img.onerror=()=>resolve(src);img.src=src})}
 function fileData(input){return new Promise(resolve=>{const file=input.files&&input.files[0];if(!file)return resolve('');const r=new FileReader();r.onload=async()=>resolve(await compressDataUrl(r.result));r.onerror=()=>resolve('');r.readAsDataURL(file)})}
 async function migrateHeavyPhotos(){let changed=false;for(const p of products){if(p.photo&&p.photo.length>300000){p.photo=await compressDataUrl(p.photo);changed=true}}if(changed)save('gp_products',products);changed=false;for(const a of auctions){if(a.photo&&a.photo.length>300000){a.photo=await compressDataUrl(a.photo);changed=true}}if(changed)save('gp_auctions',auctions);if(raffle.photo&&raffle.photo.length>300000){raffle.photo=await compressDataUrl(raffle.photo);save('gp_raffle',raffle)}}
@@ -188,8 +222,8 @@ q('#menuBtn').onclick=()=>{q('#drawer').classList.add('open');q('#drawerBack').c
 q('#profileBtn').onclick=()=>go('perfil');q('#inboxBtn').onclick=()=>go('mensajes');q('#adminBtn').onclick=()=>go('adminPage');q('#drawerAdmin').onclick=()=>go('adminPage');
 async function logout(){await sb.auth.signOut();session=null;if(presenceChannel){await sb.removeChannel(presenceChannel);presenceChannel=null}renderAuth();closeDrawer()}q('#logoutBtn').onclick=logout;q('#drawerLogout').onclick=logout;
 qa('[data-auth]').forEach(b=>b.onclick=()=>{qa('[data-auth]').forEach(x=>x.classList.toggle('active',x===b));qa('.authPane').forEach(x=>x.classList.toggle('active',x.id===b.dataset.auth))});
-q('#loginBtn').onclick=async()=>{const email=q('#loginEmail').value.trim().toLowerCase(),password=q('#loginPassword').value;if(!email||!password)return toast('Completa correo y contraseña');const {data,error}=await sb.auth.signInWithPassword({email,password});if(error)return toast(error.message==='Invalid login credentials'?'Correo o contraseña incorrectos':error.message);await setSessionFromUser(data.user);renderAll();setupPresence();subscribeAuctions();subscribeProducts();subscribeRaffle();Promise.all([loadAuctions(),loadProducts(),loadOrderCount(),loadRaffle()]);toast('Sesión iniciada')};
-q('#registerBtn').onclick=async()=>{const name=q('#regName').value.trim(),email=q('#regEmail').value.trim().toLowerCase(),password=q('#regPassword').value;if(!name||!email||!password)return toast('Completa todos los campos');if(password.length<6)return toast('La contraseña debe tener al menos 6 caracteres');const {data,error}=await sb.auth.signUp({email,password,options:{data:{username:name}}});if(error)return toast(error.message);if(!data.session){toast('Cuenta creada. Revisa tu correo para confirmar la cuenta.');return}await setSessionFromUser(data.user);renderAll();setupPresence();subscribeAuctions();subscribeProducts();subscribeRaffle();Promise.all([loadAuctions(),loadProducts(),loadOrderCount(),loadRaffle()]);toast('Cuenta creada')};
+q('#loginBtn').onclick=async()=>{const email=q('#loginEmail').value.trim().toLowerCase(),password=q('#loginPassword').value;if(!email||!password)return toast('Completa correo y contraseña');const {data,error}=await sb.auth.signInWithPassword({email,password});if(error)return toast(error.message==='Invalid login credentials'?'Correo o contraseña incorrectos':error.message);await setSessionFromUser(data.user);renderAll();setupPresence();subscribeAuctions();subscribeProducts();subscribeRaffle();subscribeCommunity();Promise.all([loadAuctions(),loadProducts(),loadOrderCount(),loadRaffle(),loadCommunityData()]);toast('Sesión iniciada')};
+q('#registerBtn').onclick=async()=>{const name=q('#regName').value.trim(),email=q('#regEmail').value.trim().toLowerCase(),password=q('#regPassword').value;if(!name||!email||!password)return toast('Completa todos los campos');if(password.length<6)return toast('La contraseña debe tener al menos 6 caracteres');const {data,error}=await sb.auth.signUp({email,password,options:{data:{username:name}}});if(error)return toast(error.message);if(!data.session){toast('Cuenta creada. Revisa tu correo para confirmar la cuenta.');return}await setSessionFromUser(data.user);renderAll();setupPresence();subscribeAuctions();subscribeProducts();subscribeRaffle();subscribeCommunity();Promise.all([loadAuctions(),loadProducts(),loadOrderCount(),loadRaffle(),loadCommunityData()]);toast('Cuenta creada')};
 async function setSessionFromUser(user){
  if(!user){session=null;return}
  let name=user.user_metadata?.username||user.email?.split('@')[0]||'Usuario';
@@ -246,50 +280,65 @@ q('#confirmRaffle').onclick=async()=>{if(!raffle.id)return toast('No hay rifa ac
 q('#spinBtn').onclick=async()=>{if(!isAdmin())return toast('Solo el administrador puede girar');if(!raffle.id||spinning)return;const e=paidEntries();if(!e.length)return toast('No hay participantes pagados');spinning=true;q('#winnerText').textContent='Girando...';const {data,error}=await sb.rpc('draw_raffle_winner',{p_raffle_id:raffle.id});spinning=false;if(error)return toast(error.message);await loadRaffle();if(data&&data[0])toast('Ganador: '+data[0].alias)};
 q('#saveRaffle').onclick=async()=>{try{if(!isAdmin())return toast('Solo administrador');const title=q('#rTitle').value.trim(),price=Number(q('#rPrice').value),slots=Number(q('#rSlots').value);if(!title||price<=0||slots<=0)return toast('Completa carta, precio por número y plazas');const photo=await fileData(q('#rPhoto'));let error;if(raffle.id){({error}=await sb.from('raffles').update({title,price_per_slot:price,total_slots:Math.max(1,slots),description:q('#rDesc').value.trim(),photo_url:photo||raffle.photo||null}).eq('id',raffle.id))}else{({error}=await sb.from('raffles').insert({title,price_per_slot:price,total_slots:Math.max(1,slots),description:q('#rDesc').value.trim(),photo_url:photo||null,status:'active'}))}if(error)return toast('No se pudo guardar la rifa');q('#rPhoto').value='';await loadRaffle();toast('Rifa creada/actualizada correctamente')}catch(e){console.error(e);toast('No se pudo guardar la rifa')}};
 q('#addParticipant').onclick=async()=>{if(!isAdmin())return toast('Solo administrador');if(!raffle.id)return toast('No hay rifa');const alias=q('#aAlias').value.trim();if(!alias)return toast('Pon un alias');const qty=Math.max(1,Number(q('#aQty').value)||1),status=q('#aStatus').value==='Pagado'?'paid':'pending';const {error}=await sb.from('raffle_entries').insert({raffle_id:raffle.id,user_id:null,alias,quantity:qty,status});if(error)return toast('No se pudo añadir participante');q('#aAlias').value='';await loadRaffle()};
-function renderChats(){q('#raffleChat').innerHTML=raffleChat.map(x=>'<div class="msg"><b>'+x.u+'</b><br>'+x.m+'</div>').join('');q('#communityChat').innerHTML=communityChat.map(x=>'<div class="msg"><b>'+x.u+'</b><br>'+x.m+'</div>').join('')}
-q('#raffleChatSend').onclick=()=>{const m=q('#raffleChatInput').value.trim();if(!m)return;raffleChat.push({u:session.name,m});save('gp_raffle_chat',raffleChat);q('#raffleChatInput').value='';renderChats()};q('#communitySend').onclick=()=>{const m=q('#communityInput').value.trim();if(!m)return;communityChat.push({u:session.name,m});save('gp_community_chat',communityChat);q('#communityInput').value='';renderChats()};
+function renderChats(){
+ q('#raffleChat').innerHTML=raffleChat.map(x=>'<div class="msg"><b>'+esc(x.u)+'</b><br>'+esc(x.m)+'</div>').join('');
+ q('#communityChat').innerHTML=communityChat.map(x=>'<div class="msg"><b>'+esc(x.u)+'</b><br>'+esc(x.m)+'</div>').join('');
+ q('#raffleChat').scrollTop=q('#raffleChat').scrollHeight;q('#communityChat').scrollTop=q('#communityChat').scrollHeight
+}
+q('#raffleChatSend').onclick=async()=>{const m=q('#raffleChatInput').value.trim();if(!m)return;if(!raffle.id)return toast('No hay rifa activa');const {error}=await sb.from('chat_messages').insert({channel:'raffle',raffle_id:raffle.id,user_id:session.id,username:session.name,message:m});if(error)return toast('No se pudo enviar');q('#raffleChatInput').value='';await loadCommunityData()};
+q('#communitySend').onclick=async()=>{const m=q('#communityInput').value.trim();if(!m)return;const {error}=await sb.from('chat_messages').insert({channel:'community',raffle_id:null,user_id:session.id,username:session.name,message:m});if(error)return toast('No se pudo enviar');q('#communityInput').value='';await loadCommunityData()};
+
 function renderCommunity(){
  q('#newsFeed').innerHTML=news.map(x=>'<div class="item"><b>'+esc(x.title)+'</b><div class="muted">'+esc(x.date)+'</div><p>'+esc(x.text)+'</p></div>').join('');
  q('#eventsFeed').innerHTML=events.map(x=>'<div class="item"><b>'+esc(x.title)+'</b><div class="muted">'+esc(x.date)+'</div><p>'+esc(x.text)+'</p></div>').join('');
  q('#adminCommunityList').innerHTML=news.map((x,i)=>'<div class="adminItem itemRow"><span>📰 '+esc(x.title)+'</span><span><button class="btn dark editNews" data-i="'+i+'">Editar</button> <button class="btn dark delNews" data-i="'+i+'">Eliminar</button></span></div>').join('')+events.map((x,i)=>'<div class="adminItem itemRow"><span>📅 '+esc(x.title)+'</span><span><button class="btn dark editEvent" data-i="'+i+'">Editar</button> <button class="btn dark delEvent" data-i="'+i+'">Eliminar</button></span></div>').join('');
- qa('.editNews').forEach(b=>b.onclick=()=>{const x=news[Number(b.dataset.i)],t=prompt('Título',x.title);if(t===null)return;const d=prompt('Fecha/etiqueta',x.date);if(d===null)return;const tx=prompt('Texto',x.text);if(tx===null)return;Object.assign(x,{title:t||x.title,date:d||x.date,text:tx||x.text});save('gp_news',news);renderCommunity()});qa('.delNews').forEach(b=>b.onclick=()=>{news.splice(Number(b.dataset.i),1);save('gp_news',news);renderCommunity()});
- qa('.editEvent').forEach(b=>b.onclick=()=>{const x=events[Number(b.dataset.i)],t=prompt('Evento',x.title);if(t===null)return;const d=prompt('Fecha/hora',x.date);if(d===null)return;const tx=prompt('Descripción',x.text);if(tx===null)return;Object.assign(x,{title:t||x.title,date:d||x.date,text:tx||x.text});save('gp_events',events);renderCommunity()});qa('.delEvent').forEach(b=>b.onclick=()=>{events.splice(Number(b.dataset.i),1);save('gp_events',events);renderCommunity()})
+ qa('.editNews').forEach(b=>b.onclick=async()=>{if(!isAdmin())return;const x=news[Number(b.dataset.i)],t=prompt('Título',x.title);if(t===null)return;const d=prompt('Fecha/etiqueta',x.date);if(d===null)return;const tx=prompt('Texto',x.text);if(tx===null)return;const {error}=await sb.from('news').update({title:t||x.title,label:d||x.date,body:tx||x.text}).eq('id',x.id);if(error)return toast('No se pudo editar');await loadCommunityData()});
+ qa('.delNews').forEach(b=>b.onclick=async()=>{if(!isAdmin())return;const x=news[Number(b.dataset.i)];const {error}=await sb.from('news').delete().eq('id',x.id);if(error)return toast('No se pudo eliminar');await loadCommunityData()});
+ qa('.editEvent').forEach(b=>b.onclick=async()=>{if(!isAdmin())return;const x=events[Number(b.dataset.i)],t=prompt('Evento',x.title);if(t===null)return;const d=prompt('Fecha/hora',x.date);if(d===null)return;const tx=prompt('Descripción',x.text);if(tx===null)return;const {error}=await sb.from('events').update({title:t||x.title,event_label:d||x.date,body:tx||x.text}).eq('id',x.id);if(error)return toast('No se pudo editar');await loadCommunityData()});
+ qa('.delEvent').forEach(b=>b.onclick=async()=>{if(!isAdmin())return;const x=events[Number(b.dataset.i)];const {error}=await sb.from('events').delete().eq('id',x.id);if(error)return toast('No se pudo eliminar');await loadCommunityData()})
 }
-q('#addNews').onclick=()=>{const title=q('#nTitle').value.trim(),text=q('#nText').value.trim();if(!title||!text)return toast('Completa noticia');news.unshift({title,date:q('#nDate').value.trim()||'Hoy',text});save('gp_news',news);renderCommunity();toast('Noticia publicada')};
-q('#addEvent').onclick=()=>{const title=q('#eTitle').value.trim();if(!title)return toast('Completa evento');events.unshift({title,date:q('#eDate').value.trim()||'Por confirmar',text:q('#eText').value.trim()||''});save('gp_events',events);renderCommunity();toast('Evento publicado')};
+q('#addNews').onclick=async()=>{if(!isAdmin())return toast('Solo administrador');const title=q('#nTitle').value.trim(),text=q('#nText').value.trim();if(!title||!text)return toast('Completa noticia');const {error}=await sb.from('news').insert({title,label:q('#nDate').value.trim()||'Hoy',body:text});if(error)return toast('No se pudo publicar');q('#nTitle').value='';q('#nText').value='';q('#nDate').value='';await loadCommunityData();toast('Noticia publicada')};
+q('#addEvent').onclick=async()=>{if(!isAdmin())return toast('Solo administrador');const title=q('#eTitle').value.trim();if(!title)return toast('Completa evento');const {error}=await sb.from('events').insert({title,event_label:q('#eDate').value.trim()||'Por confirmar',body:q('#eText').value.trim()||''});if(error)return toast('No se pudo publicar');q('#eTitle').value='';q('#eDate').value='';q('#eText').value='';await loadCommunityData();toast('Evento publicado')};
+
 function conversationKey(o){return 'offer:'+o.id}
+function offerByThread(thread){if(!thread||!thread.startsWith('offer:'))return null;return offers.find(o=>Number(o.id)===Number(thread.split(':')[1]))||null}
+function messagesForOffer(id){return privateMessages.filter(m=>Number(m.offer_id)===Number(id)).sort((a,b)=>a.time-b.time)}
 function renderOffers(){
- q('#adminOffersList').innerHTML=offers.length?offers.map((o,i)=>'<div class="adminItem"><div class="itemRow"><span><b>'+esc(o.name)+'</b><br><small>'+esc(o.sender||o.contact)+' · '+esc(o.price)+' € · '+esc(o.state)+'</small><br>'+esc(o.message)+'</span><button class="btn blue openOffer" data-i="'+i+'">Abrir / responder</button></div></div>').join(''):'<p class="muted">Sin ofertas.</p>';
+ q('#adminOffersList').innerHTML=offers.length?offers.map((o,i)=>'<div class="adminItem"><div class="itemRow"><span><b>'+esc(o.name)+'</b><br><small>'+esc(o.sender||o.contact)+' · '+esc(o.price)+' € · '+esc(o.state)+' · '+esc(o.status)+'</small><br>'+esc(o.message)+'</span><button class="btn blue openOffer" data-i="'+i+'">Abrir / responder</button></div></div>').join(''):'<p class="muted">Sin ofertas.</p>';
  qa('.openOffer').forEach(b=>b.onclick=()=>{const o=offers[Number(b.dataset.i)];activeConversation=conversationKey(o);go('mensajes');renderMessages();q('#privateReply').focus()})
 }
-q('#sendOffer').onclick=()=>{const name=q('#sellName').value.trim();if(!name)return toast('Pon el nombre de la carta');const o={id:Date.now(),name,price:q('#sellPrice').value||'—',state:q('#sellState').value,contact:q('#sellContact').value||session.email,message:q('#sellMessage').value||'',sender:session.name,senderEmail:session.email,created:Date.now(),status:'Nueva'};offers.push(o);if(!save('gp_offers',offers)){offers.pop();return}renderOffers();renderMessages();toast('Oferta enviada al administrador. No abre conversación hasta que él responda')};
-function myMessages(){if(!session)return[];return privateMessages.filter(m=>isAdmin()?m.to===ADMIN_EMAIL||m.from===ADMIN_EMAIL:m.to===session.email||m.from===session.email)}
-function threads(){const map=new Map();myMessages().forEach(m=>{const key=m.thread||('legacy:'+m.id);if(!map.has(key))map.set(key,[]);map.get(key).push(m)});return map}
-function offerByThread(thread){if(!thread||!thread.startsWith('offer:'))return null;const id=Number(thread.split(':')[1]);return offers.find(o=>Number(o.id)===id)||null}
+q('#sendOffer').onclick=async()=>{const name=q('#sellName').value.trim();if(!name)return toast('Pon el nombre de la carta');const priceRaw=q('#sellPrice').value;const payload={user_id:session.id,sender_name:session.name,sender_email:session.email,card_name:name,requested_price:priceRaw?Number(priceRaw):null,card_state:q('#sellState').value,contact:q('#sellContact').value||session.email,message:q('#sellMessage').value||'',status:'Nueva'};const {data,error}=await sb.from('offers').insert(payload).select('id').single();if(error)return toast('No se pudo enviar la oferta');q('#sellName').value='';q('#sellPrice').value='';q('#sellMessage').value='';await loadCommunityData();activeConversation='offer:'+data.id;toast('Oferta enviada al administrador')};
+
+async function markConversationRead(offerId){
+ const rows=messagesForOffer(offerId).filter(m=>m.from_user_id!==session.id&&!messageReads.has(Number(m.id))).map(m=>({message_id:m.id,user_id:session.id}));
+ if(!rows.length)return;
+ const {error}=await sb.from('offer_message_reads').upsert(rows,{onConflict:'message_id,user_id'});
+ if(!error)rows.forEach(r=>messageReads.add(Number(r.message_id)));
+}
 function renderMessages(){
  if(!session)return;
- const mine=myMessages(),unread=mine.filter(m=>m.to===session.email&&!m.read).length+(isAdmin()?mine.filter(m=>m.to===ADMIN_EMAIL&&!m.read).length:0);
- q('#unreadCount').textContent=unread;q('#messageRoleTag').textContent=isAdmin()?'Bandeja del administrador':'Notificaciones del usuario';q('#inboxTitle').textContent=isAdmin()?'Chats iniciados por oferta':'Tus chats por oferta';
+ const unread=privateMessages.filter(m=>m.from_user_id!==session.id&&!messageReads.has(Number(m.id))).length;
+ q('#unreadCount').textContent=unread;q('#messageRoleTag').textContent=isAdmin()?'Bandeja del administrador':'Notificaciones del usuario';q('#inboxTitle').textContent='Tus chats por oferta';
  const offerBox=q('#offerInbox'),offerTitle=q('#offerInboxTitle');
  if(isAdmin()){
    offerTitle.style.display='block';offerBox.style.display='grid';
-   offerBox.innerHTML=offers.length?offers.map((o,i)=>'<button class="item chooseOffer" data-i="'+i+'" style="width:100%;color:white;text-align:left"><b>🃏 '+esc(o.name)+'</b><br><small>'+esc(o.sender||o.contact)+' · '+esc(o.price)+' € · '+esc(o.status||'Nueva')+'</small></button>').join(''):'<p class="muted">No hay solicitudes de venta.</p>';
-   qa('.chooseOffer').forEach(b=>b.onclick=()=>{const o=offers[Number(b.dataset.i)];activeConversation=conversationKey(o);q('#conversationBox').innerHTML='<p><b>'+esc(o.name)+'</b></p><p class="muted">Oferta de '+esc(o.sender||o.contact)+' · '+esc(o.price)+' € · '+esc(o.state)+'</p><p>'+esc(o.message||'Sin mensaje')+'</p><p class="muted">Escribe abajo para iniciar el chat de ESTA oferta.</p>';q('#privateReply').focus()})
+   offerBox.innerHTML=offers.length?offers.map((o,i)=>'<button class="item chooseOffer" data-i="'+i+'" style="width:100%;color:white;text-align:left"><b>🃏 '+esc(o.name)+'</b><br><small>'+esc(o.sender)+' · '+esc(o.price)+' € · '+esc(o.status)+'</small></button>').join(''):'<p class="muted">No hay solicitudes de venta.</p>';
+   qa('.chooseOffer').forEach(b=>b.onclick=async()=>{const o=offers[Number(b.dataset.i)];activeConversation=conversationKey(o);await markConversationRead(o.id);renderMessages();q('#privateReply').focus()})
  }else{offerTitle.style.display='none';offerBox.style.display='none'}
- const map=threads();
- q('#messageList').innerHTML=map.size?Array.from(map.entries()).map(([key,msgs])=>{const last=msgs.slice().sort((a,b)=>b.time-a.time)[0],off=offerByThread(key),title=off?off.name:(isAdmin()?(last.from===ADMIN_EMAIL?last.toName:last.fromName):'GPokeTCG');return '<button class="item threadBtn" data-key="'+esc(key)+'" style="width:100%;color:white;text-align:left"><b>💬 '+esc(title)+'</b><br><small>'+esc(last.text).slice(0,80)+'</small></button>'}).join(''):'<p class="muted">No hay conversaciones iniciadas.</p>';
- qa('.threadBtn').forEach(b=>b.onclick=()=>{activeConversation=b.dataset.key;privateMessages.forEach(m=>{if(m.thread===activeConversation&&((isAdmin()&&m.to===ADMIN_EMAIL)||(!isAdmin()&&m.to===session.email)))m.read=true});save('gp_private_messages',privateMessages);renderMessages()});
- if(activeConversation&&map.has(activeConversation)){const conv=map.get(activeConversation)||[],off=offerByThread(activeConversation);q('#conversationBox').innerHTML=(off?'<div class="item"><b>Oferta: '+esc(off.name)+'</b><br><small>'+esc(off.price)+' € · '+esc(off.state)+'</small></div>':'')+conv.slice().sort((a,b)=>a.time-b.time).map(m=>'<div class="msg"><b>'+esc(m.fromName)+'</b><br>'+esc(m.text)+'</div>').join('');q('#conversationBox').scrollTop=q('#conversationBox').scrollHeight}else if(!activeConversation){q('#conversationBox').innerHTML='<p class="muted">Selecciona una oferta o una conversación.</p>'}
+ q('#messageList').innerHTML=offers.length?offers.map(o=>{const msgs=messagesForOffer(o.id),last=msgs[msgs.length-1];return '<button class="item threadBtn" data-id="'+o.id+'" style="width:100%;color:white;text-align:left"><b>💬 '+esc(o.name)+'</b><br><small>'+(last?esc(last.text).slice(0,80):'Sin mensajes todavía')+'</small></button>'}).join(''):'<p class="muted">No hay conversaciones.</p>';
+ qa('.threadBtn').forEach(b=>b.onclick=async()=>{const id=Number(b.dataset.id);activeConversation='offer:'+id;await markConversationRead(id);renderMessages()});
+ const off=offerByThread(activeConversation);
+ if(off){const conv=messagesForOffer(off.id);q('#conversationBox').innerHTML='<div class="item"><b>Oferta: '+esc(off.name)+'</b><br><small>'+esc(off.price)+' € · '+esc(off.state)+' · '+esc(off.status)+'</small><br>'+esc(off.message||'')+'</div>'+conv.map(m=>'<div class="msg"><b>'+esc(m.fromName)+'</b><br>'+esc(m.text)+'</div>').join('');q('#conversationBox').scrollTop=q('#conversationBox').scrollHeight}else{q('#conversationBox').innerHTML='<p class="muted">Selecciona una oferta o conversación.</p>'}
 }
-q('#sendPrivateReply').onclick=()=>{const text=q('#privateReply').value.trim();if(!text||!activeConversation)return toast('Selecciona una oferta/conversación y escribe un mensaje');const off=offerByThread(activeConversation);let to,toName;if(isAdmin()){if(!off)return toast('Selecciona una oferta concreta');to=off.senderEmail||off.contact;toName=off.sender||off.contact}else{to=ADMIN_EMAIL;toName='Administrador GPokeTCG'}privateMessages.push({id:Date.now(),from:session.email,fromName:session.name,to,toName,text,read:false,thread:activeConversation,time:Date.now()});if(!save('gp_private_messages',privateMessages)){privateMessages.pop();return}if(isAdmin()&&off){off.status='Respondida';save('gp_offers',offers)}q('#privateReply').value='';renderOffers();renderMessages();toast('Mensaje privado enviado')};
+q('#sendPrivateReply').onclick=async()=>{const text=q('#privateReply').value.trim(),off=offerByThread(activeConversation);if(!text||!off)return toast('Selecciona una oferta/conversación y escribe un mensaje');const {error}=await sb.from('offer_messages').insert({offer_id:off.id,sender_user_id:session.id,sender_name:session.name,message:text});if(error)return toast('No se pudo enviar');if(isAdmin()&&off.status==='Nueva')await sb.from('offers').update({status:'Respondida'}).eq('id',off.id);q('#privateReply').value='';await loadCommunityData();toast('Mensaje privado enviado')};
 qa('.adminTab').forEach(b=>b.onclick=()=>{qa('.adminTab').forEach(x=>x.classList.toggle('active',x===b));qa('.adminPane').forEach(x=>x.classList.toggle('active',x.id===b.dataset.admin))});
 function renderAll(){renderAuth();renderLiveStats();renderProfile();renderProducts();renderCart();renderAuctions();renderRaffle();renderChats();renderCommunity();renderOffers();renderMessages()}
 (async function boot(){
  const {data:{session:authSession}}=await sb.auth.getSession();
- if(authSession?.user){await setSessionFromUser(authSession.user);setupPresence();subscribeAuctions();subscribeProducts();subscribeRaffle();await Promise.all([loadAuctions(),loadProducts(),loadOrderCount(),loadRaffle()])}
+ if(authSession?.user){await setSessionFromUser(authSession.user);setupPresence();subscribeAuctions();subscribeProducts();subscribeRaffle();subscribeCommunity();await Promise.all([loadAuctions(),loadProducts(),loadOrderCount(),loadRaffle(),loadCommunityData()])}
  renderAll();
  migrateHeavyPhotos().then(()=>{renderProducts();renderRaffle()});
- sb.auth.onAuthStateChange(async(event,newSession)=>{if(newSession?.user){await setSessionFromUser(newSession.user);setupPresence();subscribeAuctions();subscribeProducts();subscribeRaffle();await Promise.all([loadAuctions(),loadProducts(),loadOrderCount(),loadRaffle()]);renderAll()}else if(event==='SIGNED_OUT'){session=null;renderAll()}});
+ sb.auth.onAuthStateChange(async(event,newSession)=>{if(newSession?.user){await setSessionFromUser(newSession.user);setupPresence();subscribeAuctions();subscribeProducts();subscribeRaffle();subscribeCommunity();await Promise.all([loadAuctions(),loadProducts(),loadOrderCount(),loadRaffle(),loadCommunityData()]);renderAll()}else if(event==='SIGNED_OUT'){session=null;renderAll()}});
 })();
 });
 </script>
