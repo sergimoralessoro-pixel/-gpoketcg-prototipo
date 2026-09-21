@@ -72,7 +72,7 @@ input,textarea,select{background:#071725;color:#fff;border:1px solid #2a5574;bor
 .drawerBackdrop{display:none;position:fixed;inset:0;background:#0008;z-index:79}.drawer{position:fixed;left:0;top:0;bottom:0;width:min(330px,86vw);background:#07131f;border-right:1px solid #285675;z-index:80;transform:translateX(-105%);transition:.25s;padding:calc(env(safe-area-inset-top) + 16px) 14px 20px}.drawer.on{transform:none}.drawerBackdrop.on{display:block}.drawer .navBtn{width:100%;text-align:left;margin:3px 0}
 .socialCard{display:flex;align-items:center;justify-content:space-between;gap:12px}
 .instagram{background:linear-gradient(135deg,#7024c4,#df1d78,#f48b2e);color:#fff}
-.toast{display:none;position:fixed;right:16px;bottom:20px;background:#10283c;border:1px solid #356587;border-radius:11px;padding:12px 14px;z-index:100}
+.authGate{position:fixed;inset:0;z-index:200;background:radial-gradient(circle at 50% 20%,#0f3b61,#02070c 55%);display:none;align-items:center;justify-content:center;padding:18px}.authGate.on{display:flex}.authCard{width:min(470px,100%);background:#081725;border:1px solid #2d5b7d;border-radius:20px;padding:22px;box-shadow:0 25px 70px #0008}.authCard h1{color:var(--y);text-shadow:2px 2px #0752ca;margin:0 0 8px}.authTabs{display:flex;gap:8px;margin:16px 0}.authTab{flex:1;border:1px solid #2b5876;background:#0d2234;color:#fff;border-radius:10px;padding:10px;font-weight:800}.authTab.on{background:var(--blue)}.authPane{display:none}.authPane.on{display:block}.roleChip{font-size:11px;padding:5px 8px;border-radius:999px;background:#143650;color:#b9ddff;font-weight:900}.authNote{font-size:12px;color:#8fa9bf;line-height:1.45}.toast{display:none;position:fixed;right:16px;bottom:20px;background:#10283c;border:1px solid #356587;border-radius:11px;padding:12px 14px;z-index:300}
 @media(max-width:1050px){.hero,.rifaTop,.two,.communityGrid{grid-template-columns:1fr}.grid4{grid-template-columns:repeat(2,1fr)}.raffleGrid{grid-template-columns:1fr}.steps{grid-template-columns:repeat(2,1fr)}}
 @media(max-width:760px){
  .desktopNav{display:none}.menuBtn{display:block}.nav{height:auto;min-height:62px;padding:10px}.brand{font-size:23px}.headerActions .adminBtn{display:none}.wrap{padding:12px 10px 70px}
@@ -94,7 +94,7 @@ input,textarea,select{background:#071725;color:#fff;border:1px solid #2a5574;bor
    </nav>
    <div class="headerActions">
      <button class="iconBtn" id="cartBtn">🛒 <span class="cartBadge" id="cartCount">0</span></button>
-     <button class="profileBtn" id="profileBtn">👤</button>
+     <span class="roleChip" id="roleChip">Invitado</span><button class="profileBtn" id="profileBtn">👤</button><button class="iconBtn" id="logoutBtn">Salir</button>
      <button class="adminBtn" id="adminBtn">Admin</button>
    </div>
  </div>
@@ -111,7 +111,7 @@ input,textarea,select{background:#071725;color:#fff;border:1px solid #2a5574;bor
  <button class="navBtn" data-page="vender">🏷️ Vender tus cartas</button>
  <button class="navBtn" data-page="ranking">🏆 Ranking</button>
  <button class="navBtn" data-page="perfil">👤 Mi perfil</button>
- <button class="navBtn" id="drawerAdmin">⚙️ Panel Admin</button>
+ <button class="navBtn" id="drawerAdmin">⚙️ Panel Admin</button><button class="navBtn" id="drawerLogout">🚪 Cerrar sesión</button>
  <a class="navBtn instagram" href="https://www.instagram.com/gpoketcg?stkn=cWw4d3ZjdmNnZnNt" target="_blank">📸 Instagram GPokeTCG</a>
 </aside>
 
@@ -165,7 +165,7 @@ input,textarea,select{background:#071725;color:#fff;border:1px solid #2a5574;bor
  </div>
  <div class="raffleGrid">
    <div class="card"><h3>Participantes de la rifa</h3><div class="tablewrap"><table><thead><tr><th>Usuario</th><th>Números</th><th>Estado</th></tr></thead><tbody id="participantRows"></tbody></table></div></div>
-   <div class="card wheel"><h3>Ruleta de participantes</h3><canvas id="wheel" width="600" height="600"></canvas><button class="btn blue" id="spinBtn" style="margin-top:12px">GIRAR</button><div class="price" id="winnerText" style="margin-top:12px"></div></div>
+   <div class="card wheel"><h3>Ruleta de participantes</h3><canvas id="wheel" width="600" height="600"></canvas><button class="btn blue" id="spinBtn" style="margin-top:12px;display:none">GIRAR · SOLO ADMIN</button><div id="spinViewerNote" class="small" style="margin-top:10px">El sorteo solo puede iniciarlo el administrador.</div><div class="price" id="winnerText" style="margin-top:12px"></div></div>
    <div class="card"><h3>Chat en directo</h3><div class="chat" id="raffleChat"></div><div class="chatbar"><input id="raffleChatInput" placeholder="Escribe un mensaje..."><button class="btn blue" id="raffleChatSend">Enviar</button></div></div>
  </div>
 </section>
@@ -237,17 +237,37 @@ input,textarea,select{background:#071725;color:#fff;border:1px solid #2a5574;bor
 <div class="modal" id="cartModal"><div class="modalBox"><h2>🛒 Carrito</h2><div id="cartRows"></div><div class="price" id="cartTotal" style="margin:14px 0"></div><button class="btn" id="checkoutBtn">Simular compra</button><button class="btn dark" onclick="closeModal('cartModal')">Seguir mirando</button></div></div>
 <div class="modal" id="raffleModal"><div class="modalBox"><h2>Comprar números · DEMO</h2><p class="muted">No se realiza ningún cobro real.</p><input id="raffleBuyer" placeholder="Tu usuario"><input id="raffleQty" type="number" min="1" max="20" value="1" style="margin-top:9px"><div class="actions" style="margin-top:11px"><button class="btn" id="confirmRaffleBuy">Simular pago</button><button class="btn dark" onclick="closeModal('raffleModal')">Cancelar</button></div></div></div>
 <div class="modal" id="profileModal"><div class="modalBox"><h3>Perfil</h3><input id="editProfileName" placeholder="Nombre de usuario"><button class="btn" style="margin-top:10px" id="saveProfileBtn">Guardar nombre</button><button class="btn dark" style="margin-top:10px" onclick="closeModal('profileModal')">Cerrar</button></div></div>
-<div class="toast" id="toast"></div>
+<div class="authGate" id="authGate"><div class="authCard">
+   <h1>GPokeTCG</h1><p class="muted">Inicia sesión para entrar al prototipo, participar en rifas, pujar, comprar y usar la comunidad.</p>
+   <div class="authTabs"><button class="authTab on" data-auth="loginPane">Iniciar sesión</button><button class="authTab" data-auth="registerPane">Crear cuenta</button></div>
+   <div class="authPane on" id="loginPane"><input id="loginEmail" placeholder="Correo o usuario"><input id="loginPassword" type="password" placeholder="Contraseña" style="margin-top:9px"><button class="btn" style="width:100%;margin-top:11px" id="loginBtn">Entrar</button><p class="authNote">DEMO: no uses una contraseña real. Las cuentas creadas aquí solo se guardan en este navegador.</p></div>
+   <div class="authPane" id="registerPane"><input id="registerName" placeholder="Nombre de usuario"><input id="registerEmail" type="email" placeholder="Correo" style="margin-top:9px"><input id="registerPassword" type="password" placeholder="Contraseña de prueba" style="margin-top:9px"><button class="btn blue" style="width:100%;margin-top:11px" id="registerBtn">Crear cuenta demo</button><p class="authNote">Esta es una simulación local. La versión final necesitará autenticación y base de datos reales.</p></div>
+  </div></div><div class="toast" id="toast"></div>
 
 <script>
 const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
 const store=(k,v)=>localStorage.setItem(k,JSON.stringify(v)), load=(k,f)=>{try{let v=JSON.parse(localStorage.getItem(k));return v??f}catch{return f}};
 function toast(t){let x=$('#toast');x.textContent=t;x.style.display='block';clearTimeout(window.__toast);window.__toast=setTimeout(()=>x.style.display='none',2300)}
+const ADMIN_EMAIL='admin@gpoketcg.demo', ADMIN_PASS='Admin2026!';
+let session=load('gptcg_session',null), demoAccounts=load('gptcg_accounts',[]);
+function isAdmin(){return session&&session.role==='admin'} function isLogged(){return !!session}
+function renderAuthState(){
+  const logged=isLogged(); $('#authGate').classList.toggle('on',!logged);
+  $('#adminBtn').style.display=isAdmin()?'inline-flex':'none'; $('#drawerAdmin').style.display=isAdmin()?'block':'none';
+  $('#spinBtn').style.display=isAdmin()?'inline-block':'none'; $('#spinViewerNote').style.display=isAdmin()?'none':'block';
+  $('#roleChip').textContent=!logged?'Invitado':(isAdmin()?'Administrador':session.name);
+  if(logged){profile.name=session.name||profile.name;store('gptcg_profile',profile);renderProfile()}
+}
+function logout(){session=null;localStorage.removeItem('gptcg_session');renderAuthState();closeDrawer();toast('Sesión cerrada')}
+$('.authTab').forEach(b=>b.onclick=()=>{$('.authTab').forEach(x=>x.classList.toggle('on',x===b));$('.authPane').forEach(x=>x.classList.toggle('on',x.id===b.dataset.auth))});
+$('#loginBtn').onclick=()=>{let email=$('#loginEmail').value.trim().toLowerCase(),pass=$('#loginPassword').value;if(email===ADMIN_EMAIL&&pass===ADMIN_PASS){session={name:'Administrador GPokeTCG',email:ADMIN_EMAIL,role:'admin'};store('gptcg_session',session);renderAuthState();toast('Sesión de administrador iniciada');return}let acc=demoAccounts.find(a=>(a.email.toLowerCase()===email||a.name.toLowerCase()===email)&&a.password===pass);if(!acc)return toast('Usuario o contraseña incorrectos');session={name:acc.name,email:acc.email,role:'user'};store('gptcg_session',session);renderAuthState();toast('Sesión iniciada')};
+$('#registerBtn').onclick=()=>{let name=$('#registerName').value.trim(),email=$('#registerEmail').value.trim().toLowerCase(),password=$('#registerPassword').value;if(!name||!email||!password)return toast('Completa todos los campos');if(email===ADMIN_EMAIL||demoAccounts.some(a=>a.email.toLowerCase()===email))return toast('Ese correo ya existe');demoAccounts.push({name,email,password});store('gptcg_accounts',demoAccounts);session={name,email,role:'user'};store('gptcg_session',session);renderAuthState();toast('Cuenta demo creada')};
+$('#logoutBtn').onclick=logout;$('#drawerLogout').onclick=logout;
 function openModal(id){$('#'+id).classList.add('on')} function closeModal(id){$('#'+id).classList.remove('on')}
 function closeDrawer(){$('#drawer').classList.remove('on');$('#drawerBackdrop').classList.remove('on')}
 function go(id){$$('.page').forEach(p=>p.classList.toggle('on',p.id===id));$$('[data-page]').forEach(b=>b.classList.toggle('on',b.dataset.page===id));closeDrawer();scrollTo({top:0,behavior:'smooth'})}
 $$('[data-page]').forEach(b=>b.onclick=()=>go(b.dataset.page));$('#menuBtn').onclick=()=>{$('#drawer').classList.add('on');$('#drawerBackdrop').classList.add('on')};$('#drawerBackdrop').onclick=closeDrawer;
-$('#adminBtn').onclick=()=>go('adminPage');$('#drawerAdmin').onclick=()=>go('adminPage');$('#profileBtn').onclick=()=>go('perfil');
+$('#adminBtn').onclick=()=>{if(!isAdmin())return toast('Solo el administrador puede entrar');go('adminPage')};$('#drawerAdmin').onclick=()=>{if(!isAdmin())return toast('Solo el administrador puede entrar');go('adminPage')};$('#profileBtn').onclick=()=>go('perfil');
 
 let profile=load('gptcg_profile',{name:'SergiTCG',orders:0}); function renderProfile(){$('#profileName').textContent=profile.name;$('#profileOrders').textContent=profile.orders;$('#editProfileName').value=profile.name} renderProfile();
 $('#profileBtn').ondblclick=()=>openModal('profileModal');$('#saveProfileBtn').onclick=()=>{profile.name=$('#editProfileName').value.trim()||'UsuarioTCG';store('gptcg_profile',profile);renderProfile();closeModal('profileModal');toast('Perfil actualizado')};
@@ -269,7 +289,7 @@ window.viewProduct=viewProduct;
 $('#addCartBtn').onclick=()=>{if(!selectedProduct)return;let found=cart.find(x=>x.id===selectedProduct.id);if(found)found.qty++;else cart.push({id:selectedProduct.id,name:selectedProduct.name,price:selectedProduct.price,qty:1});store('gptcg_cart',cart);renderCart();closeModal('productModal');toast('Añadido al carrito')};
 function renderCart(){$('#cartCount').textContent=cart.reduce((s,x)=>s+x.qty,0);$('#cartRows').innerHTML=cart.length?cart.map((x,i)=>'<div class="cartRow"><div><b>'+x.name+'</b><div class="small">Cantidad '+x.qty+'</div></div><div><b>'+money(x.price*x.qty)+'</b><br><button class="btn dark" onclick="removeCart('+i+')">Quitar</button></div></div>').join(''):'<p class="muted">El carrito está vacío.</p>';$('#cartTotal').textContent='Total: '+money(cart.reduce((s,x)=>s+x.price*x.qty,0))}
 window.removeCart=i=>{cart.splice(i,1);store('gptcg_cart',cart);renderCart()};
-$('#cartBtn').onclick=()=>{renderCart();openModal('cartModal')};$('#checkoutBtn').onclick=()=>{if(!cart.length)return toast('El carrito está vacío');profile.orders++;store('gptcg_profile',profile);cart=[];store('gptcg_cart',cart);renderCart();renderProfile();closeModal('cartModal');toast('Compra simulada completada')};
+$('#cartBtn').onclick=()=>{renderCart();openModal('cartModal')};$('#checkoutBtn').onclick=()=>{if(!isLogged())return renderAuthState();if(!cart.length)return toast('El carrito está vacío');profile.orders++;store('gptcg_profile',profile);cart=[];store('gptcg_cart',cart);renderCart();renderProfile();closeModal('cartModal');toast('Compra simulada completada')};
 $('#addProductBtn').onclick=()=>{let name=$('#newProductName').value.trim(),price=Number($('#newProductPrice').value),state=$('#newProductState').value,stock=Number($('#newProductStock').value);if(!name||!price)return toast('Completa nombre y precio');products.push({id:Date.now(),name,price,state,stock,desc:'Producto añadido desde el panel Admin del prototipo.'});store('gptcg_products',products);renderProducts();toast('Producto añadido')};
 window.quickEditProduct=id=>{let p=products.find(x=>x.id===id);if(!p)return;let price=prompt('Nuevo precio (€)',p.price);if(price===null)return;let stock=prompt('Nuevo stock',p.stock);if(stock===null)return;p.price=Number(price)||p.price;p.stock=Math.max(0,Number(stock)||0);store('gptcg_products',products);renderProducts();toast('Producto editado')};
 window.deleteProduct=id=>{products=products.filter(x=>x.id!==id);store('gptcg_products',products);renderProducts();toast('Producto eliminado')};
@@ -280,7 +300,7 @@ let auctions=load('gptcg_auctions',[
 {id:2,name:'Umbreon VMAX Alt Art PSA 10',price:2180,leader:'CollectorMario'},
 {id:3,name:'Lote Pokémon 151 sellado',price:420,leader:'PikaHunter'}]);
 function renderAuctions(){$('#auctionGrid').innerHTML=auctions.map(a=>'<div class="card"><span class="tag">Subasta activa</span><h3>'+a.name+'</h3><div class="price">'+money(a.price)+'</div><p><b>Va ganando:</b> <span style="color:var(--green)">'+a.leader+'</span></p><input id="bidder_'+a.id+'" placeholder="Tu usuario" value="'+profile.name+'"><button class="btn" style="margin-top:10px" onclick="bid('+a.id+')">Pujar +25 €</button></div>').join('')}
-window.bid=id=>{let a=auctions.find(x=>x.id===id),name=$('#bidder_'+id).value.trim()||profile.name;a.price+=25;a.leader=name;store('gptcg_auctions',auctions);renderAuctions();toast(name+' va primero con '+money(a.price))};renderAuctions();
+window.bid=id=>{if(!isLogged())return renderAuthState();let a=auctions.find(x=>x.id===id),name=$('#bidder_'+id).value.trim()||profile.name;a.price+=25;a.leader=name;store('gptcg_auctions',auctions);renderAuctions();toast(name+' va primero con '+money(a.price))};renderAuctions();
 
 let raffle=load('gptcg_raffle',{title:'Charizard ex · PSA 10',price:5,slots:250,desc:'Special Illustration Rare · Pokémon 151 · rifa de demostración'});
 let participants=load('gptcg_participants',[
@@ -297,30 +317,30 @@ function renderRaffle(){
  $('#adminParticipantList').innerHTML=participants.map((p,i)=>'<div class="adminItem"><div><b>'+p.alias+'</b><div class="small">'+p.qty+' números · '+p.status+'</div></div><button class="btn dark" onclick="removeParticipant('+i+')">Eliminar</button></div>').join('');
  $('#editRaffleTitle').value=raffle.title;$('#editRafflePrice').value=raffle.price;$('#editRaffleSlots').value=raffle.slots;$('#editRaffleDesc').value=raffle.desc;drawWheel()
 }
-$('#buyRaffleBtn').onclick=()=>{$('#raffleBuyer').value=profile.name;openModal('raffleModal')};
+$('#buyRaffleBtn').onclick=()=>{if(!isLogged())return renderAuthState();$('#raffleBuyer').value=profile.name;openModal('raffleModal')};
 $('#confirmRaffleBuy').onclick=()=>{let alias=$('#raffleBuyer').value.trim()||profile.name,qty=Math.max(1,Math.min(20,Number($('#raffleQty').value)||1));participants.push({alias,qty,status:'Pagado'});store('gptcg_participants',participants);renderRaffle();closeModal('raffleModal');toast(alias+' añadido a la lista y a la ruleta')};
-$('#spinBtn').onclick=()=>{let e=paidEntries();if(!e.length||spinning)return;spinning=true;$('#winnerText').textContent='';let start=performance.now(),base=wheelAngle,target=base+Math.PI*2*(7+Math.random()*3),dur=4200;function anim(t){let p=Math.min(1,(t-start)/dur),ease=1-Math.pow(1-p,4);wheelAngle=base+(target-base)*ease;drawWheel();if(p<1)requestAnimationFrame(anim);else{spinning=false;let n=e.length,norm=(((-Math.PI/2-wheelAngle)%(Math.PI*2))+Math.PI*2)%(Math.PI*2),idx=Math.floor(norm/(Math.PI*2/n))%n;$('#winnerText').textContent='🏆 Ganador: '+e[idx]}}requestAnimationFrame(anim)};
+$('#spinBtn').onclick=()=>{if(!isAdmin())return toast('Solo el administrador puede iniciar el sorteo');let e=paidEntries();if(!e.length||spinning)return;spinning=true;$('#winnerText').textContent='';let start=performance.now(),base=wheelAngle,target=base+Math.PI*2*(7+Math.random()*3),dur=4200;function anim(t){let p=Math.min(1,(t-start)/dur),ease=1-Math.pow(1-p,4);wheelAngle=base+(target-base)*ease;drawWheel();if(p<1)requestAnimationFrame(anim);else{spinning=false;let n=e.length,norm=(((-Math.PI/2-wheelAngle)%(Math.PI*2))+Math.PI*2)%(Math.PI*2),idx=Math.floor(norm/(Math.PI*2/n))%n;$('#winnerText').textContent='🏆 Ganador: '+e[idx]}}requestAnimationFrame(anim)};
 $('#adminAddParticipant').onclick=()=>{let alias=$('#adminAlias').value.trim();if(!alias)return toast('Escribe un alias');participants.push({alias,qty:Math.max(1,Number($('#adminQty').value)||1),status:$('#adminPay').value});store('gptcg_participants',participants);renderRaffle();toast('Participante añadido')};
 window.removeParticipant=i=>{participants.splice(i,1);store('gptcg_participants',participants);renderRaffle()};
 $('#saveRaffleBtn').onclick=()=>{raffle={title:$('#editRaffleTitle').value.trim()||raffle.title,price:Number($('#editRafflePrice').value)||raffle.price,slots:Number($('#editRaffleSlots').value)||raffle.slots,desc:$('#editRaffleDesc').value.trim()||raffle.desc};store('gptcg_raffle',raffle);renderRaffle();toast('Rifa actualizada')};renderRaffle();
 
 let raffleMessages=load('gptcg_raffle_chat',[{u:'PokeAlex',m:'¡Vamos! Qué carta 🔥'},{u:'MartaTCG',m:'Suerte a todos 🍀'},{u:'CharizardBoy',m:'Ojalá me toque 😍'}]);
 function renderRaffleChat(){$('#raffleChat').innerHTML=raffleMessages.map(x=>'<div class="msg"><b>'+x.u+'</b><br>'+x.m+'</div>').join('');$('#raffleChat').scrollTop=$('#raffleChat').scrollHeight}
-$('#raffleChatSend').onclick=()=>{let m=$('#raffleChatInput').value.trim();if(!m)return;raffleMessages.push({u:profile.name,m});store('gptcg_raffle_chat',raffleMessages);$('#raffleChatInput').value='';renderRaffleChat()};$('#raffleChatInput').addEventListener('keydown',e=>{if(e.key==='Enter')$('#raffleChatSend').click()});renderRaffleChat();
+$('#raffleChatSend').onclick=()=>{if(!isLogged())return renderAuthState();let m=$('#raffleChatInput').value.trim();if(!m)return;raffleMessages.push({u:profile.name,m});store('gptcg_raffle_chat',raffleMessages);$('#raffleChatInput').value='';renderRaffleChat()};$('#raffleChatInput').addEventListener('keydown',e=>{if(e.key==='Enter')$('#raffleChatSend').click()});renderRaffleChat();
 
 let news=load('gptcg_news',[{title:'Bienvenidos a GPokeTCG',date:'Hoy',text:'Aquí aparecerán las noticias y avisos que publique el administrador.'},{title:'Próximas rifas de octubre',date:'Próximamente',text:'Nuevas cartas y productos se irán anunciando desde este apartado.'}]);
 let events=load('gptcg_events',[{title:'Rifa en directo · Charizard PSA 10',date:'Sábado · 20:00',text:'Sorteo de demostración.'},{title:'Apertura Pokémon 151',date:'Domingo · 19:30',text:'Directo de apertura de producto.'}]);
 let communityMessages=load('gptcg_community_chat',[{u:'AdminGPokeTCG',m:'Bienvenidos al chat general 👋'},{u:'PokeAlex',m:'¿Qué carta os gustaría ver en la próxima rifa?'}]);
 function renderCommunity(){$('#newsFeed').innerHTML=news.map(x=>'<div class="feedItem"><h4>'+x.title+'</h4><div class="meta">'+x.date+'</div><p>'+x.text+'</p></div>').join('');$('#eventsFeed').innerHTML=events.map(x=>'<div class="feedItem"><h4>'+x.title+'</h4><div class="meta">'+x.date+'</div><p>'+x.text+'</p></div>').join('');$('#communityChat').innerHTML=communityMessages.map(x=>'<div class="msg"><b>'+x.u+'</b><br>'+x.m+'</div>').join('');$('#communityChat').scrollTop=$('#communityChat').scrollHeight;$('#adminCommunityList').innerHTML=[...news.map((x,i)=>'<div class="adminItem"><span>Noticia: '+x.title+'</span><button class="btn dark" onclick="deleteNews('+i+')">Eliminar</button></div>'),...events.map((x,i)=>'<div class="adminItem"><span>Evento: '+x.title+'</span><button class="btn dark" onclick="deleteEvent('+i+')">Eliminar</button></div>')].join('')}
-$('#communitySend').onclick=()=>{let m=$('#communityInput').value.trim();if(!m)return;communityMessages.push({u:profile.name,m});store('gptcg_community_chat',communityMessages);$('#communityInput').value='';renderCommunity()};$('#communityInput').addEventListener('keydown',e=>{if(e.key==='Enter')$('#communitySend').click()});
+$('#communitySend').onclick=()=>{if(!isLogged())return renderAuthState();let m=$('#communityInput').value.trim();if(!m)return;communityMessages.push({u:profile.name,m});store('gptcg_community_chat',communityMessages);$('#communityInput').value='';renderCommunity()};$('#communityInput').addEventListener('keydown',e=>{if(e.key==='Enter')$('#communitySend').click()});
 $('#addNewsBtn').onclick=()=>{let title=$('#newsTitle').value.trim(),text=$('#newsText').value.trim();if(!title||!text)return toast('Completa título y texto');news.unshift({title,date:$('#newsDate').value.trim()||'Hoy',text});store('gptcg_news',news);renderCommunity();toast('Noticia añadida')};
 $('#addEventBtn').onclick=()=>{let title=$('#eventTitle').value.trim(),text=$('#eventText').value.trim();if(!title)return toast('Pon nombre del evento');events.unshift({title,date:$('#eventDate').value.trim()||'Por confirmar',text:text||'Sin descripción'});store('gptcg_events',events);renderCommunity();toast('Evento añadido')};
 window.deleteNews=i=>{news.splice(i,1);store('gptcg_news',news);renderCommunity()};window.deleteEvent=i=>{events.splice(i,1);store('gptcg_events',events);renderCommunity()};renderCommunity();
 
 let offers=load('gptcg_offers',[]);
 function renderOffers(){$('#offerList').innerHTML=offers.length?offers.map((o,i)=>'<div class="adminItem"><div><b>'+o.name+'</b><div class="small">'+o.state+' · Solicita '+o.price+' € · '+o.contact+'</div><div>'+o.message+'</div></div><button class="btn dark" onclick="deleteOffer('+i+')">Archivar</button></div>').join(''):'<p class="muted">No hay propuestas guardadas todavía.</p>'}
-$('#sendOffer').onclick=()=>{let name=$('#sellName').value.trim();if(!name)return toast('Pon el nombre de la carta');offers.push({name,price:$('#sellPrice').value||'—',state:$('#sellState').value,contact:$('#sellContact').value||'Sin contacto',message:$('#sellMessage').value||''});store('gptcg_offers',offers);renderOffers();toast('Propuesta guardada para el administrador')};window.deleteOffer=i=>{offers.splice(i,1);store('gptcg_offers',offers);renderOffers()};renderOffers();
+$('#sendOffer').onclick=()=>{if(!isLogged())return renderAuthState();let name=$('#sellName').value.trim();if(!name)return toast('Pon el nombre de la carta');offers.push({name,price:$('#sellPrice').value||'—',state:$('#sellState').value,contact:$('#sellContact').value||'Sin contacto',message:$('#sellMessage').value||''});store('gptcg_offers',offers);renderOffers();toast('Propuesta guardada para el administrador')};window.deleteOffer=i=>{offers.splice(i,1);store('gptcg_offers',offers);renderOffers()};renderOffers();
 
-$$('.adminTab').forEach(b=>b.onclick=()=>{$$('.adminTab').forEach(x=>x.classList.toggle('on',x===b));$$('.adminPane').forEach(x=>x.classList.toggle('on',x.id===b.dataset.admin))});
+$('.adminTab').forEach(b=>b.onclick=()=>{$('.adminTab').forEach(x=>x.classList.toggle('on',x===b));$('.adminPane').forEach(x=>x.classList.toggle('on',x.id===b.dataset.admin))});renderAuthState();
 </script>
 </body></html>
