@@ -200,7 +200,7 @@ header{position:fixed;left:0;right:0;top:0;width:100%;z-index:30;background:#061
     <div id="compraventaPanel" style="display:none;margin-top:12px">
       <div class="two">
         <div class="card"><h3 id="offerInboxTitle" style="display:none">Solicitudes de venta</h3><div id="offerInbox" class="list" style="display:none;margin-bottom:14px"></div><h3 id="inboxTitle">Conversaciones</h3><div id="messageList" class="list"></div></div>
-        <div class="card"><h3>Conversación</h3><div id="conversationBox" class="chat" style="height:420px"></div><div class="chatbar"><input id="privateReply" placeholder="Escribe un mensaje privado..."><button class="btn blue" id="sendPrivateReply">Enviar</button></div><p class="muted" style="font-size:12px">Selecciona una conversación de la izquierda.</p></div>
+        <div class="card"><h3>Conversación</h3><div id="conversationBox" class="chat" style="height:420px"></div><div class="chatbar"><button class="chatToolBtn" id="offerFileBtn" title="Adjuntar foto">📎</button><input id="offerFileInput" type="file" accept="image/*" style="display:none"><input id="privateReply" placeholder="Escribe un mensaje privado..."><button class="btn blue" id="sendPrivateReply">Enviar</button></div><p class="muted" style="font-size:12px">Puedes enviar texto o una foto de la carta.</p></div>
       </div>
     </div>
   </div>
@@ -485,7 +485,7 @@ async function loadCommunityData(){
  events=(eventRes.data||[]).map(x=>({id:x.id,title:x.title,date:x.event_label,text:x.body}));
  const hiddenOfferIds=new Set((hideRes.data||[]).map(x=>Number(x.offer_id)));
  offers=(offerRes.data||[]).filter(o=>!hiddenOfferIds.has(Number(o.id))).map(o=>({id:o.id,user_id:o.user_id,name:o.card_name,price:o.requested_price??'—',state:o.card_state,contact:o.contact,message:o.message,photo:o.photo_url||'',sender:o.sender_name,senderEmail:o.sender_email,status:o.status,created:new Date(o.created_at).getTime()}));
- privateMessages=(msgRes.data||[]).filter(m=>!hiddenOfferIds.has(Number(m.offer_id))).map(m=>({id:m.id,offer_id:m.offer_id,from_user_id:m.sender_user_id,fromName:m.sender_name,text:m.message,time:new Date(m.created_at).getTime()}));
+ privateMessages=(msgRes.data||[]).filter(m=>!hiddenOfferIds.has(Number(m.offer_id))).map(m=>({id:m.id,offer_id:m.offer_id,from_user_id:m.sender_user_id,fromName:m.sender_name,text:m.message,attachment_url:m.attachment_url||'',attachment_name:m.attachment_name||'',attachment_type:m.attachment_type||'',time:new Date(m.created_at).getTime()}));
  messageReads=new Set((readRes.data||[]).map(r=>Number(r.message_id)));
  renderChats();renderCommunity();renderOffers();renderMessages();
 }
@@ -1006,9 +1006,38 @@ function renderMessages(){
  qa('.threadBtn').forEach(b=>b.onclick=async()=>{const id=Number(b.dataset.id);activeConversation='offer:'+id;await markConversationRead(id);renderMessages()});
  qa('.deleteThread').forEach(b=>b.onclick=()=>deleteOfferConversation(Number(b.dataset.id)));
  const off=offerByThread(activeConversation);
- if(off){const conv=messagesForOffer(off.id);q('#conversationBox').innerHTML='<div class="item">'+(off.photo?'<img src="'+esc(off.photo)+'" alt="Foto de '+esc(off.name)+'" style="width:100%;max-height:320px;object-fit:contain;border-radius:10px;margin-bottom:10px;background:#07131f">':'')+'<b>Oferta: '+esc(off.name)+'</b><br><small>'+esc(off.price)+' € · '+esc(off.state)+' · '+esc(off.status)+'</small><br>'+esc(off.message||'')+'</div>'+conv.map(m=>'<div class="msg"><b>'+esc(m.fromName)+'</b><br>'+esc(m.text)+'</div>').join('');q('#conversationBox').scrollTop=q('#conversationBox').scrollHeight}else{q('#conversationBox').innerHTML='<p class="muted">Selecciona una oferta o conversación.</p>'}
+ if(off){const conv=messagesForOffer(off.id);q('#conversationBox').innerHTML='<div class="item">'+(off.photo?'<img src="'+esc(off.photo)+'" alt="Foto de '+esc(off.name)+'" style="width:100%;max-height:320px;object-fit:contain;border-radius:10px;margin-bottom:10px;background:#07131f">':'')+'<b>Oferta: '+esc(off.name)+'</b><br><small>'+esc(off.price)+' € · '+esc(off.state)+' · '+esc(off.status)+'</small><br>'+esc(off.message||'')+'</div>'+conv.map(m=>'<div class="msg"><b>'+esc(m.fromName)+'</b><br>'+(m.text?esc(m.text):'')+(m.attachment_url?'<div style="margin-top:8px"><img src="'+esc(m.attachment_url)+'" alt="'+esc(m.attachment_name||'Foto')+'" style="width:100%;max-height:320px;object-fit:contain;border-radius:10px;background:#07131f"></div>':'')+'</div>').join('');q('#conversationBox').scrollTop=q('#conversationBox').scrollHeight}else{q('#conversationBox').innerHTML='<p class="muted">Selecciona una oferta o conversación.</p>'}
 }
-q('#sendPrivateReply').onclick=async()=>{const text=q('#privateReply').value.trim(),off=offerByThread(activeConversation);if(!text||!off)return toast('Selecciona una oferta/conversación y escribe un mensaje');const {error}=await sb.from('offer_messages').insert({offer_id:off.id,sender_user_id:session.id,sender_name:session.name,message:text});if(error)return toast('No se pudo enviar');if(isAdmin()&&off.status==='Nueva')await sb.from('offers').update({status:'Respondida'}).eq('id',off.id);q('#privateReply').value='';await loadCommunityData();toast('Mensaje privado enviado')};
+q('#offerFileBtn').onclick=()=>q('#offerFileInput').click();
+async function uploadOfferChatImage(){
+ const input=q('#offerFileInput'),file=input?.files?.[0];if(!file)return {url:'',name:'',type:''};
+ if(file.size>5*1024*1024){toast('La imagen supera 5 MB');return null}
+ if(!file.type.startsWith('image/')){toast('Selecciona una imagen');return null}
+ const raw=await new Promise(resolve=>{const r=new FileReader();r.onload=()=>resolve(r.result);r.onerror=()=>resolve('');r.readAsDataURL(file)});
+ if(!raw)return null;
+ const compressed=await compressDataUrl(raw,1400,1400,.84);
+ const blob=await (await fetch(compressed)).blob();
+ const ext=blob.type==='image/png'?'png':blob.type==='image/webp'?'webp':'jpg';
+ const path='offer-chat/'+session.id+'/'+Date.now()+'-foto.'+ext;
+ const {error}=await sb.storage.from('gpoketcg-media').upload(path,blob,{contentType:blob.type,upsert:false});
+ if(error){console.error(error);toast('No se pudo subir la foto');return null}
+ const {data}=sb.storage.from('gpoketcg-media').getPublicUrl(path);
+ return {url:data?.publicUrl||'',name:file.name||'Foto de la carta',type:blob.type};
+}
+q('#sendPrivateReply').onclick=async()=>{
+ const text=q('#privateReply').value.trim(),off=offerByThread(activeConversation),hasFile=!!q('#offerFileInput').files?.[0];
+ if(!off)return toast('Selecciona una oferta o conversación');
+ if(!text&&!hasFile)return toast('Escribe un mensaje o adjunta una foto');
+ const btn=q('#sendPrivateReply');btn.disabled=true;btn.textContent='Enviando...';
+ const attachment=hasFile?await uploadOfferChatImage():{url:'',name:'',type:''};
+ if(attachment===null){btn.disabled=false;btn.textContent='Enviar';return}
+ const {error}=await sb.from('offer_messages').insert({offer_id:off.id,sender_user_id:session.id,sender_name:session.name,message:text||'Foto adjunta',attachment_url:attachment.url||null,attachment_name:attachment.name||null,attachment_type:attachment.type||null});
+ btn.disabled=false;btn.textContent='Enviar';
+ if(error)return toast('No se pudo enviar');
+ if(isAdmin()&&off.status==='Nueva')await sb.from('offers').update({status:'Respondida'}).eq('id',off.id);
+ q('#privateReply').value='';q('#offerFileInput').value='';
+ await loadCommunityData();toast('Mensaje privado enviado')
+};
 q('#saveAuctionShipping').onclick=async()=>{
  if(!selectedAuctionWinner)return toast('No hay subasta seleccionada');
  const shipping={
