@@ -11,8 +11,8 @@ header{position:sticky;top:0;z-index:30;background:#06111df2;border-bottom:1px s
 .drawerBack{display:none;position:fixed;inset:0;background:#0009;z-index:49}.drawer{position:fixed;z-index:50;left:0;top:0;bottom:0;width:min(330px,86vw);background:#07131f;border-right:1px solid #2a5878;padding:calc(env(safe-area-inset-top) + 16px) 14px 20px;transform:translateX(-105%);transition:.2s}.drawer.open{transform:none}.drawerBack.open{display:block}.drawer .nav{width:100%;text-align:left;margin:3px 0}.modal,.auth{position:fixed;inset:0;background:#000b;display:none;align-items:center;justify-content:center;padding:16px;z-index:80}.modal.open,.auth.open{display:flex}.box{width:min(580px,100%);max-height:88vh;overflow:auto;background:#0a1927;border:1px solid #2c5878;border-radius:18px;padding:20px}.auth{z-index:100;background:radial-gradient(circle at 50% 20%,#0e3b61,#02070c 55%)}.auth .box{width:min(460px,100%)}.auth h1{color:var(--yellow);text-shadow:2px 2px #0752ca}.tabs{display:flex;gap:8px;margin:12px 0}.tab{flex:1;padding:10px;border-radius:9px;border:1px solid #2b5876;background:#0c2234;color:#fff;font-weight:800}.tab.active{background:var(--blue)}.authPane{display:none}.authPane.active{display:block}.adminTabs{display:flex;gap:8px;overflow:auto;margin-bottom:12px}.adminTab{white-space:nowrap;padding:9px 11px;border-radius:9px;border:1px solid #2a5a7a;background:#0b2234;color:#fff}.adminTab.active{background:var(--blue)}.adminPane{display:none}.adminPane.active{display:block}.adminItem{padding:11px;border:1px solid #214967;border-radius:10px;background:#081725;margin:8px 0}.toast{display:none;position:fixed;right:14px;bottom:18px;background:#10283c;border:1px solid #356587;border-radius:10px;padding:11px 13px;z-index:120}.liveStats{display:grid;grid-template-columns:1fr;gap:12px;margin:14px 0;max-width:360px}.liveStat{display:flex;align-items:center;gap:12px}.liveDot{width:8px;height:8px;border-radius:50%;background:var(--green);box-shadow:0 0 10px var(--green)}.topStats{margin-left:auto;display:flex;align-items:center;gap:7px;flex-wrap:wrap;justify-content:flex-end}.onlineMini,.registeredMini{display:flex;align-items:center;gap:7px;padding:7px 10px;border:1px solid #214967;border-radius:999px;background:#081725;font-size:12px;font-weight:900;color:#dff7ea;white-space:nowrap}.onlineMini .liveDot{flex:0 0 auto}.onlineMini b,.registeredMini b{font-size:13px}.registeredMini{color:#d9e6f1}.trashBtn{width:38px;min-width:38px;height:38px;padding:0;border-radius:10px;border:1px solid #7d2634;background:#3a1119;color:#ff657b;font-size:18px;display:inline-flex;align-items:center;justify-content:center}.trashBtn:hover{background:#5a1825}.countdown{font-size:24px;font-weight:1000;letter-spacing:.04em;color:var(--yellow);margin:8px 0}.finished{padding:10px;border:1px solid #754052;background:#311620;border-radius:10px;color:#ffb0bd;font-weight:900}.auctionMeta{display:flex;justify-content:space-between;gap:8px;align-items:center;flex-wrap:wrap}
 @media(max-width:1000px){.hero,.two,.raffleGrid{grid-template-columns:1fr}.grid4{grid-template-columns:repeat(2,1fr)}}@media(max-width:760px){.desktop{display:none}.menu{display:inline-block}.admin{display:none}.top{flex-wrap:wrap}.wrap{padding:12px 10px 70px}.grid3,.grid4,.stats,.formgrid{grid-template-columns:1fr}.heroMain{min-height:300px;padding:22px}.hero h1{font-size:58px}}
 .productCard{position:relative;overflow:hidden}.productCard.soldOut .productArt img{filter:grayscale(.85) blur(1.2px);opacity:.42}.productCard.soldOut .productArt{opacity:.72}.soldOutStamp{position:absolute;top:92px;left:50%;transform:translateX(-50%) rotate(-8deg);z-index:3;background:#b30020e8;border:2px solid #ff8397;color:#fff;padding:9px 18px;border-radius:9px;font-weight:1000;letter-spacing:.12em;font-size:18px;box-shadow:0 8px 24px #0008}.stockPill{display:inline-flex;align-items:center;gap:6px;border-radius:999px;padding:6px 9px;background:#12324b;border:1px solid #285b7d;font-size:12px;font-weight:900}.stockPill.low{background:#4a310d;border-color:#8a641d;color:#ffd37a}.stockPill.zero{background:#3a1520;border-color:#74303f;color:#ff9aab}.orderCard{padding:14px;border:1px solid #1d4360;border-radius:12px;background:#081724;margin-top:10px}.orderHead{display:flex;justify-content:space-between;gap:10px;align-items:flex-start;flex-wrap:wrap}.orderStatus{display:inline-flex;padding:6px 9px;border-radius:999px;background:#14334c;font-weight:900;font-size:12px}.orderItems{margin-top:10px;display:grid;gap:6px}.adminOrderGrid{display:grid;gap:12px}.adminOrderActions{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
-.noticeCard{border:1px solid #214967;background:#081724;border-radius:11px;padding:12px;text-align:left;width:100%;color:#fff}.noticeCard.unseen{border-color:#2d7db7;background:#0a2134}.noticeCard small{color:var(--muted)}.legalGrid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}.legalGrid h3{margin-top:0}
-@media(max-width:760px){input,textarea,select{font-size:16px}.box{max-height:92dvh;padding:16px}.chat{height:50dvh}.chatbar{position:sticky;bottom:0;background:#06121d;padding-top:8px}.btn,.icon,.nav{min-height:44px}.itemRow{align-items:flex-start}.legalGrid{grid-template-columns:1fr}body{overflow-x:hidden}}
+.notificationCats{display:grid;grid-template-columns:repeat(5,1fr);gap:10px}.notifCat{border:1px solid #214967;background:#081724;border-radius:14px;padding:14px;color:#fff;text-align:center;position:relative}.notifCat:hover,.notifCat.active{border-color:#2d7db7;background:#0a2134}.notifCatIcon{font-size:28px;display:block;margin-bottom:6px}.notifCatCount{position:absolute;right:8px;top:8px;min-width:20px;height:20px;border-radius:999px;background:var(--red);display:inline-flex;align-items:center;justify-content:center;font-size:11px;font-weight:900;padding:0 5px}.noticeCard{border:1px solid #214967;background:#081724;border-radius:11px;padding:12px;text-align:left;width:100%;color:#fff}.noticeCard.unseen{border-color:#2d7db7;background:#0a2134}.noticeCard small{color:var(--muted)}.legalGrid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}.legalGrid h3{margin-top:0}
+@media(max-width:760px){.notificationCats{grid-template-columns:repeat(2,1fr)}input,textarea,select{font-size:16px}.box{max-height:92dvh;padding:16px}.chat{height:50dvh}.chatbar{position:sticky;bottom:0;background:#06121d;padding-top:8px}.btn,.icon,.nav{min-height:44px}.itemRow{align-items:flex-start}.legalGrid{grid-template-columns:1fr}body{overflow-x:hidden}}
 </style>
 </head>
 <body>
@@ -89,11 +89,18 @@ header{position:sticky;top:0;z-index:30;background:#06111df2;border-bottom:1px s
 <section class="page" id="perfil"><div class="title"><h2>Mi perfil</h2><span class="tag" id="profileRole"></span></div><div class="two"><div class="card"><h2 id="profileName"></h2><p class="muted" id="profileEmail"></p><div class="stats"><div class="stat"><small>Compras</small><b id="profileOrders">0</b></div><div class="stat"><small>Miembro</small><b id="profileMember">—</b></div><div class="stat"><small>Rol</small><b id="profileRoleBig"></b></div></div></div><div class="card"><h3>Mi cuenta</h3><p class="muted">La cuenta, productos, subastas, pedidos, encuestas y rifas ya están conectados a la base de datos.</p><button class="btn blue" data-go="mensajes">Ver mensajes y notificaciones</button></div></div><div class="card" style="margin-top:12px"><div class="title"><h2>Mis pedidos</h2><span class="tag">Historial</span></div><div id="myOrders"></div></div></section>
 
 <section class="page" id="mensajes"><div class="title"><h2>Mensajes y notificaciones</h2><span class="tag" id="messageRoleTag"></span></div>
-  <div class="card" style="margin-bottom:12px"><div class="title"><h3 style="margin:0">Notificaciones</h3><button class="btn dark" id="markAllNotifications">Marcar todas como leídas</button></div><div id="notificationsList" class="list"></div></div>
-  <div class="two">
-    <div class="card"><h3 id="offerInboxTitle" style="display:none">Solicitudes de venta</h3><div id="offerInbox" class="list" style="display:none;margin-bottom:14px"></div><h3 id="inboxTitle">Bandeja de entrada</h3><div id="messageList" class="list"></div></div>
-    <div class="card"><h3>Conversación</h3><div id="conversationBox" class="chat" style="height:420px"></div><div class="chatbar"><input id="privateReply" placeholder="Escribe un mensaje privado..."><button class="btn blue" id="sendPrivateReply">Enviar</button></div><p class="muted" style="font-size:12px">Selecciona una conversación de la izquierda.</p></div>
-  </div></section>
+  <div class="card"><div id="notificationCategories" class="notificationCats"></div></div>
+  <div class="card" style="margin-top:12px" id="notificationDetailCard">
+    <div class="title"><h3 id="notificationSectionTitle" style="margin:0">Selecciona una categoría</h3><button class="btn dark" id="markAllNotifications">Marcar todas como leídas</button></div>
+    <div id="notificationsList" class="list"></div>
+    <div id="compraventaPanel" style="display:none;margin-top:12px">
+      <div class="two">
+        <div class="card"><h3 id="offerInboxTitle" style="display:none">Solicitudes de venta</h3><div id="offerInbox" class="list" style="display:none;margin-bottom:14px"></div><h3 id="inboxTitle">Conversaciones</h3><div id="messageList" class="list"></div></div>
+        <div class="card"><h3>Conversación</h3><div id="conversationBox" class="chat" style="height:420px"></div><div class="chatbar"><input id="privateReply" placeholder="Escribe un mensaje privado..."><button class="btn blue" id="sendPrivateReply">Enviar</button></div><p class="muted" style="font-size:12px">Selecciona una conversación de la izquierda.</p></div>
+      </div>
+    </div>
+  </div>
+</section>
 
 <section class="page" id="legal"><div class="title"><h2>Información legal y condiciones</h2><span class="tag">Antes de publicar</span></div>
 <div class="card"><p class="muted">Esta sección deja preparada la información básica de la tienda. Antes de abrir GPokeTCG al público habrá que completar los datos legales del titular del negocio (nombre o razón social, NIF/CIF y domicilio) y revisar el texto definitivo según la actividad.</p></div>
@@ -216,6 +223,7 @@ let activeConversation=null;
 let communityChannel=null;
 let notifications=[];
 let notificationsChannel=null;
+let activeNotificationCategory=null;
 let selectedProduct=null,selectedAuctionWinner=null,wheelAngle=0,spinning=false,lastSpinSeen=null,pendingWinnerText='';
 function money(n){return Number(n).toLocaleString('es-ES',{minimumFractionDigits:2,maximumFractionDigits:2})+' €'}
 async function renderLiveStats(){
@@ -282,7 +290,7 @@ async function loadAuctions(){
    const again=await sb.from('auctions').select('*').order('created_at',{ascending:false});
    if(!again.error)data=again.data;
  }
- auctions=(data||[]).map(a=>({id:a.id,name:a.name,photo:a.photo_url||'',price:Number(a.current_price),increment:Number(a.min_increment),leader:a.leader_name||'Sin pujas',leaderUserId:a.leader_user_id||null,endAt:a.ends_at,closed:a.closed}));
+ auctions=(data||[]).map(a=>({id:a.id,name:a.name,photo:a.photo_url||'',price:Number(a.current_price),increment:Number(a.min_increment),leader:a.leader_name||'Sin pujas',leaderUserId:a.leader_user_id||null,endAt:a.ends_at,closed:a.closed,active:a.active!==false}));
  const typingBid=document.activeElement&&document.activeElement.classList&&document.activeElement.classList.contains('bidAmount');
  if(!typingBid)renderAuctions();
 }
@@ -460,7 +468,8 @@ function auctionLeft(a){return Math.max(0,new Date(a.endAt).getTime()-Date.now()
 function formatCountdown(ms){const s=Math.max(0,Math.floor(ms/1000)),h=Math.floor(s/3600),m=Math.floor((s%3600)/60),sec=s%60;return String(h).padStart(2,'0')+':'+String(m).padStart(2,'0')+':'+String(sec).padStart(2,'0')}
 function refreshAuctionClocks(){let rerender=false;qa('.auctionClock').forEach(el=>{const a=auctions.find(x=>x.id===Number(el.dataset.id));if(!a)return;const left=auctionLeft(a);el.textContent=formatCountdown(left);if(left<=0)rerender=true});if(rerender)renderAuctions()}
 function renderAuctions(){
- q('#auctionGrid').innerHTML=auctions.map(a=>{
+ const visibleAuctions=auctions.filter(a=>a.active!==false||(session&&a.leaderUserId===session.id));
+ q('#auctionGrid').innerHTML=visibleAuctions.map(a=>{
    const closed=a.closed||auctionLeft(a)<=0;
    const isWinner=closed&&session&&a.leaderUserId===session.id;
    const existingOrder=isWinner?userOrders.find(o=>o.source_type==='auction'&&Number(o.source_id)===Number(a.id)):null;
@@ -504,9 +513,10 @@ function renderAuctions(){
 }
 function renderAdminAuctions(){
  const box=q('#adminAuctionsList');if(!box)return;
- box.innerHTML=auctions.map(a=>'<div class="adminItem"><div class="itemRow"><span><b>'+esc(a.name)+'</b><br><small>Actual '+money(a.price)+' · incremento mín. '+money(a.increment)+'<br>Finaliza: '+new Date(a.endAt).toLocaleString('es-ES')+((a.closed||auctionLeft(a)<=0)?' · FINALIZADA':'')+'</small></span><span><button class="btn dark editAuction" data-id="'+a.id+'">Editar</button> <button class="btn dark delAuction" data-id="'+a.id+'">Retirar</button></span></div></div>').join('');
+ const adminAuctions=auctions.filter(a=>a.active!==false);
+ box.innerHTML=adminAuctions.map(a=>'<div class="adminItem"><div class="itemRow"><span><b>'+esc(a.name)+'</b><br><small>Actual '+money(a.price)+' · incremento mín. '+money(a.increment)+'<br>Finaliza: '+new Date(a.endAt).toLocaleString('es-ES')+((a.closed||auctionLeft(a)<=0)?' · FINALIZADA':'')+'</small></span><span><button class="btn dark editAuction" data-id="'+a.id+'">Editar</button> <button class="btn dark delAuction" data-id="'+a.id+'">Retirar</button></span></div></div>').join('');
  qa('.editAuction').forEach(b=>b.onclick=async()=>{if(!isAdmin())return;const a=auctions.find(x=>x.id===Number(b.dataset.id));const name=prompt('Producto subastado',a.name);if(name===null)return;const price=prompt('Precio actual/inicial',a.price);if(price===null)return;const inc=prompt('Incremento mínimo obligatorio',a.increment);if(inc===null)return;const end=prompt('Fecha y hora final (AAAA-MM-DDTHH:MM)',new Date(a.endAt).toISOString().slice(0,16));if(end===null)return;const endMs=new Date(end).getTime();if(!Number.isFinite(endMs))return toast('Fecha de finalización no válida');const {error}=await sb.from('auctions').update({name:name.trim()||a.name,current_price:Number(price)||a.price,min_increment:Math.max(.01,Number(inc)||a.increment),ends_at:new Date(endMs).toISOString(),closed:Date.now()>=endMs,leader_user_id:null,leader_name:null}).eq('id',a.id);if(error)return toast('No se pudo editar');await loadAuctions();toast('Subasta editada')});
- qa('.delAuction').forEach(b=>b.onclick=async()=>{if(!isAdmin())return;const {error}=await sb.from('auctions').delete().eq('id',Number(b.dataset.id));if(error)return toast('No se pudo retirar');await loadAuctions();toast('Subasta retirada')})
+ qa('.delAuction').forEach(b=>b.onclick=async()=>{if(!isAdmin())return;const id=Number(b.dataset.id);const {error}=await sb.rpc('admin_archive_auction',{p_auction_id:id});if(error)return toast('No se pudo retirar');await loadAuctions();toast('Subasta retirada del escaparate; el historial del ganador se conserva')})
 }
 q('#addAuction').onclick=async()=>{try{if(!isAdmin())return toast('Solo administrador');const name=q('#auName').value.trim(),price=Number(q('#auStart').value),increment=Number(q('#auIncrement').value),endRaw=q('#auEnd').value,endMs=new Date(endRaw).getTime();if(!name||price<=0||increment<=0||!endRaw||!Number.isFinite(endMs)||endMs<=Date.now())return toast('Completa producto, precio, incremento y una fecha futura de finalización');const photo=await fileData(q('#auPhoto'));const {error}=await sb.from('auctions').insert({name,photo_url:photo||null,current_price:price,min_increment:increment,leader_name:null,ends_at:new Date(endMs).toISOString(),closed:false});if(error)return toast('No se pudo crear la subasta');await loadAuctions();q('#auName').value='';q('#auStart').value='';q('#auIncrement').value='';q('#auEnd').value='';q('#auPhoto').value='';toast('Subasta creada correctamente')}catch(e){console.error(e);toast('No se pudo crear la subasta')}};
 setInterval(refreshAuctionClocks,1000);
@@ -631,10 +641,42 @@ function updateUnreadBadge(){
  const notificationUnread=notifications.filter(n=>!n.is_read).length;
  q('#unreadCount').textContent=privateUnread+notificationUnread;
 }
+function notificationCategory(n){
+ if(['order','order_status'].includes(n.type))return 'pedidos';
+ if(n.type==='auction_won')return 'subastas';
+ if(String(n.type||'').startsWith('raffle'))return 'rifas';
+ if(String(n.type||'').startsWith('offer'))return 'compraventa';
+ return 'sistema';
+}
 function renderNotifications(){
- const box=q('#notificationsList');if(!box)return;
- box.innerHTML=notifications.length?notifications.map(n=>'<button class="noticeCard '+(!n.is_read?'unseen':'')+'" data-id="'+n.id+'" data-page="'+esc(n.link_page||'mensajes')+'"><b>'+esc(n.title)+'</b><br><span>'+esc(n.body)+'</span><br><small>'+new Date(n.created_at).toLocaleString('es-ES')+'</small></button>').join(''):'<p class="muted">No tienes notificaciones.</p>';
- qa('.noticeCard').forEach(b=>b.onclick=async()=>{await sb.rpc('mark_notification_read',{p_notification_id:Number(b.dataset.id)});const page=b.dataset.page||'mensajes';await loadNotifications();if(page)go(page)});
+ const cats=q('#notificationCategories'),box=q('#notificationsList'),panel=q('#compraventaPanel'),title=q('#notificationSectionTitle');
+ if(!cats||!box)return;
+ const defs=[
+  {id:'compraventa',icon:'🃏',label:'Compraventa'},
+  {id:'pedidos',icon:'📦',label:'Pedidos'},
+  {id:'subastas',icon:'🔨',label:'Subastas'},
+  {id:'rifas',icon:'🎟️',label:'Rifas'},
+  {id:'sistema',icon:'🔔',label:'Sistema'}
+ ];
+ cats.innerHTML=defs.map(d=>{
+   const notifUnread=notifications.filter(n=>notificationCategory(n)===d.id&&!n.is_read).length;
+   const chatUnread=d.id==='compraventa'?privateMessages.filter(m=>m.from_user_id!==session.id&&!messageReads.has(Number(m.id))).length:0;
+   const total=notifUnread+chatUnread;
+   return '<button class="notifCat '+(activeNotificationCategory===d.id?'active':'')+'" data-cat="'+d.id+'"><span class="notifCatIcon">'+d.icon+'</span><b>'+d.label+'</b>'+(total?'<span class="notifCatCount">'+total+'</span>':'')+'</button>';
+ }).join('');
+ qa('.notifCat').forEach(b=>b.onclick=()=>{activeNotificationCategory=b.dataset.cat;renderNotifications();renderMessages()});
+ if(!activeNotificationCategory){
+   title.textContent='Selecciona una categoría';
+   box.innerHTML='<p class="muted">Pulsa uno de los apartados de arriba para ver su contenido.</p>';
+   panel.style.display='none';
+   return;
+ }
+ const def=defs.find(d=>d.id===activeNotificationCategory);
+ title.textContent=(def?def.icon+' '+def.label:'Notificaciones');
+ const filtered=notifications.filter(n=>notificationCategory(n)===activeNotificationCategory);
+ box.innerHTML=filtered.length?filtered.map(n=>'<button class="noticeCard '+(!n.is_read?'unseen':'')+'" data-id="'+n.id+'" data-page="'+esc(n.link_page||'mensajes')+'"><b>'+esc(n.title)+'</b><br><span>'+esc(n.body)+'</span><br><small>'+new Date(n.created_at).toLocaleString('es-ES')+'</small></button>').join(''):(activeNotificationCategory==='compraventa'?'<p class="muted">Aquí tienes tus conversaciones de compraventa.</p>':'<p class="muted">No hay notificaciones en este apartado.</p>');
+ qa('.noticeCard').forEach(b=>b.onclick=async()=>{await sb.rpc('mark_notification_read',{p_notification_id:Number(b.dataset.id)});await loadNotifications()});
+ panel.style.display=activeNotificationCategory==='compraventa'?'block':'none';
 }
 function subscribeNotifications(){
  if(notificationsChannel)sb.removeChannel(notificationsChannel);
@@ -642,7 +684,7 @@ function subscribeNotifications(){
    .on('postgres_changes',{event:'*',schema:'public',table:'notifications',filter:'user_id=eq.'+(session?.id||'')},()=>loadNotifications())
    .subscribe();
 }
-q('#markAllNotifications').onclick=async()=>{await sb.rpc('mark_all_notifications_read');await loadNotifications()};
+q('#markAllNotifications').onclick=async()=>{await sb.rpc('mark_all_notifications_read');await loadNotifications();renderMessages()};
 
 async function markConversationRead(offerId){
  const rows=messagesForOffer(offerId).filter(m=>m.from_user_id!==session.id&&!messageReads.has(Number(m.id))).map(m=>({message_id:m.id,user_id:session.id}));
@@ -652,7 +694,8 @@ async function markConversationRead(offerId){
 }
 function renderMessages(){
  if(!session)return;
- updateUnreadBadge();q('#messageRoleTag').textContent=isAdmin()?'Bandeja del administrador':'Notificaciones del usuario';q('#inboxTitle').textContent='Tus chats por oferta';
+ updateUnreadBadge();
+ const cp=q('#compraventaPanel');if(cp)cp.style.display=activeNotificationCategory==='compraventa'?'block':'none';q('#messageRoleTag').textContent=isAdmin()?'Bandeja del administrador':'Notificaciones del usuario';q('#inboxTitle').textContent='Tus chats por oferta';
  const offerBox=q('#offerInbox'),offerTitle=q('#offerInboxTitle');
  if(isAdmin()){
    offerTitle.style.display='block';offerBox.style.display='grid';
