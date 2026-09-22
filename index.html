@@ -80,7 +80,7 @@ header{position:sticky;top:0;z-index:30;background:#06111df2;border-bottom:1px s
 <div class="card"><h3>💬 Chat general</h3><div class="chat" id="communityChat"></div><div class="chatbar"><input id="communityInput" placeholder="Escribe..."><button class="btn blue" id="communitySend">Enviar</button></div></div>
 </div></section>
 
-<section class="page" id="vender"><div class="title"><h2>Vender tus cartas</h2><span class="tag">Privado al admin</span></div><div class="card"><div class="formgrid"><input id="sellName" placeholder="Nombre de la carta"><input id="sellPrice" type="number" placeholder="Precio solicitado (€)"><select id="sellState"><option>Near Mint</option><option>Excellent</option><option>Played</option><option>PSA / Graded</option></select><input id="sellContact" placeholder="Email o @usuario"><textarea id="sellMessage" placeholder="Detalles..."></textarea></div><button class="btn" id="sendOffer" style="margin-top:10px">Enviar propuesta privada</button></div></section>
+<section class="page" id="vender"><div class="title"><h2>Vender tus cartas</h2><span class="tag">Privado al admin</span></div><div class="card"><p class="muted">Tu propuesta se envía únicamente al administrador de GPokeTCG: <b style="color:#fff">gpoketcg@gmail.com</b></p><div class="formgrid"><input id="sellName" placeholder="Nombre de la carta"><input id="sellPrice" type="number" placeholder="Precio solicitado (€)"><select id="sellState"><option>Near Mint</option><option>Excellent</option><option>Played</option><option>PSA / Graded</option></select><textarea id="sellMessage" placeholder="Detalles..."></textarea></div><button class="btn" id="sendOffer" style="margin-top:10px">Enviar propuesta privada</button></div></section>
 
 <section class="page" id="ranking"><div class="title"><h2>Ranking</h2><span class="tag">Próximamente</span></div><div class="card"><p class="muted">Todavía no hay datos suficientes para mostrar un ranking.</p></div></section>
 
@@ -189,7 +189,7 @@ let privateMessages=[];
 let messageReads=new Set();
 let activeConversation=null;
 let communityChannel=null;
-let selectedProduct=null,wheelAngle=0,spinning=false;
+let selectedProduct=null,wheelAngle=0,spinning=false,lastSpinSeen=null;
 function money(n){return Number(n).toLocaleString('es-ES',{minimumFractionDigits:2,maximumFractionDigits:2})+' €'}
 async function renderLiveStats(){
  const r=q('#registeredCount'),o=q('#onlineCount');
@@ -199,7 +199,9 @@ async function renderLiveStats(){
    sb.rpc('online_user_count')
  ]);
  if(r&&!registered.error)r.textContent=registered.data??0;
- if(o&&!online.error)o.textContent=online.data??0;
+ const presenceCount=presenceChannel?Object.keys(presenceChannel.presenceState()||{}).length:0;
+ const serverCount=!online.error?Number(online.data||0):0;
+ if(o)o.textContent=Math.max(presenceCount,serverCount);
 }
 async function heartbeatOnline(){
  if(!logged())return;
@@ -260,7 +262,7 @@ async function loadRaffle(){
  const {data,error}=await sb.from('raffles').select('*').order('created_at',{ascending:false}).limit(1).maybeSingle();
  if(error){console.error(error);toast('No se pudo cargar la rifa');return}
  if(!data){raffle={id:null,title:'Sin rifa activa',price:0,slots:0,desc:'',photo:'',status:'closed',winner:''};participants=[];renderRaffle();return}
- raffle={id:data.id,title:data.title,price:Number(data.price_per_slot),slots:data.total_slots,desc:data.description||'',photo:data.photo_url||'',status:data.status,winner:data.winner_name||'',winnerTicket:data.winner_ticket||null};
+ raffle={id:data.id,title:data.title,price:Number(data.price_per_slot),slots:data.total_slots,desc:data.description||'',photo:data.photo_url||'',status:data.status,winner:data.winner_name||'',winnerTicket:data.winner_ticket||null,spinStartedAt:data.spin_started_at||null};
  const {data:entries,error:entriesError}=await sb.from('raffle_entries').select('*').eq('raffle_id',data.id).order('created_at',{ascending:true});
  if(entriesError){console.error(entriesError);return}
  participants=(entries||[]).map(e=>({id:e.id,user_id:e.user_id,alias:e.alias,qty:e.quantity,status:e.status==='paid'?'Pagado':'Pendiente'}));
@@ -331,7 +333,7 @@ async function loadCommunityData(){
 function subscribeCommunity(){
  if(communityChannel)sb.removeChannel(communityChannel);
  communityChannel=sb.channel('gpoketcg-community-live')
-   .on('postgres_changes',{event:'*',schema:'public',table:'chat_messages'},()=>loadCommunityData())
+   .on('postgres_changes',{event:'*',schema:'public',table:'chat_messages'},()=>loadChatsOnly())
    .on('postgres_changes',{event:'*',schema:'public',table:'news'},()=>loadCommunityData())
    .on('postgres_changes',{event:'*',schema:'public',table:'events'},()=>loadCommunityData())
    .on('postgres_changes',{event:'*',schema:'public',table:'offers'},()=>loadCommunityData())
@@ -438,7 +440,7 @@ setInterval(refreshAuctionClocks,1000);
 function paidEntries(){const e=[];participants.filter(p=>p.status==='Pagado').forEach(p=>{for(let i=0;i<p.qty;i++)e.push(p.alias)});return e}
 function drawWheel(){const c=q('#wheel'),ctx=c.getContext('2d'),e=paidEntries();ctx.clearRect(0,0,600,600);if(!e.length){ctx.fillStyle='#ffd92e';ctx.font='bold 28px system-ui';ctx.textAlign='center';ctx.fillText('Sin participantes',300,305);return}const n=e.length;ctx.save();ctx.translate(300,300);ctx.rotate(wheelAngle);e.forEach((name,i)=>{const a0=i*2*Math.PI/n,a1=(i+1)*2*Math.PI/n;ctx.beginPath();ctx.moveTo(0,0);ctx.arc(0,0,280,a0,a1);ctx.closePath();ctx.fillStyle='hsl('+((i*53)%360)+' 68% 48%)';ctx.fill();ctx.strokeStyle='#07131f';ctx.stroke();if(n<=30){ctx.save();ctx.rotate((a0+a1)/2);ctx.textAlign='right';ctx.fillStyle='#fff';ctx.font='bold 13px system-ui';ctx.fillText(name.slice(0,13),260,4);ctx.restore()}});ctx.restore();ctx.fillStyle='#07131f';ctx.beginPath();ctx.arc(300,300,70,0,Math.PI*2);ctx.fill();ctx.fillStyle='#ffd92e';ctx.font='900 22px system-ui';ctx.textAlign='center';ctx.fillText('GPokeTCG',300,307);ctx.save();ctx.fillStyle='#ffd92e';ctx.strokeStyle='#07131f';ctx.lineWidth=6;ctx.beginPath();ctx.moveTo(276,8);ctx.lineTo(324,8);ctx.lineTo(300,58);ctx.closePath();ctx.fill();ctx.stroke();ctx.restore()}
 function renderRaffle(){
- q('#raffleTitle').textContent=raffle.title||'Sin rifa activa';q('#raffleDesc').textContent=raffle.desc||'';q('#rafflePrice').textContent=money(raffle.price||0);q('#raffleSlots').textContent=raffle.slots||0;q('#homeRaffleTitle').textContent=raffle.title||'Sin rifa activa';q('#homeRaffleMeta').textContent=(raffle.slots||0)+' números · '+money(raffle.price||0)+' por número';
+ q('#raffleTitle').textContent=raffle.title||'Sin rifa activa';q('#raffleDesc').textContent=raffle.desc||'';q('#rafflePrice').textContent=money(raffle.price||0);const rs=q('#raffleSlots');if(rs)rs.textContent=raffle.slots||0;q('#homeRaffleTitle').textContent=raffle.title||'Sin rifa activa';q('#homeRaffleMeta').textContent=(raffle.slots||0)+' números · '+money(raffle.price||0)+' por número';
  const reserved=participants.reduce((s,p)=>s+p.qty,0),paid=participants.filter(p=>p.status==='Pagado').reduce((s,p)=>s+p.qty,0);q('#soldCount').textContent=reserved+' / '+(raffle.slots||0);q('#paidCount').textContent=paid+' / '+(raffle.slots||0);
  const statusLabel=raffle.status==='active'?'RESERVAS ABIERTAS':raffle.status==='payment_processing'?'PROCESANDO PAGOS':raffle.status==='ready_to_draw'?'LISTA PARA SORTEO':raffle.status==='closed'?'FINALIZADA':'SIN RIFA';q('#raffleStatusTag').textContent=statusLabel;
  q('#participantRows').innerHTML=participants.map(p=>'<tr><td>'+esc(p.alias)+'</td><td>'+p.qty+'</td><td class="'+(p.status==='Pagado'?'paid':'pending')+'">'+(p.status==='Pagado'?'Pagado':'Pago pendiente')+'</td></tr>').join('');
@@ -456,22 +458,44 @@ function renderRaffle(){
    if(er)er.onclick=()=>{if(!isAdmin())return;q('#rTitle').value=raffle.title||'';q('#rPrice').value=raffle.price||'';q('#rSlots').value=raffle.slots||'';q('#rDesc').value=raffle.desc||'';q('#rTitle').focus();toast('Rifa cargada para editar')};
    if(dr)dr.onclick=async()=>{if(!isAdmin()||!raffle.id)return;if(!confirm('¿Eliminar esta rifa? También se eliminarán sus participantes.'))return;const {error}=await sb.rpc('admin_delete_raffle',{p_raffle_id:raffle.id});if(error)return toast('No se pudo eliminar la rifa');await loadRaffle();toast('Rifa eliminada')};
  }
- drawWheel()
+ if(raffle.spinStartedAt&&raffle.spinStartedAt!==lastSpinSeen){lastSpinSeen=raffle.spinStartedAt;setTimeout(animateLiveWheel,50)}
+ if(!spinning)drawWheel()
 }
 q('#buyRaffleBtn').onclick=()=>{if(!raffle.id||raffle.status!=='active')return toast('No hay una rifa activa');q('#raffleBuyer').value=session?session.name:'';openModal('raffleModal')};
 q('#confirmRaffle').onclick=async()=>{if(!raffle.id)return toast('No hay rifa activa');const alias=q('#raffleBuyer').value.trim()||(session&&session.name)||'Usuario',qty=Math.max(1,Math.min(20,Number(q('#raffleQty').value)||1));const btn=q('#confirmRaffle');btn.disabled=true;const {error}=await sb.rpc('buy_raffle_slots',{p_raffle_id:raffle.id,p_quantity:qty,p_alias:alias});btn.disabled=false;if(error)return toast(error.message.includes('suficientes')?'No quedan suficientes números':'No se pudo reservar los números');closeModal('raffleModal');await loadRaffle();toast('Números seleccionados. El pago se realizará ahora; al conectarlo, la pasarela confirmará el cobro automáticamente')};
-q('#spinBtn').onclick=async()=>{if(!isAdmin())return toast('Solo el administrador puede girar');if(!raffle.id||spinning)return;const e=paidEntries();if(!e.length)return toast('No hay participantes pagados');spinning=true;q('#winnerText').textContent='Girando...';const {data,error}=await sb.rpc('draw_raffle_winner',{p_raffle_id:raffle.id});spinning=false;if(error)return toast(error.message);await loadRaffle();if(data&&data[0])toast('Ganador: '+data[0].alias)};
+function animateLiveWheel(){
+ if(spinning)return;
+ spinning=true;
+ q('#winnerText').textContent='🎡 Sorteo en directo...';
+ const start=performance.now(),duration=5200;
+ function frame(now){
+   const t=Math.min(1,(now-start)/duration);
+   wheelAngle+=((1-t)*0.42+0.035);
+   drawWheel();
+   if(t<1){requestAnimationFrame(frame)}else{spinning=false;loadRaffle()}
+ }
+ requestAnimationFrame(frame);
+}
+q('#spinBtn').onclick=async()=>{if(!isAdmin())return toast('Solo el administrador puede girar');if(!raffle.id||spinning)return;const e=paidEntries();if(!e.length)return toast('No hay participantes pagados');const {data,error}=await sb.rpc('draw_raffle_winner',{p_raffle_id:raffle.id});if(error)return toast(error.message);await loadRaffle();if(data&&data[0])toast('Sorteo iniciado · la ruleta está girando en directo')};
 q('#saveRaffle').onclick=async()=>{try{if(!isAdmin())return toast('Solo administrador');const title=q('#rTitle').value.trim(),price=Number(q('#rPrice').value),slots=Number(q('#rSlots').value);if(!title||price<=0||slots<=0)return toast('Completa carta, precio por número y plazas');const photo=await fileData(q('#rPhoto'));let error;if(raffle.id){const payload={title,price_per_slot:price,total_slots:Math.max(1,slots),description:q('#rDesc').value.trim()};if(photo)payload.photo_url=photo;({error}=await sb.from('raffles').update(payload).eq('id',raffle.id))}else{({error}=await sb.from('raffles').insert({title,price_per_slot:price,total_slots:Math.max(1,slots),description:q('#rDesc').value.trim(),photo_url:photo||null,status:'active'}))}if(error)return toast('No se pudo guardar la rifa');q('#rPhoto').value='';await loadRaffle();toast(raffle.id?'Rifa actualizada correctamente':'Rifa creada correctamente')}catch(e){console.error(e);toast('No se pudo guardar la rifa')}};
 q('#addParticipant').onclick=async()=>{if(!isAdmin())return toast('Solo administrador');if(!raffle.id)return toast('No hay rifa');const alias=q('#aAlias').value.trim();if(!alias)return toast('Pon un alias');const qty=Math.max(1,Number(q('#aQty').value)||1),status=q('#aStatus').value==='Pagado'?'paid':'pending';const {error}=await sb.from('raffle_entries').insert({raffle_id:raffle.id,user_id:null,alias,quantity:qty,status});if(error)return toast('No se pudo añadir participante');q('#aAlias').value='';await loadRaffle()};
+async function loadChatsOnly(){
+ if(!logged())return;
+ const {data,error}=await sb.from('chat_messages').select('*').order('created_at',{ascending:true}).limit(500);
+ if(error){console.error(error);return}
+ raffleChat=(data||[]).filter(x=>x.channel==='raffle'&&(!raffle.id||Number(x.raffle_id)===Number(raffle.id))).map(x=>({id:x.id,u:x.username,m:x.message,time:new Date(x.created_at).getTime()}));
+ communityChat=(data||[]).filter(x=>x.channel==='community').map(x=>({id:x.id,u:x.username,m:x.message,time:new Date(x.created_at).getTime()}));
+ renderChats();
+}
 function renderChats(){
  q('#raffleChat').innerHTML=raffleChat.map(x=>'<div class="msg"><b>'+esc(x.u)+'</b><br>'+esc(x.m)+'</div>').join('');
  q('#communityChat').innerHTML=communityChat.map(x=>'<div class="msg"><b>'+esc(x.u)+'</b><br>'+esc(x.m)+'</div>').join('');
  const rg=q('#raffleGeneralChat');if(rg)rg.innerHTML=communityChat.map(x=>'<div class="msg"><b>'+esc(x.u)+'</b><br>'+esc(x.m)+'</div>').join('');
  q('#raffleChat').scrollTop=q('#raffleChat').scrollHeight;q('#communityChat').scrollTop=q('#communityChat').scrollHeight;if(rg)rg.scrollTop=rg.scrollHeight
 }
-q('#raffleChatSend').onclick=async()=>{const m=q('#raffleChatInput').value.trim();if(!m)return;if(!raffle.id)return toast('No hay rifa activa');const {error}=await sb.from('chat_messages').insert({channel:'raffle',raffle_id:raffle.id,user_id:session.id,username:session.name,message:m});if(error)return toast('No se pudo enviar');q('#raffleChatInput').value='';await loadCommunityData()};
-q('#communitySend').onclick=async()=>{const m=q('#communityInput').value.trim();if(!m)return;const {error}=await sb.from('chat_messages').insert({channel:'community',raffle_id:null,user_id:session.id,username:session.name,message:m});if(error)return toast('No se pudo enviar');q('#communityInput').value='';await loadCommunityData()};
-q('#raffleGeneralSend').onclick=async()=>{const m=q('#raffleGeneralInput').value.trim();if(!m)return;const {error}=await sb.from('chat_messages').insert({channel:'community',raffle_id:null,user_id:session.id,username:session.name,message:m});if(error)return toast('No se pudo enviar');q('#raffleGeneralInput').value='';await loadCommunityData()};
+q('#raffleChatSend').onclick=async()=>{const m=q('#raffleChatInput').value.trim();if(!m)return;if(!raffle.id)return toast('No hay rifa activa');const {error}=await sb.from('chat_messages').insert({channel:'raffle',raffle_id:raffle.id,user_id:session.id,username:session.name,message:m});if(error)return toast('No se pudo enviar');q('#raffleChatInput').value='';await loadChatsOnly()};
+q('#communitySend').onclick=async()=>{const m=q('#communityInput').value.trim();if(!m)return;const {error}=await sb.from('chat_messages').insert({channel:'community',raffle_id:null,user_id:session.id,username:session.name,message:m});if(error)return toast('No se pudo enviar');q('#communityInput').value='';await loadChatsOnly()};
+q('#raffleGeneralSend').onclick=async()=>{const m=q('#raffleGeneralInput').value.trim();if(!m)return;const {error}=await sb.from('chat_messages').insert({channel:'community',raffle_id:null,user_id:session.id,username:session.name,message:m});if(error)return toast('No se pudo enviar');q('#raffleGeneralInput').value='';await loadChatsOnly()};
 
 function renderCommunity(){
  q('#newsFeed').innerHTML=news.map(x=>'<div class="item"><b>'+esc(x.title)+'</b><div class="muted">'+esc(x.date)+'</div><p>'+esc(x.text)+'</p></div>').join('');
@@ -492,7 +516,7 @@ function renderOffers(){
  q('#adminOffersList').innerHTML=offers.length?offers.map((o,i)=>'<div class="adminItem"><div class="itemRow"><span><b>'+esc(o.name)+'</b><br><small>'+esc(o.sender||o.contact)+' · '+esc(o.price)+' € · '+esc(o.state)+' · '+esc(o.status)+'</small><br>'+esc(o.message)+'</span><button class="btn blue openOffer" data-i="'+i+'">Abrir / responder</button></div></div>').join(''):'<p class="muted">Sin ofertas.</p>';
  qa('.openOffer').forEach(b=>b.onclick=()=>{const o=offers[Number(b.dataset.i)];activeConversation=conversationKey(o);go('mensajes');renderMessages();q('#privateReply').focus()})
 }
-q('#sendOffer').onclick=async()=>{const name=q('#sellName').value.trim();if(!name)return toast('Pon el nombre de la carta');const priceRaw=q('#sellPrice').value;const payload={user_id:session.id,sender_name:session.name,sender_email:session.email,card_name:name,requested_price:priceRaw?Number(priceRaw):null,card_state:q('#sellState').value,contact:q('#sellContact').value||session.email,message:q('#sellMessage').value||'',status:'Nueva'};const {data,error}=await sb.from('offers').insert(payload).select('id').single();if(error)return toast('No se pudo enviar la oferta');q('#sellName').value='';q('#sellPrice').value='';q('#sellMessage').value='';await loadCommunityData();activeConversation='offer:'+data.id;toast('Oferta enviada al administrador')};
+q('#sendOffer').onclick=async()=>{const name=q('#sellName').value.trim();if(!name)return toast('Pon el nombre de la carta');const priceRaw=q('#sellPrice').value;const payload={user_id:session.id,sender_name:session.name,sender_email:session.email,card_name:name,requested_price:priceRaw?Number(priceRaw):null,card_state:q('#sellState').value,contact:'gpoketcg@gmail.com',message:q('#sellMessage').value||'',status:'Nueva'};const {data,error}=await sb.from('offers').insert(payload).select('id').single();if(error)return toast('No se pudo enviar la oferta');q('#sellName').value='';q('#sellPrice').value='';q('#sellMessage').value='';await loadCommunityData();activeConversation='offer:'+data.id;toast('Oferta enviada a gpoketcg@gmail.com')};
 
 async function markConversationRead(offerId){
  const rows=messagesForOffer(offerId).filter(m=>m.from_user_id!==session.id&&!messageReads.has(Number(m.id))).map(m=>({message_id:m.id,user_id:session.id}));
@@ -529,10 +553,10 @@ async function refreshAllLiveData(){
      loadProducts(),
      loadRaffle(),
      loadRafflePoll(),
-     loadCommunityData(),
+     loadChatsOnly(),
      renderLiveStats()
    ];
-   if(syncTick%5===0)jobs.push(loadOrders());
+   if(syncTick%5===0){jobs.push(loadOrders());jobs.push(loadCommunityData())}
    await Promise.allSettled(jobs);
  }finally{syncBusy=false}
 }
@@ -541,7 +565,7 @@ function startLiveFallback(){
  if(heartbeatTimer)clearInterval(heartbeatTimer);
  refreshAllLiveData();
  livePollTimer=setInterval(refreshAllLiveData,1000);
- heartbeatTimer=setInterval(async()=>{await heartbeatOnline();await renderLiveStats()},10000);
+ heartbeatTimer=setInterval(async()=>{await heartbeatOnline();await renderLiveStats()},5000);
 }
 window.addEventListener('focus',()=>{if(logged()){heartbeatOnline();refreshAllLiveData()}});
 document.addEventListener('visibilitychange',()=>{if(!document.hidden&&logged()){heartbeatOnline();refreshAllLiveData()}});
