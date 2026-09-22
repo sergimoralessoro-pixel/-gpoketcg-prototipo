@@ -13,13 +13,13 @@ header{position:fixed;left:0;right:0;top:0;width:100%;z-index:30;background:#061
   :root{--header-h:calc(60px + env(safe-area-inset-top))}
   body{padding-top:var(--header-h)}
   header{height:var(--header-h);padding-top:env(safe-area-inset-top);overflow:hidden}
-  .top{height:60px;padding:8px 10px;flex-wrap:nowrap;gap:7px;max-width:none}
-  .desktop{display:none}.menu{display:inline-flex;flex:0 0 auto}
-  .top .brand{font-size:20px;white-space:nowrap;margin-right:auto}
+  .top{height:60px;padding:8px 52px 8px 8px;flex-wrap:nowrap;gap:5px;max-width:none;position:relative}
+  .desktop{display:none}.menu{display:inline-flex;flex:0 0 auto;width:38px;height:38px;align-items:center;justify-content:center;padding:0}
+  .top .brand{font-size:17px;white-space:nowrap;margin-right:auto}
   .topStats,.role,#adminBtn{display:none!important}
-  #inboxBtn,#cartBtn,#profileBtn,#logoutBtn{flex:0 0 auto;padding:8px 9px}
-  #logoutBtn{display:inline-flex!important;font-size:0;align-items:center;justify-content:center}
-  #logoutBtn::before{content:'🚪';font-size:18px;line-height:1}
+  #inboxBtn,#cartBtn,#profileBtn{flex:0 0 auto;width:38px;height:38px;padding:0;display:inline-flex;align-items:center;justify-content:center}
+  #logoutBtn{display:inline-flex!important;position:absolute;right:8px;top:11px;width:38px;height:38px;padding:0;font-size:0;align-items:center;justify-content:center}
+  #logoutBtn::before{content:'🚪';font-size:19px;line-height:1}
   .wrap{padding:12px 10px 70px}
   .grid3,.grid4,.stats,.formgrid{grid-template-columns:1fr}
   .heroMain{min-height:300px;padding:22px}.hero h1{font-size:58px}
