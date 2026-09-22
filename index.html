@@ -518,26 +518,34 @@ function renderMessages(){
 q('#sendPrivateReply').onclick=async()=>{const text=q('#privateReply').value.trim(),off=offerByThread(activeConversation);if(!text||!off)return toast('Selecciona una oferta/conversación y escribe un mensaje');const {error}=await sb.from('offer_messages').insert({offer_id:off.id,sender_user_id:session.id,sender_name:session.name,message:text});if(error)return toast('No se pudo enviar');if(isAdmin()&&off.status==='Nueva')await sb.from('offers').update({status:'Respondida'}).eq('id',off.id);q('#privateReply').value='';await loadCommunityData();toast('Mensaje privado enviado')};
 qa('.adminTab').forEach(b=>b.onclick=()=>{qa('.adminTab').forEach(x=>x.classList.toggle('active',x===b));qa('.adminPane').forEach(x=>x.classList.toggle('active',x.id===b.dataset.admin))});
 function renderAll(){renderAuth();renderLiveStats();renderProfile();renderProducts();renderCart();renderOrders();renderAuctions();renderRaffle();renderRafflePoll();renderChats();renderCommunity();renderOffers();renderMessages()}
-let livePollTimer=null, heartbeatTimer=null;
-async function refreshVisibleLiveData(){
- if(!logged()||document.hidden)return;
- const active=q('.page.active')?.id||'inicio';
- const jobs=[];
- if(active==='subastas'||active==='inicio'||active==='adminPage')jobs.push(loadAuctions());
- if(active==='tienda'||active==='inicio'||active==='adminPage')jobs.push(loadProducts());
- if(active==='rifas'||active==='adminPage'){jobs.push(loadRaffle());jobs.push(loadRafflePoll());jobs.push(loadCommunityData())}
- if(active==='comunidad'||active==='mensajes'||active==='adminPage')jobs.push(loadCommunityData());
- if(active==='perfil'||active==='adminPage')jobs.push(loadOrders());
- if(jobs.length)await Promise.allSettled(jobs);
+let livePollTimer=null, heartbeatTimer=null, syncBusy=false, syncTick=0;
+async function refreshAllLiveData(){
+ if(!logged()||document.hidden||syncBusy)return;
+ syncBusy=true;
+ try{
+   syncTick++;
+   const jobs=[
+     loadAuctions(),
+     loadProducts(),
+     loadRaffle(),
+     loadRafflePoll(),
+     loadCommunityData(),
+     renderLiveStats()
+   ];
+   if(syncTick%5===0)jobs.push(loadOrders());
+   await Promise.allSettled(jobs);
+ }finally{syncBusy=false}
 }
 function startLiveFallback(){
  if(livePollTimer)clearInterval(livePollTimer);
  if(heartbeatTimer)clearInterval(heartbeatTimer);
- livePollTimer=setInterval(refreshVisibleLiveData,2500);
- heartbeatTimer=setInterval(async()=>{await heartbeatOnline();await renderLiveStats()},15000);
+ refreshAllLiveData();
+ livePollTimer=setInterval(refreshAllLiveData,1000);
+ heartbeatTimer=setInterval(async()=>{await heartbeatOnline();await renderLiveStats()},10000);
 }
-window.addEventListener('focus',()=>{if(logged()){heartbeatOnline();refreshVisibleLiveData();renderLiveStats()}});
-document.addEventListener('visibilitychange',()=>{if(!document.hidden&&logged()){heartbeatOnline();refreshVisibleLiveData();renderLiveStats()}});
+window.addEventListener('focus',()=>{if(logged()){heartbeatOnline();refreshAllLiveData()}});
+document.addEventListener('visibilitychange',()=>{if(!document.hidden&&logged()){heartbeatOnline();refreshAllLiveData()}});
+qa('[data-page],[data-go]').forEach(b=>b.addEventListener('click',()=>{if(logged())setTimeout(refreshAllLiveData,50)}));
 (async function boot(){
  const {data:{session:authSession}}=await sb.auth.getSession();
  if(authSession?.user){await setSessionFromUser(authSession.user);await setupPresence();subscribeAuctions();subscribeProducts();subscribeRaffle();subscribeRafflePoll();subscribeCommunity();startLiveFallback();await Promise.all([loadAuctions(),loadProducts(),loadOrders(),loadRaffle(),loadRafflePoll(),loadCommunityData(),renderLiveStats()])}
