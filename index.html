@@ -557,7 +557,7 @@ q('#checkoutBtn').onclick=async()=>{
  if(!cart.length)return toast('Carrito vacío');
  const shipping={
   name:q('#checkoutName').value.trim(),
-  email:q('#checkoutEmail').value.trim().toLowerCase(),
+  email:q('#checkoutEmail').value.normalize('NFKC').replace(/[\s\u200B-\u200D\uFEFF]/g,'').toLowerCase(),
   phone:q('#checkoutPhone').value.trim(),
   address1:q('#checkoutAddress1').value.trim(),
   address2:q('#checkoutAddress2').value.trim(),
@@ -568,13 +568,13 @@ q('#checkoutBtn').onclick=async()=>{
   notes:q('#checkoutNotes').value.trim()
  };
  if(!shipping.name||!shipping.email||!shipping.phone||!shipping.address1||!shipping.postal_code||!shipping.city||!shipping.province||!shipping.country)return toast('Completa todos los datos de entrega obligatorios');
- if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(shipping.email))return toast('Introduce un correo válido');
+ const at=shipping.email.indexOf('@'),dot=shipping.email.lastIndexOf('.');if(at<=0||dot<=at+1||dot>=shipping.email.length-1)return toast('Introduce un correo válido');
  const purchased=cart.map(x=>({...x}));
  const total=purchased.reduce((s,x)=>s+x.price*x.qty,0);
  const btn=q('#checkoutBtn');btn.disabled=true;btn.textContent='Creando pedido...';
  const {data,error}=await sb.rpc('create_order',{p_items:purchased.map(x=>({id:x.id,qty:x.qty})),p_shipping:shipping});
  btn.disabled=false;btn.textContent='Continuar con el pedido';
- if(error)return toast(error.message.includes('Stock insuficiente')?'No queda suficiente stock de uno de los productos':error.message.includes('Faltan datos')?'Faltan datos de entrega':'No se pudo crear el pedido');
+ if(error)return toast(error.message.includes('Stock insuficiente')?'No queda suficiente stock de uno de los productos':error.message.includes('Faltan datos')?'Faltan datos de entrega':error.message.toLowerCase().includes('correo')?'El correo no es válido':'No se pudo crear el pedido');
  const {data:order}=await sb.from('orders').select('id,receipt_number,created_at,status').eq('id',data).single();
  cart=[];save('gp_cart',cart);renderCart();await loadProducts();await loadOrders();closeModal('cartModal');
  q('#orderReceipt').innerHTML='<p>Gracias por confiar en <b>GPokeTCG</b>.</p><p class="muted">Hemos recibido tu pedido y estos son sus datos:</p><div class="item"><b>Recibo '+esc(order?.receipt_number||('GP-'+data))+'</b><br><small>Pedido #'+data+' · '+new Date(order?.created_at||Date.now()).toLocaleString('es-ES')+'</small></div><div style="margin-top:10px">'+purchased.map(x=>'<div class="itemRow"><span>'+esc(x.name)+' × '+x.qty+'</span><b>'+money(x.price*x.qty)+'</b></div>').join('')+'</div><div class="price" style="margin-top:12px">Total: '+money(total)+'</div><div class="item" style="margin-top:12px"><b>Entrega</b><br>'+esc(shipping.name)+'<br>'+esc(shipping.address1)+(shipping.address2?'<br>'+esc(shipping.address2):'')+'<br>'+esc(shipping.postal_code)+' · '+esc(shipping.city)+' · '+esc(shipping.province)+'<br>'+esc(shipping.country)+'<br><small>'+esc(shipping.email)+' · '+esc(shipping.phone)+'</small></div><p class="muted" style="margin-top:12px">Estado: pago pendiente. Cuando conectemos la pasarela de pago, el correo de confirmación se enviará automáticamente tras confirmarse el cobro.</p>';
