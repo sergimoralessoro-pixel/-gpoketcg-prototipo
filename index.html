@@ -52,6 +52,8 @@ header{position:sticky;top:0;z-index:30;background:#06111df2;border-bottom:1px s
 @media(max-width:760px){.marketTools{grid-template-columns:1fr 1fr}.raffleTop,.homeCommunityGrid{grid-template-columns:1fr}.raffleMiniCard .productArt{height:135px}}
 
 .chatNewBadge{display:none;position:absolute;right:14px;bottom:68px;z-index:15;min-width:38px;height:38px;border:0;border-radius:999px;background:#e53935;color:#fff;font-weight:1000;box-shadow:0 8px 24px #0008;padding:0 10px}.chatNewBadge.show{display:block}.avatarModalGrid{display:grid;grid-template-columns:repeat(8,1fr);gap:8px;max-height:55vh;overflow:auto;padding:3px}.avatarModalGrid .avatarChoice{width:100%;aspect-ratio:1;height:auto;min-width:0}.stickerClose{width:100%;padding:7px;border:0;border-radius:9px;background:#10283a;color:#fff;font-weight:800}@media(max-width:760px){.avatarModalGrid{grid-template-columns:repeat(6,1fr)}}
+
+.profileAccordionHead{width:100%;display:flex;align-items:center;justify-content:space-between;gap:10px;background:none;border:0;color:#fff;padding:0;text-align:left;cursor:pointer}.profileAccordionHead h3{margin:0}.accordionRight{display:flex;align-items:center;gap:8px}.accordionChevron{font-size:18px;transition:transform .2s ease}.profileAccordion.open .accordionChevron{transform:rotate(180deg)}.profileAccordionBody{display:none;margin-top:10px;max-height:330px;overflow:auto}.profileAccordion.open .profileAccordionBody{display:block}
 </style>
 <!-- cache v49: filtro Gradeada / No gradeada -->
 </head>
@@ -163,11 +165,11 @@ header{position:sticky;top:0;z-index:30;background:#06111df2;border-bottom:1px s
 </div>
 
 <div class="profileBlocks">
-  <div class="card profileBlock"><div class="title"><h3>👥 Amigos</h3><span class="tag" id="profileFriendCount">0</span></div><div id="profileFriendsList" class="friendCardList"></div></div>
+  <div class="card profileBlock profileAccordion" id="friendsAccordion"><button class="profileAccordionHead" id="friendsAccordionBtn"><h3>👥 Amigos</h3><span class="accordionRight"><span class="tag" id="profileFriendCount">0</span><span class="accordionChevron">⌄</span></span></button><div class="profileAccordionBody" id="friendsAccordionBody"><div id="profileFriendsList" class="friendCardList"></div></div></div>
   <div class="card profileBlock"><div class="title"><h3>Solicitudes</h3><span class="tag" id="profileRequestCount">0</span></div><div id="profileFriendRequests" class="friendCardList"></div></div>
 </div>
 <div class="card" style="margin-top:12px"><div class="title"><h3 style="margin:0">🔎 Agregar amigo</h3><span class="muted" style="font-size:12px">Busca por nickname</span></div><div class="profileSearchWrap"><input id="friendSearchInput" placeholder="Escribe un nickname..."><button class="btn blue" id="friendSearchBtn">Buscar</button></div><div id="friendSearchResults" class="userSearchResults"></div></div>
-<div class="card" style="margin-top:12px"><div class="title"><h3 style="margin:0">💬 Conversaciones</h3><span class="tag" id="privateUnreadCount">0</span></div><div id="profileConversations" class="friendCardList"></div><div id="privateChatPanel" class="privatePanel"><div class="privateHead"><button class="miniArrow" id="minimizePrivateChat" title="Minimizar">⌄</button><div><b id="privateChatName">Conversación</b><br><small class="muted" id="privateChatMeta"></small></div><button class="btn dark" id="privateProfileBtn">Ver perfil</button></div><div id="privateChatBody" class="privateBody"></div><div class="privateComposer"><input id="privateCommunityInput" placeholder="Escribe un mensaje privado..."><button class="btn blue" id="privateCommunitySend">Enviar</button></div></div></div>
+<div class="card profileAccordion" id="conversationsAccordion" style="margin-top:12px"><button class="profileAccordionHead" id="conversationsAccordionBtn"><h3>💬 Conversaciones</h3><span class="accordionRight"><span class="tag" id="privateUnreadCount">0</span><span class="accordionChevron">⌄</span></span></button><div class="profileAccordionBody" id="conversationsAccordionBody"><div id="profileConversations" class="friendCardList"></div></div><div id="privateChatPanel" class="privatePanel"><div class="privateHead"><button class="miniArrow" id="minimizePrivateChat" title="Minimizar">⌄</button><div><b id="privateChatName">Conversación</b><br><small class="muted" id="privateChatMeta"></small></div><button class="btn dark" id="privateProfileBtn">Ver perfil</button></div><div id="privateChatBody" class="privateBody"></div><div class="privateComposer"><input id="privateCommunityInput" placeholder="Escribe un mensaje privado..."><button class="btn blue" id="privateCommunitySend">Enviar</button></div></div></div></div>
 <div class="card" style="margin-top:12px"><button class="albumLaunch" id="openAlbumBtn"><span class="albumIcon">🔴</span><span><b>Mi álbum digital</b><br><small class="muted">Cartas conseguidas en tienda, subastas y rifas</small></span></button></div>
 <div class="card" style="margin-top:12px"><div class="profileTabs"><button class="profileTab active" data-profile="profilePurchases">🛒 Compras</button><button class="profileTab" data-profile="profileAuctions">🔨 Subastas</button><button class="profileTab" data-profile="profileRaffles">🎟️ Rifas</button><button class="profileTab" data-profile="profileSales">🃏 Compraventa</button></div><div class="profilePane active" id="profilePurchases"><div id="profilePurchasesList"></div></div><div class="profilePane" id="profileAuctions"><div id="profileAuctionsList"></div></div><div class="profilePane" id="profileRaffles"><div id="profileRafflesList"></div></div><div class="profilePane" id="profileSales"><div id="profileSalesList"></div></div><div id="myOrders" style="display:none"></div></div>
 </section>
@@ -312,7 +314,7 @@ let communityChannel=null;
 let notifications=[];
 let notificationsChannel=null;
 let activeNotificationCategory=null;
-let communityMembers=[],friendships=[],directMessages=[],socialChannel=null,selectedMemberId=null,activeDmUserId=null,albumCards=[];let chatLastRenderedId=0,chatUnreadLive=0,chatFirstUnreadId=null,chatInitialized=false;
+let communityMembers=[],friendships=[],directMessages=[],socialChannel=null,selectedMemberId=null,activeDmUserId=null,albumCards=[];let friendsAccordionOpen=false,conversationsAccordionOpen=false;let chatLastRenderedId=0,chatUnreadLive=0,chatFirstUnreadId=null,chatInitialized=false;
 let selectedProduct=null,selectedAuctionWinner=null,wheelAngle=0,spinning=false,lastSpinSeen=null,pendingWinnerText='';let adminOrderFilter='all';
 function money(n){return Number(n).toLocaleString('es-ES',{minimumFractionDigits:2,maximumFractionDigits:2})+' €'}
 async function renderLiveStats(){
@@ -769,13 +771,20 @@ function renderAvatarPicker(active){
  box.innerHTML=defs.map(d=>'<button class="avatarChoice '+(active===d[0]?'active':'')+'" data-avatar="'+d[0]+'">'+d[1]+'</button>').join('');
  qa('.avatarChoice').forEach(b=>b.onclick=async()=>{const {error}=await sb.rpc('set_profile_avatar',{p_avatar_key:b.dataset.avatar});if(error)return toast(error.message||'No se pudo cambiar');closeModal('avatarModal');await setSessionFromUser(session.user);await loadSocial();toast('Foto de perfil actualizada')});
 }
+function syncProfileAccordions(){
+ const fa=q('#friendsAccordion'),ca=q('#conversationsAccordion');
+ if(fa)fa.classList.toggle('open',friendsAccordionOpen);
+ if(ca)ca.classList.toggle('open',conversationsAccordionOpen);
+}
+q('#friendsAccordionBtn').onclick=()=>{friendsAccordionOpen=!friendsAccordionOpen;syncProfileAccordions()};
+q('#conversationsAccordionBtn').onclick=()=>{conversationsAccordionOpen=!conversationsAccordionOpen;syncProfileAccordions()};
 function renderSocial(){
  const friendsBox=q('#profileFriendsList'),requests=q('#profileFriendRequests'),accepted=friendships.filter(f=>f.status==='accepted'),incoming=friendships.filter(f=>f.status==='pending'&&f.direction==='incoming');
  const fc=q('#profileFriendCount');if(fc)fc.textContent=accepted.length;
  const rc=q('#profileRequestCount');if(rc)rc.textContent=incoming.length;
  if(friendsBox){friendsBox.innerHTML=accepted.length?accepted.map(f=>{const m=memberById(f.other_user_id);return '<button class="friendCard friendPerson" data-user="'+f.other_user_id+'"><span class="avatarMini">'+avatarSymbol(m?.avatar_key||'none')+'</span><span class="personMeta"><b class="'+roleClass(f.other_role)+'">'+esc(f.other_username)+'</b><small>'+esc(f.other_role)+' · socio #'+esc(f.other_member_number||'—')+'</small></span></button>'}).join(''):'<p class="muted">Aún no tienes amigos en la comunidad.</p>';qa('.friendPerson').forEach(b=>b.onclick=()=>openMemberProfile(b.dataset.user))}
  if(requests){requests.innerHTML=incoming.length?incoming.map(f=>{const m=memberById(f.other_user_id);return '<div class="friendCard"><span class="avatarMini">'+avatarSymbol(m?.avatar_key||'none')+'</span><span class="personMeta"><b>'+esc(f.other_username)+'</b><small>Quiere agregarte como amigo</small></span><button class="btn blue acceptFriend" data-id="'+f.friendship_id+'">Aceptar</button><button class="btn dark rejectFriend" data-id="'+f.friendship_id+'">No</button></div>'}).join(''):'<p class="muted">No tienes solicitudes pendientes.</p>';qa('.acceptFriend').forEach(b=>b.onclick=async()=>{const {error}=await sb.rpc('respond_friend_request',{p_friendship_id:Number(b.dataset.id),p_accept:true});if(error)return toast(error.message);await loadSocial();toast('Amigo añadido')});qa('.rejectFriend').forEach(b=>b.onclick=async()=>{const {error}=await sb.rpc('respond_friend_request',{p_friendship_id:Number(b.dataset.id),p_accept:false});if(error)return toast(error.message);await loadSocial();toast('Solicitud rechazada')})}
- renderPrivateConversations();
+ renderPrivateConversations();syncProfileAccordions();
 }
 function otherDmUserId(m){return m.sender_id===session.id?m.recipient_id:m.sender_id}
 function renderPrivateConversations(){
@@ -788,7 +797,7 @@ function renderPrivateConversations(){
 }
 async function openPrivateConversation(uid){
  if(!uid||uid===session.id)return;
- activeDmUserId=uid;
+ activeDmUserId=uid;conversationsAccordionOpen=true;syncProfileAccordions();
  const m=memberById(uid);q('#privateChatName').textContent=m?.username||'Conversación';q('#privateChatMeta').textContent=m?((m.is_admin?'Admin':m.community_role)+' · socio #'+(m.member_number||'—')):'';
  q('#privateChatPanel').classList.add('open');
  await sb.from('direct_messages').update({read_at:new Date().toISOString()}).eq('sender_id',uid).eq('recipient_id',session.id).is('read_at',null);
@@ -804,7 +813,7 @@ function renderPrivateRoom(){
 }
 q('#privateCommunitySend').onclick=async()=>{const msg=q('#privateCommunityInput').value.trim();if(!msg||!activeDmUserId)return;const {error}=await sb.from('direct_messages').insert({sender_id:session.id,recipient_id:activeDmUserId,message:msg});if(error)return toast(error.message||'No se pudo enviar');q('#privateCommunityInput').value='';await loadSocial();renderPrivateRoom()};
 q('#privateCommunityInput').addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();q('#privateCommunitySend').click()}});
-q('#minimizePrivateChat').onclick=()=>{q('#privateChatPanel').classList.remove('open');activeDmUserId=null;renderPrivateConversations()};
+q('#minimizePrivateChat').onclick=()=>{q('#privateChatPanel').classList.remove('open');activeDmUserId=null;conversationsAccordionOpen=true;renderPrivateConversations();syncProfileAccordions()};
 q('#privateProfileBtn').onclick=()=>{if(activeDmUserId)openMemberProfile(activeDmUserId)};
 q('#friendSearchBtn').onclick=()=>searchCommunityUsers();
 q('#friendSearchInput').addEventListener('keydown',e=>{if(e.key==='Enter')searchCommunityUsers()});
