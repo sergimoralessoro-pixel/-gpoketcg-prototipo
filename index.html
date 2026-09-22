@@ -344,21 +344,23 @@ q('#votePollBtn').onclick=async()=>{if(!rafflePoll.id)return toast('No hay encue
 q('#createRafflePoll').onclick=async()=>{if(!isAdmin())return toast('Solo administrador');const title=q('#pollAdminTitle').value.trim(),price=Number(q('#pollAdminPrice').value),target=Number(q('#pollAdminTarget').value),editId=Number(q('#createRafflePoll').dataset.editId||0);if(!title||price<=0||target<=0)return toast('Completa carta, precio y personas necesarias');const photo=await fileData(q('#pollAdminPhoto'));let error;if(editId){const payload={title,price_per_slot:price,target_votes:Math.max(1,target),description:q('#pollAdminDesc').value.trim()};if(photo)payload.photo_url=photo;({error}=await sb.from('raffle_polls').update(payload).eq('id',editId))}else{({error}=await sb.from('raffle_polls').insert({title,price_per_slot:price,target_votes:Math.max(1,target),description:q('#pollAdminDesc').value.trim(),photo_url:photo||null,status:'open'}))}if(error)return toast(editId?'No se pudo editar la encuesta':'No se pudo publicar la encuesta');q('#pollAdminTitle').value='';q('#pollAdminPrice').value='';q('#pollAdminTarget').value='';q('#pollAdminDesc').value='';q('#pollAdminPhoto').value='';delete q('#createRafflePoll').dataset.editId;q('#createRafflePoll').textContent='Publicar encuesta';await loadRafflePoll();toast(editId?'Encuesta actualizada':'Encuesta publicada')};
 async function loadCommunityData(){
  if(!logged())return;
- const [chatRes,newsRes,eventRes,offerRes,msgRes,readRes]=await Promise.all([
+ const [chatRes,newsRes,eventRes,offerRes,msgRes,readRes,hideRes]=await Promise.all([
    sb.from('chat_messages').select('*').order('created_at',{ascending:true}).limit(300),
    sb.from('news').select('*').order('created_at',{ascending:false}),
    sb.from('events').select('*').order('created_at',{ascending:false}),
    sb.from('offers').select('*').order('created_at',{ascending:false}),
    sb.from('offer_messages').select('*').order('created_at',{ascending:true}),
-   sb.from('offer_message_reads').select('message_id').eq('user_id',session.id)
+   sb.from('offer_message_reads').select('message_id').eq('user_id',session.id),
+   sb.from('offer_conversation_hides').select('offer_id').eq('user_id',session.id)
  ]);
- if(chatRes.error||newsRes.error||eventRes.error||offerRes.error||msgRes.error){console.error(chatRes.error||newsRes.error||eventRes.error||offerRes.error||msgRes.error);return}
+ if(chatRes.error||newsRes.error||eventRes.error||offerRes.error||msgRes.error||hideRes.error){console.error(chatRes.error||newsRes.error||eventRes.error||offerRes.error||msgRes.error||hideRes.error);return}
  raffleChat=(chatRes.data||[]).filter(x=>x.channel==='raffle'&&(!raffle.id||x.raffle_id===raffle.id)).map(x=>({id:x.id,u:x.username,m:x.message,time:new Date(x.created_at).getTime()}));
  communityChat=(chatRes.data||[]).filter(x=>x.channel==='community').map(x=>({id:x.id,u:x.username,m:x.message,time:new Date(x.created_at).getTime()}));
  news=(newsRes.data||[]).map(x=>({id:x.id,title:x.title,date:x.label,text:x.body}));
  events=(eventRes.data||[]).map(x=>({id:x.id,title:x.title,date:x.event_label,text:x.body}));
- offers=(offerRes.data||[]).map(o=>({id:o.id,user_id:o.user_id,name:o.card_name,price:o.requested_price??'—',state:o.card_state,contact:o.contact,message:o.message,sender:o.sender_name,senderEmail:o.sender_email,status:o.status,created:new Date(o.created_at).getTime()}));
- privateMessages=(msgRes.data||[]).map(m=>({id:m.id,offer_id:m.offer_id,from_user_id:m.sender_user_id,fromName:m.sender_name,text:m.message,time:new Date(m.created_at).getTime()}));
+ const hiddenOfferIds=new Set((hideRes.data||[]).map(x=>Number(x.offer_id)));
+ offers=(offerRes.data||[]).filter(o=>!hiddenOfferIds.has(Number(o.id))).map(o=>({id:o.id,user_id:o.user_id,name:o.card_name,price:o.requested_price??'—',state:o.card_state,contact:o.contact,message:o.message,sender:o.sender_name,senderEmail:o.sender_email,status:o.status,created:new Date(o.created_at).getTime()}));
+ privateMessages=(msgRes.data||[]).filter(m=>!hiddenOfferIds.has(Number(m.offer_id))).map(m=>({id:m.id,offer_id:m.offer_id,from_user_id:m.sender_user_id,fromName:m.sender_name,text:m.message,time:new Date(m.created_at).getTime()}));
  messageReads=new Set((readRes.data||[]).map(r=>Number(r.message_id)));
  renderChats();renderCommunity();renderOffers();renderMessages();
 }
@@ -599,15 +601,14 @@ function conversationKey(o){return 'offer:'+o.id}
 function offerByThread(thread){if(!thread||!thread.startsWith('offer:'))return null;return offers.find(o=>Number(o.id)===Number(thread.split(':')[1]))||null}
 function messagesForOffer(id){return privateMessages.filter(m=>Number(m.offer_id)===Number(id)).sort((a,b)=>a.time-b.time)}
 async function deleteOfferConversation(id){
- if(!isAdmin())return toast('Solo el administrador puede eliminar conversaciones');
  const o=offers.find(x=>Number(x.id)===Number(id));
  if(!o)return;
- if(!confirm('¿Eliminar la conversación con '+(o.sender||'este usuario')+' sobre '+o.name+'?'))return;
- const {error}=await sb.rpc('admin_delete_offer_conversation',{p_offer_id:Number(id)});
- if(error)return toast(error.message||'No se pudo eliminar la conversación');
+ if(!confirm('¿Quitar esta conversación de tu bandeja? La otra persona seguirá viéndola hasta que la elimine de su perfil.'))return;
+ const {error}=await sb.rpc('hide_offer_conversation',{p_offer_id:Number(id)});
+ if(error)return toast(error.message||'No se pudo quitar la conversación');
  if(activeConversation==='offer:'+id)activeConversation=null;
  await loadCommunityData();
- toast('Conversación eliminada');
+ toast('Conversación eliminada de tu bandeja');
 }
 function renderOffers(){
  q('#adminOffersList').innerHTML=offers.length?offers.map((o,i)=>'<div class="adminItem"><div class="itemRow"><span><b>'+esc(o.name)+'</b><br><small>'+esc(o.sender||o.contact)+' · '+esc(o.price)+' € · '+esc(o.state)+' · '+esc(o.status)+'</small><br>'+esc(o.message)+'</span><span class="actions"><button class="btn blue openOffer" data-i="'+i+'">Abrir / responder</button><button class="trashBtn deleteOffer" data-id="'+o.id+'" title="Eliminar conversación" aria-label="Eliminar conversación">🗑️</button></span></div></div>').join(''):'<p class="muted">Sin ofertas.</p>';
@@ -659,7 +660,7 @@ function renderMessages(){
    qa('.chooseOffer').forEach(b=>b.onclick=async()=>{const o=offers[Number(b.dataset.i)];activeConversation=conversationKey(o);await markConversationRead(o.id);renderMessages();q('#privateReply').focus()});
    qa('.deleteInboxOffer').forEach(b=>b.onclick=()=>deleteOfferConversation(Number(b.dataset.id)))
  }else{offerTitle.style.display='none';offerBox.style.display='none'}
- q('#messageList').innerHTML=offers.length?offers.map(o=>{const msgs=messagesForOffer(o.id),last=msgs[msgs.length-1];return '<div class="item itemRow"><button class="threadBtn" data-id="'+o.id+'" style="flex:1;background:none;border:0;color:white;text-align:left;padding:0"><b>💬 '+esc(o.name)+'</b><br><small>'+(last?esc(last.text).slice(0,80):'Sin mensajes todavía')+'</small></button>'+(isAdmin()?'<button class="trashBtn deleteThread" data-id="'+o.id+'" title="Eliminar conversación" aria-label="Eliminar conversación">🗑️</button>':'')+'</div>'}).join(''):'<p class="muted">No hay conversaciones.</p>';
+ q('#messageList').innerHTML=offers.length?offers.map(o=>{const msgs=messagesForOffer(o.id),last=msgs[msgs.length-1];return '<div class="item itemRow"><button class="threadBtn" data-id="'+o.id+'" style="flex:1;background:none;border:0;color:white;text-align:left;padding:0"><b>💬 '+esc(o.name)+'</b><br><small>'+(last?esc(last.text).slice(0,80):'Sin mensajes todavía')+'</small></button><button class="trashBtn deleteThread" data-id="'+o.id+'" title="Eliminar de mi bandeja" aria-label="Eliminar de mi bandeja">🗑️</button></div>'}).join(''):'<p class="muted">No hay conversaciones.</p>';
  qa('.threadBtn').forEach(b=>b.onclick=async()=>{const id=Number(b.dataset.id);activeConversation='offer:'+id;await markConversationRead(id);renderMessages()});
  qa('.deleteThread').forEach(b=>b.onclick=()=>deleteOfferConversation(Number(b.dataset.id)));
  const off=offerByThread(activeConversation);
