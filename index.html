@@ -568,7 +568,7 @@ q('#checkoutBtn').onclick=async()=>{
   notes:q('#checkoutNotes').value.trim()
  };
  if(!shipping.name||!shipping.email||!shipping.phone||!shipping.address1||!shipping.postal_code||!shipping.city||!shipping.province||!shipping.country)return toast('Completa todos los datos de entrega obligatorios');
- if(!/^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/.test(shipping.email))return toast('Introduce un correo válido');
+ if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(shipping.email))return toast('Introduce un correo válido');
  const purchased=cart.map(x=>({...x}));
  const total=purchased.reduce((s,x)=>s+x.price*x.qty,0);
  const btn=q('#checkoutBtn');btn.disabled=true;btn.textContent='Creando pedido...';
