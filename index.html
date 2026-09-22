@@ -283,7 +283,22 @@ function subscribeCommunity(){
    .subscribe();
 }
 function compressDataUrl(src,maxW=900,maxH=900,quality=.78){return new Promise(resolve=>{if(!src)return resolve('');const img=new Image();img.onload=()=>{let w=img.naturalWidth,h=img.naturalHeight,scale=Math.min(1,maxW/w,maxH/h);w=Math.max(1,Math.round(w*scale));h=Math.max(1,Math.round(h*scale));const cv=document.createElement('canvas');cv.width=w;cv.height=h;cv.getContext('2d').drawImage(img,0,0,w,h);resolve(cv.toDataURL('image/jpeg',quality))};img.onerror=()=>resolve(src);img.src=src})}
-function fileData(input){return new Promise(resolve=>{const file=input.files&&input.files[0];if(!file)return resolve('');const r=new FileReader();r.onload=async()=>resolve(await compressDataUrl(r.result));r.onerror=()=>resolve('');r.readAsDataURL(file)})}
+async function fileData(input){
+ const file=input.files&&input.files[0];if(!file)return '';
+ if(!isAdmin())throw new Error('Solo administrador');
+ if(file.size>5*1024*1024){toast('La imagen supera 5 MB');return ''}
+ const raw=await new Promise(resolve=>{const r=new FileReader();r.onload=()=>resolve(r.result);r.onerror=()=>resolve('');r.readAsDataURL(file)});
+ if(!raw)return '';
+ const compressed=await compressDataUrl(raw,1200,1200,.82);
+ const blob=await (await fetch(compressed)).blob();
+ const ext=blob.type==='image/png'?'png':blob.type==='image/webp'?'webp':'jpg';
+ const safe=(input.id||'image').replace(/[^a-zA-Z0-9_-]/g,'');
+ const path=(session?.id||'admin')+'/'+Date.now()+'-'+safe+'.'+ext;
+ const {error}=await sb.storage.from('gpoketcg-media').upload(path,blob,{contentType:blob.type,upsert:false});
+ if(error){console.error(error);toast('No se pudo subir la imagen');return ''}
+ const {data}=sb.storage.from('gpoketcg-media').getPublicUrl(path);
+ return data?.publicUrl||'';
+}
 async function migrateHeavyPhotos(){let changed=false;for(const p of products){if(p.photo&&p.photo.length>300000){p.photo=await compressDataUrl(p.photo);changed=true}}if(changed)save('gp_products',products);changed=false;for(const a of auctions){if(a.photo&&a.photo.length>300000){a.photo=await compressDataUrl(a.photo);changed=true}}if(changed)save('gp_auctions',auctions);if(raffle.photo&&raffle.photo.length>300000){raffle.photo=await compressDataUrl(raffle.photo);save('gp_raffle',raffle)}}
 function esc(s){return String(s??'').replace(/[&<>\"]/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','\"':'&quot;'}[m]))}
 function isAdmin(){return session&&session.role==='admin'}
@@ -423,7 +438,6 @@ function renderAll(){renderAuth();renderLiveStats();renderProfile();renderProduc
  const {data:{session:authSession}}=await sb.auth.getSession();
  if(authSession?.user){await setSessionFromUser(authSession.user);setupPresence();subscribeAuctions();subscribeProducts();subscribeRaffle();subscribeRafflePoll();subscribeCommunity();await Promise.all([loadAuctions(),loadProducts(),loadOrderCount(),loadRaffle(),loadRafflePoll(),loadCommunityData()])}
  renderAll();
- migrateHeavyPhotos().then(()=>{renderProducts();renderRaffle()});
  sb.auth.onAuthStateChange(async(event,newSession)=>{if(event==='PASSWORD_RECOVERY'){openModal('resetPasswordModal');return}if(newSession?.user){await setSessionFromUser(newSession.user);setupPresence();subscribeAuctions();subscribeProducts();subscribeRaffle();subscribeRafflePoll();subscribeCommunity();await Promise.all([loadAuctions(),loadProducts(),loadOrderCount(),loadRaffle(),loadRafflePoll(),loadCommunityData()]);renderAll()}else if(event==='SIGNED_OUT'){session=null;renderAll()}});
 q('#saveNewPassword').onclick=async()=>{const p1=q('#newPassword').value,p2=q('#newPassword2').value;if(!p1||!p2)return toast('Completa los dos campos');if(p1!==p2)return toast('Las contraseñas no coinciden');if(p1.length<8||!/[A-Z]/.test(p1)||!/[a-z]/.test(p1)||!/[0-9]/.test(p1))return toast('La contraseña debe tener 8+ caracteres, mayúscula, minúscula y número');const {error}=await sb.auth.updateUser({password:p1});if(error)return toast('No se pudo cambiar la contraseña');closeModal('resetPasswordModal');q('#newPassword').value='';q('#newPassword2').value='';toast('Contraseña actualizada correctamente')};
 })();
