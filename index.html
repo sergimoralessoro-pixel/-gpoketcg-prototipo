@@ -189,7 +189,7 @@ let privateMessages=[];
 let messageReads=new Set();
 let activeConversation=null;
 let communityChannel=null;
-let selectedProduct=null,wheelAngle=0,spinning=false,lastSpinSeen=null;
+let selectedProduct=null,wheelAngle=0,spinning=false,lastSpinSeen=null,pendingWinnerText='';
 function money(n){return Number(n).toLocaleString('es-ES',{minimumFractionDigits:2,maximumFractionDigits:2})+' €'}
 async function renderLiveStats(){
  const r=q('#registeredCount'),o=q('#onlineCount');
@@ -451,7 +451,7 @@ function renderRaffle(){
  qa('.delPart').forEach(b=>b.onclick=async()=>{if(!isAdmin())return;const {error}=await sb.from('raffle_entries').delete().eq('id',Number(b.dataset.id));if(error)return toast('No se pudo eliminar');await loadRaffle()});
  q('#rTitle').value=raffle.title||'';q('#rPrice').value=raffle.price||'';q('#rSlots').value=raffle.slots||'';q('#rDesc').value=raffle.desc||'';
  const rb=q('#raffleImageBox');rb.innerHTML=raffle.photo?'<img src="'+raffle.photo+'" alt="">':'🃏';
- q('#winnerText').textContent=raffle.winner?'🏆 Ganador: '+raffle.winner+(raffle.winnerTicket?' · Nº '+raffle.winnerTicket:''):'';
+ if(!spinning)q('#winnerText').textContent=raffle.winner?'🏆 Ganador: '+raffle.winner+(raffle.winnerTicket?' · Nº '+raffle.winnerTicket:''):'';
  q('#buyRaffleBtn').disabled=!raffle.id||raffle.status!=='active';q('#buyRaffleBtn').textContent=raffle.status==='active'?'Comprar números':raffle.status==='payment_processing'?'Rifa completa · verificando pagos':raffle.status==='ready_to_draw'?'Pagos confirmados · esperando sorteo':'Rifa cerrada';
  const adminR=q('#adminCurrentRaffle');
  if(adminR){
@@ -469,16 +469,31 @@ function animateLiveWheel(){
  if(spinning)return;
  spinning=true;
  q('#winnerText').textContent='🎡 Sorteo en directo...';
- const start=performance.now(),duration=5200;
+ const entries=paidEntries();
+ const n=entries.length||1;
+ let winnerIndex=-1;
+ if(raffle.winnerTicket)winnerIndex=Math.max(0,Math.min(n-1,Number(raffle.winnerTicket)-1));
+ const targetAngle=winnerIndex>=0 ? (Math.PI*1.5)-((winnerIndex+.5)*2*Math.PI/n) : wheelAngle;
+ const startAngle=wheelAngle;
+ const extraTurns=8*2*Math.PI;
+ const finalAngle=targetAngle+extraTurns;
+ const start=performance.now(),duration=6200;
  function frame(now){
    const t=Math.min(1,(now-start)/duration);
-   wheelAngle+=((1-t)*0.42+0.035);
+   const eased=1-Math.pow(1-t,4);
+   wheelAngle=startAngle+(finalAngle-startAngle)*eased;
    drawWheel();
-   if(t<1){requestAnimationFrame(frame)}else{spinning=false;loadRaffle()}
+   if(t<1){requestAnimationFrame(frame)}
+   else{
+     wheelAngle=targetAngle;
+     drawWheel();
+     spinning=false;
+     q('#winnerText').textContent=raffle.winner?'🏆 Ganador: '+raffle.winner+(raffle.winnerTicket?' · Nº '+raffle.winnerTicket:''):'';
+   }
  }
  requestAnimationFrame(frame);
 }
-q('#spinBtn').onclick=async()=>{if(!isAdmin())return toast('Solo el administrador puede girar');if(!raffle.id||spinning)return;const e=paidEntries();if(!e.length)return toast('No hay participantes pagados');const {data,error}=await sb.rpc('draw_raffle_winner',{p_raffle_id:raffle.id});if(error)return toast(error.message);await loadRaffle();if(data&&data[0])toast('Sorteo iniciado · la ruleta está girando en directo')};
+q('#spinBtn').onclick=async()=>{if(!isAdmin())return toast('Solo el administrador puede girar');if(!raffle.id||spinning)return;const e=paidEntries();if(!e.length)return toast('No hay participantes pagados');q('#winnerText').textContent='🎡 Sorteo en directo...';const {data,error}=await sb.rpc('draw_raffle_winner',{p_raffle_id:raffle.id});if(error)return toast(error.message);await loadRaffle();if(data&&data[0])toast('Sorteo iniciado')};
 q('#saveRaffle').onclick=async()=>{try{if(!isAdmin())return toast('Solo administrador');const title=q('#rTitle').value.trim(),price=Number(q('#rPrice').value),slots=Number(q('#rSlots').value);if(!title||price<=0||slots<=0)return toast('Completa carta, precio por número y plazas');const photo=await fileData(q('#rPhoto'));let error;if(raffle.id){const payload={title,price_per_slot:price,total_slots:Math.max(1,slots),description:q('#rDesc').value.trim()};if(photo)payload.photo_url=photo;({error}=await sb.from('raffles').update(payload).eq('id',raffle.id))}else{({error}=await sb.from('raffles').insert({title,price_per_slot:price,total_slots:Math.max(1,slots),description:q('#rDesc').value.trim(),photo_url:photo||null,status:'active'}))}if(error)return toast('No se pudo guardar la rifa');q('#rPhoto').value='';await loadRaffle();toast(raffle.id?'Rifa actualizada correctamente':'Rifa creada correctamente')}catch(e){console.error(e);toast('No se pudo guardar la rifa')}};
 q('#addParticipant').onclick=async()=>{if(!isAdmin())return toast('Solo administrador');if(!raffle.id)return toast('No hay rifa');const alias=q('#aAlias').value.trim();if(!alias)return toast('Pon un alias');const qty=Math.max(1,Number(q('#aQty').value)||1),status=q('#aStatus').value==='Pagado'?'paid':'pending';const {error}=await sb.from('raffle_entries').insert({raffle_id:raffle.id,user_id:null,alias,quantity:qty,status});if(error)return toast('No se pudo añadir participante');q('#aAlias').value='';await loadRaffle()};
 async function loadChatsOnly(){
