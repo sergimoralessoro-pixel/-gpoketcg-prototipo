@@ -120,7 +120,23 @@ header{position:sticky;top:0;z-index:30;background:#06111df2;border-bottom:1px s
 </div></div>
 
 <div class="modal" id="productModal"><div class="box"><div class="productArt">🃏</div><h2 id="detailName"></h2><div class="price" id="detailPrice"></div><p><b>Estado:</b> <span id="detailState"></span></p><p><b>Stock:</b> <span id="detailStock"></span></p><p><b>Detalles:</b></p><p class="muted" id="detailDesc"></p><div class="actions"><button class="btn" id="addToCart">Añadir al carrito</button><button class="btn dark" data-close="productModal">Cerrar</button></div></div></div>
-<div class="modal" id="cartModal"><div class="box"><h2>Carrito</h2><div id="cartRows"></div><div class="price" id="cartTotal"></div><div class="actions" style="margin-top:12px"><button class="btn" id="checkoutBtn">Crear pedido</button><button class="btn dark" data-close="cartModal">Cerrar</button></div></div></div>
+<div class="modal" id="cartModal"><div class="box"><h2>Carrito</h2><div id="cartRows"></div><div class="price" id="cartTotal"></div>
+<h3 style="margin:18px 0 8px">Datos de entrega</h3>
+<div class="formgrid">
+<input id="checkoutName" autocomplete="name" placeholder="Nombre y apellidos">
+<input id="checkoutEmail" type="email" autocomplete="email" placeholder="Correo electrónico">
+<input id="checkoutPhone" type="tel" autocomplete="tel" placeholder="Teléfono">
+<input id="checkoutAddress1" autocomplete="address-line1" placeholder="Dirección (calle, número, piso)">
+<input id="checkoutAddress2" autocomplete="address-line2" placeholder="Información adicional (opcional)">
+<input id="checkoutPostal" autocomplete="postal-code" placeholder="Código postal">
+<input id="checkoutCity" autocomplete="address-level2" placeholder="Ciudad / localidad">
+<input id="checkoutProvince" autocomplete="address-level1" placeholder="Provincia">
+<input id="checkoutCountry" autocomplete="country-name" value="España" placeholder="País">
+<textarea id="checkoutNotes" placeholder="Notas para la entrega (opcional)"></textarea>
+</div>
+<p class="muted" style="font-size:12px;margin:10px 0 0">Usaremos estos datos únicamente para gestionar y entregar tu pedido.</p>
+<div class="actions" style="margin-top:12px"><button class="btn" id="checkoutBtn">Continuar con el pedido</button><button class="btn dark" data-close="cartModal">Cerrar</button></div></div></div>
+<div class="modal" id="orderReceiptModal"><div class="box"><h2>Pedido recibido</h2><div id="orderReceipt"></div><div class="actions" style="margin-top:12px"><button class="btn dark" data-close="orderReceiptModal">Cerrar</button></div></div></div>
 <div class="modal" id="raffleModal"><div class="box"><h2>Comprar números</h2><input id="raffleBuyer" placeholder="Usuario"><input id="raffleQty" type="number" value="1" min="1" max="20" style="margin-top:8px"><div class="actions" style="margin-top:10px"><button class="btn" id="confirmRaffle" >Comprar números</button><button class="btn dark" data-close="raffleModal">Cancelar</button></div></div></div>
 <div class="modal" id="resetPasswordModal"><div class="box"><h2>Nueva contraseña</h2><p class="muted">Introduce una contraseña nueva para tu cuenta.</p><input id="newPassword" type="password" placeholder="Nueva contraseña" autocomplete="new-password"><input id="newPassword2" type="password" placeholder="Repite la contraseña" autocomplete="new-password" style="margin-top:8px"><div class="actions" style="margin-top:10px"><button class="btn blue" id="saveNewPassword">Guardar contraseña</button></div></div></div>
 <div class="toast" id="toast"></div>
@@ -334,7 +350,34 @@ function renderProducts(){
 }
 q('#addProduct').onclick=async()=>{if(!isAdmin())return toast('Solo administrador');const name=q('#pName').value.trim(),price=Number(q('#pPrice').value);if(!name||!price)return toast('Completa nombre y precio');const photo=await fileData(q('#pPhoto'));const {error}=await sb.from('products').insert({name,price,state:q('#pState').value.trim()||'Near Mint',stock:Number(q('#pStock').value)||1,description:q('#pDesc').value.trim(),photo_url:photo||null,active:true});if(error)return toast('No se pudo añadir el producto');q('#pName').value='';q('#pPrice').value='';q('#pDesc').value='';q('#pPhoto').value='';await loadProducts();toast('Producto añadido')};
 function renderCart(){q('#cartCount').textContent=cart.reduce((s,x)=>s+x.qty,0);q('#cartRows').innerHTML=cart.length?cart.map((x,i)=>'<div class="item itemRow"><span>'+x.name+' × '+x.qty+'</span><span>'+money(x.price*x.qty)+' <button class="btn dark removeCart" data-i="'+i+'">Quitar</button></span></div>').join(''):'<p class="muted">Carrito vacío.</p>';q('#cartTotal').textContent='Total: '+money(cart.reduce((s,x)=>s+x.price*x.qty,0));qa('.removeCart').forEach(b=>b.onclick=()=>{cart.splice(Number(b.dataset.i),1);save('gp_cart',cart);renderCart()})}
-q('#cartBtn').onclick=()=>{renderCart();openModal('cartModal')};q('#addToCart').onclick=()=>{if(!selectedProduct)return;if(selectedProduct.stock<=0)return toast('Producto sin stock');const x=cart.find(c=>c.id===selectedProduct.id);if(x){if(x.qty>=selectedProduct.stock)return toast('No queda más stock');x.qty++}else cart.push({id:selectedProduct.id,name:selectedProduct.name,price:selectedProduct.price,qty:1});save('gp_cart',cart);renderCart();closeModal('productModal');toast('Añadido al carrito')};q('#checkoutBtn').onclick=async()=>{if(!cart.length)return toast('Carrito vacío');const btn=q('#checkoutBtn');btn.disabled=true;const {data,error}=await sb.rpc('create_order',{p_items:cart.map(x=>({id:x.id,qty:x.qty}))});btn.disabled=false;if(error)return toast(error.message.includes('Stock insuficiente')?'No queda suficiente stock de uno de los productos':'No se pudo crear el pedido');cart=[];save('gp_cart',cart);renderCart();await loadProducts();await loadOrderCount();closeModal('cartModal');toast('Pedido #'+data+' creado. Pago pendiente')};
+q('#cartBtn').onclick=()=>{renderCart();if(session){q('#checkoutName').value=q('#checkoutName').value||session.name||'';q('#checkoutEmail').value=q('#checkoutEmail').value||session.email||''}openModal('cartModal')};q('#addToCart').onclick=()=>{if(!selectedProduct)return;if(selectedProduct.stock<=0)return toast('Producto sin stock');const x=cart.find(c=>c.id===selectedProduct.id);if(x){if(x.qty>=selectedProduct.stock)return toast('No queda más stock');x.qty++}else cart.push({id:selectedProduct.id,name:selectedProduct.name,price:selectedProduct.price,qty:1});save('gp_cart',cart);renderCart();closeModal('productModal');toast('Añadido al carrito')};
+q('#checkoutBtn').onclick=async()=>{
+ if(!cart.length)return toast('Carrito vacío');
+ const shipping={
+  name:q('#checkoutName').value.trim(),
+  email:q('#checkoutEmail').value.trim().toLowerCase(),
+  phone:q('#checkoutPhone').value.trim(),
+  address1:q('#checkoutAddress1').value.trim(),
+  address2:q('#checkoutAddress2').value.trim(),
+  postal_code:q('#checkoutPostal').value.trim(),
+  city:q('#checkoutCity').value.trim(),
+  province:q('#checkoutProvince').value.trim(),
+  country:q('#checkoutCountry').value.trim()||'España',
+  notes:q('#checkoutNotes').value.trim()
+ };
+ if(!shipping.name||!shipping.email||!shipping.phone||!shipping.address1||!shipping.postal_code||!shipping.city||!shipping.province||!shipping.country)return toast('Completa todos los datos de entrega obligatorios');
+ if(!/^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/.test(shipping.email))return toast('Introduce un correo válido');
+ const purchased=cart.map(x=>({...x}));
+ const total=purchased.reduce((s,x)=>s+x.price*x.qty,0);
+ const btn=q('#checkoutBtn');btn.disabled=true;btn.textContent='Creando pedido...';
+ const {data,error}=await sb.rpc('create_order',{p_items:purchased.map(x=>({id:x.id,qty:x.qty})),p_shipping:shipping});
+ btn.disabled=false;btn.textContent='Continuar con el pedido';
+ if(error)return toast(error.message.includes('Stock insuficiente')?'No queda suficiente stock de uno de los productos':error.message.includes('Faltan datos')?'Faltan datos de entrega':'No se pudo crear el pedido');
+ const {data:order}=await sb.from('orders').select('id,receipt_number,created_at,status').eq('id',data).single();
+ cart=[];save('gp_cart',cart);renderCart();await loadProducts();await loadOrderCount();closeModal('cartModal');
+ q('#orderReceipt').innerHTML='<p>Gracias por confiar en <b>GPokeTCG</b>.</p><p class="muted">Hemos recibido tu pedido y estos son sus datos:</p><div class="item"><b>Recibo '+esc(order?.receipt_number||('GP-'+data))+'</b><br><small>Pedido #'+data+' · '+new Date(order?.created_at||Date.now()).toLocaleString('es-ES')+'</small></div><div style="margin-top:10px">'+purchased.map(x=>'<div class="itemRow"><span>'+esc(x.name)+' × '+x.qty+'</span><b>'+money(x.price*x.qty)+'</b></div>').join('')+'</div><div class="price" style="margin-top:12px">Total: '+money(total)+'</div><div class="item" style="margin-top:12px"><b>Entrega</b><br>'+esc(shipping.name)+'<br>'+esc(shipping.address1)+(shipping.address2?'<br>'+esc(shipping.address2):'')+'<br>'+esc(shipping.postal_code)+' · '+esc(shipping.city)+' · '+esc(shipping.province)+'<br>'+esc(shipping.country)+'<br><small>'+esc(shipping.email)+' · '+esc(shipping.phone)+'</small></div><p class="muted" style="margin-top:12px">Estado: pago pendiente. Cuando conectemos la pasarela de pago, el correo de confirmación se enviará automáticamente tras confirmarse el cobro.</p>';
+ openModal('orderReceiptModal');toast('Pedido #'+data+' creado');
+};
 function auctionLeft(a){return Math.max(0,new Date(a.endAt).getTime()-Date.now())}
 function formatCountdown(ms){const s=Math.max(0,Math.floor(ms/1000)),h=Math.floor(s/3600),m=Math.floor((s%3600)/60),sec=s%60;return String(h).padStart(2,'0')+':'+String(m).padStart(2,'0')+':'+String(sec).padStart(2,'0')}
 function refreshAuctionClocks(){let rerender=false;qa('.auctionClock').forEach(el=>{const a=auctions.find(x=>x.id===Number(el.dataset.id));if(!a)return;const left=auctionLeft(a);el.textContent=formatCountdown(left);if(left<=0)rerender=true});if(rerender)renderAuctions()}
