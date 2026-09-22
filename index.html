@@ -150,7 +150,13 @@ const load=(k,f)=>{try{const v=JSON.parse(localStorage.getItem(k));return v==nul
 const SUPABASE_URL='https://pekinkmbiyoihniaywag.supabase.co';
 const APP_URL='https://sergimoralessoro-pixel.github.io/-gpoketcg-prototipo/';
 const SUPABASE_KEY='sb_publishable_2A6zQlBjD77uSIBY-dHDiw_HORqsDSu';
-const sb=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
+const sb=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY,{
+ auth:{
+   persistSession:true,
+   autoRefreshToken:true,
+   detectSessionInUrl:true
+ }
+});
 const ADMIN_EMAILS=['sergimoralessoro@gmail.com','gpoketcg@gmail.com'];
 let session=null;
 let accounts=[];
