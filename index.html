@@ -654,8 +654,8 @@ async function loadChatsOnly(){
  if(!logged())return;
  const {data,error}=await sb.from('chat_messages').select('*').order('created_at',{ascending:true}).limit(500);
  if(error){console.error(error);return}
- raffleChat=(data||[]).filter(x=>x.channel==='raffle'&&(!raffle.id||Number(x.raffle_id)===Number(raffle.id))).map(x=>({id:x.id,uid:x.user_id,u:x.username,m:x.message,role:x.display_role||'Entrenador',time:new Date(x.created_at).getTime()}));
- communityChat=(data||[]).filter(x=>x.channel==='community').map(x=>({id:x.id,uid:x.user_id,u:x.username,m:x.message,role:x.display_role||'Entrenador',time:new Date(x.created_at).getTime()}));
+ raffleChat=(data||[]).filter(x=>x.channel==='raffle'&&(!raffle.id||Number(x.raffle_id)===Number(raffle.id))).map(x=>({id:x.id,uid:x.user_id,u:x.username,m:x.message,role:x.display_role||'Entrenador',attachment_url:x.attachment_url||'',attachment_type:x.attachment_type||'',attachment_name:x.attachment_name||'',sticker_key:x.sticker_key||'',time:new Date(x.created_at).getTime()}));
+ communityChat=(data||[]).filter(x=>x.channel==='community').map(x=>({id:x.id,uid:x.user_id,u:x.username,m:x.message,role:x.display_role||'Entrenador',attachment_url:x.attachment_url||'',attachment_type:x.attachment_type||'',attachment_name:x.attachment_name||'',sticker_key:x.sticker_key||'',time:new Date(x.created_at).getTime()}));
  renderChats();
 }
 function roleClass(role){return 'role-'+String(role||'Entrenador').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().replace(/[^a-z]/g,'')}
@@ -809,7 +809,7 @@ function renderNotifications(){
  title.textContent=(def?def.icon+' '+def.label:'Notificaciones');
  const filtered=notifications.filter(n=>notificationCategory(n)===activeNotificationCategory);
  box.innerHTML=filtered.length?filtered.map(n=>'<div class="noticeRow"><button class="noticeCard '+(!n.is_read?'unseen':'')+'" data-id="'+n.id+'"><b>'+esc(n.title)+'</b><br><span>'+esc(n.body)+'</span><br><small>'+new Date(n.created_at).toLocaleString('es-ES')+'</small></button><button class="trashBtn deleteNotification" data-id="'+n.id+'" title="Eliminar notificación" aria-label="Eliminar notificación">🗑️</button></div>').join(''):(activeNotificationCategory==='compraventa'?'<p class="muted">Aquí tienes tus conversaciones de compraventa.</p>':'<p class="muted">No hay notificaciones en este apartado.</p>');
- qa('.noticeCard').forEach(b=>b.onclick=async()=>{const id=Number(b.dataset.id),n=notifications.find(x=>Number(x.id)===id);await sb.rpc('mark_notification_read',{p_notification_id:id});await loadNotifications();if(n&&notificationCategory(n)==='social')go('chat')});
+ qa('.noticeCard').forEach(b=>b.onclick=async()=>{const id=Number(b.dataset.id),n=notifications.find(x=>Number(x.id)===id);await sb.rpc('mark_notification_read',{p_notification_id:id});await loadNotifications();if(n&&notificationCategory(n)==='social')go('perfil')});
  qa('.deleteNotification').forEach(b=>b.onclick=async()=>{const {error}=await sb.rpc('delete_own_notification',{p_notification_id:Number(b.dataset.id)});if(error)return toast('No se pudo eliminar');await loadNotifications();toast('Notificación eliminada')});
  panel.style.display=activeNotificationCategory==='compraventa'?'block':'none';
 }
