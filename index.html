@@ -275,6 +275,11 @@ document.addEventListener('DOMContentLoaded',function(){
 const q=s=>document.querySelector(s), qa=s=>Array.from(document.querySelectorAll(s));
 const save=(k,v)=>{try{localStorage.setItem(k,JSON.stringify(v));return true}catch(e){console.error(e);alert('No se pudo guardar. He reducido las fotos para evitar que el almacenamiento de la demo se llene. Prueba de nuevo.');return false}};
 const load=(k,f)=>{try{const v=JSON.parse(localStorage.getItem(k));return v==null?f:v}catch(e){return f}};
+const rawAuthUrl=location.href;
+const rawHash=new URLSearchParams(location.hash.replace(/^#/,''));
+const rawSearch=new URLSearchParams(location.search);
+if(rawSearch.get('recovery')==='1'||rawHash.get('type')==='recovery'||rawAuthUrl.includes('type=recovery')) sessionStorage.setItem('gp_recovery_mode','1');
+const recoveryMode=()=>sessionStorage.getItem('gp_recovery_mode')==='1';
 const SUPABASE_URL='https://pekinkmbiyoihniaywag.supabase.co';
 const APP_URL='https://sergimoralessoro-pixel.github.io/-gpoketcg-prototipo/';
 const SUPABASE_KEY='sb_publishable_2A6zQlBjD77uSIBY-dHDiw_HORqsDSu';
@@ -520,7 +525,8 @@ async function setSessionFromUser(user){
  if(p){name=p.username||name;if(p.role==='admin')role='admin'}
  session={user,id:user.id,name,email:user.email,role,memberNumber:p?.member_number||null,communityRole:p?.community_role||'Entrenador'};
 }
-function renderAuth(){q('#authGate').classList.toggle('open',!logged());q('#adminBtn').style.display=isAdmin()?'inline-block':'none';q('#drawerAdmin').style.display=isAdmin()?'block':'none';q('#spinBtn').style.display=isAdmin()?'inline-block':'none';q('#spinNote').style.display=isAdmin()?'none':'block';q('#roleText').textContent=!logged()?'Invitado':(isAdmin()?'Administrador':session.name)}
+function showRecoveryUI(){q('#authGate').classList.remove('open');openModal('resetPasswordModal')}
+function renderAuth(){q('#authGate').classList.toggle('open',!logged()&&!recoveryMode());q('#adminBtn').style.display=isAdmin()?'inline-block':'none';q('#drawerAdmin').style.display=isAdmin()?'block':'none';q('#spinBtn').style.display=isAdmin()?'inline-block':'none';q('#spinNote').style.display=isAdmin()?'none':'block';q('#roleText').textContent=!logged()?'Invitado':(isAdmin()?'Administrador':session.name)}
 function avatarSymbol(k){return ({none:'👤',ball:'🔴',electric:'⚡',fire:'🔥',water:'💧',leaf:'🍃',dragon:'🐉',trainer:'🧢',star:'⭐',fox:'🦊',cat:'🐱',dog:'🐶',panda:'🐼',lion:'🦁',wolf:'🐺',owl:'🦉',frog:'🐸',shark:'🦈',bear:'🐻',ghost:'👻',robot:'🤖',crown:'👑',rocket:'🚀',planet:'🪐',moon:'🌙',sun:'☀️',gem:'💎',shield:'🛡️',controller:'🎮',skull:'💀',alien:'👽',unicorn:'🦄',monkey:'🐵',tiger:'🐯',koala:'🐨',penguin:'🐧',eagle:'🦅',snake:'🐍',octopus:'🐙',butterfly:'🦋',bee:'🐝',dino:'🦖',whale:'🐋',turtle:'🐢',bat:'🦇',spider:'🕷️',ninja:'🥷',wizard:'🧙',heart:'❤️',bolt:'⚡',target:'🎯',dice:'🎲',music:'🎵',camera:'📸',sword:'⚔️',anchor:'⚓',clover:'🍀',snow:'❄️',flameface:'🤬'})[k]||'👤'}
 function renderProfile(){q('#profileName').textContent=session?session.name:'Invitado';q('#profileEmail').textContent=session?session.email:'';const member=q('#profileMember');if(member)member.textContent=session?.memberNumber?'Socio #'+session.memberNumber:'Socio —';const rank=isAdmin()?'Admin':(session?.communityRole||'Entrenador');q('#profileRole').textContent=rank;q('#profileRoleBig').textContent=rank;const me=communityMembers.find(m=>m.user_id===session?.id),fc=Number(me?.friend_count||0);const ft=q('#profileFriendsText');if(ft)ft.textContent='👥 '+fc+' '+(fc===1?'amigo':'amigos');const av=q('#profileAvatar');if(av)av.textContent=avatarSymbol(me?.avatar_key||'none');renderProfileHistory();renderSocial();renderAlbum()}
 function productCardHtml(p){
@@ -1022,12 +1028,24 @@ window.addEventListener('beforeunload',()=>{if(logged())sb.rpc('go_offline')});
 qa('[data-page],[data-go]').forEach(b=>b.addEventListener('click',()=>{if(logged())setTimeout(refreshAllLiveData,50)}));
 (async function boot(){
  const {data:{session:authSession}}=await sb.auth.getSession();
- if(authSession?.user){await setSessionFromUser(authSession.user);await setupPresence();subscribeAuctions();subscribeProducts();subscribeRaffle();subscribeRafflePoll();subscribeCommunity();subscribeNotifications();subscribeSocial();startLiveFallback();await Promise.all([loadAuctions(),loadProducts(),loadOrders(),loadRaffle(),loadRafflePoll(),loadCommunityData(),loadNotifications(),loadSocial(),loadAlbum(),renderLiveStats()])}
- renderAll();
- const recoveryRequested=new URLSearchParams(location.search).get('recovery')==='1'||location.hash.includes('type=recovery');
- if(recoveryRequested&&authSession?.user){q('#authGate').classList.remove('open');setTimeout(()=>openModal('resetPasswordModal'),100)}
- sb.auth.onAuthStateChange(async(event,newSession)=>{if(event==='PASSWORD_RECOVERY'){q('#authGate').classList.remove('open');if(newSession?.user)await setSessionFromUser(newSession.user);openModal('resetPasswordModal');return}if(newSession?.user){await setSessionFromUser(newSession.user);await setupPresence();subscribeAuctions();subscribeProducts();subscribeRaffle();subscribeRafflePoll();subscribeCommunity();subscribeNotifications();subscribeSocial();startLiveFallback();await Promise.all([loadAuctions(),loadProducts(),loadOrders(),loadRaffle(),loadRafflePoll(),loadCommunityData(),loadNotifications(),loadSocial(),loadAlbum(),renderLiveStats()]);renderAll()}else if(event==='SIGNED_OUT'){session=null;if(livePollTimer)clearInterval(livePollTimer);if(heartbeatTimer)clearInterval(heartbeatTimer);renderAll()}});
-q('#saveNewPassword').onclick=async()=>{const p1=q('#newPassword').value,p2=q('#newPassword2').value;if(!p1||!p2)return toast('Completa los dos campos');if(p1!==p2)return toast('Las contraseñas no coinciden');if(p1.length<8||!/[A-Z]/.test(p1)||!/[a-z]/.test(p1)||!/[0-9]/.test(p1))return toast('La contraseña debe tener 8+ caracteres, mayúscula, minúscula y número');const {error}=await sb.auth.updateUser({password:p1});if(error)return toast('No se pudo cambiar la contraseña');closeModal('resetPasswordModal');q('#newPassword').value='';q('#newPassword2').value='';history.replaceState({},'',APP_URL);toast('Contraseña actualizada correctamente')};
+ if(recoveryMode()){
+   if(authSession?.user)await setSessionFromUser(authSession.user);
+   renderAll();
+   showRecoveryUI();
+ }else{
+   if(authSession?.user){await setSessionFromUser(authSession.user);await setupPresence();subscribeAuctions();subscribeProducts();subscribeRaffle();subscribeRafflePoll();subscribeCommunity();subscribeNotifications();subscribeSocial();startLiveFallback();await Promise.all([loadAuctions(),loadProducts(),loadOrders(),loadRaffle(),loadRafflePoll(),loadCommunityData(),loadNotifications(),loadSocial(),loadAlbum(),renderLiveStats()])}
+   renderAll();
+ }
+ sb.auth.onAuthStateChange(async(event,newSession)=>{
+   if(event==='PASSWORD_RECOVERY'||recoveryMode()){
+     if(newSession?.user)await setSessionFromUser(newSession.user);
+     showRecoveryUI();
+     return;
+   }
+   if(newSession?.user){await setSessionFromUser(newSession.user);await setupPresence();subscribeAuctions();subscribeProducts();subscribeRaffle();subscribeRafflePoll();subscribeCommunity();subscribeNotifications();subscribeSocial();startLiveFallback();await Promise.all([loadAuctions(),loadProducts(),loadOrders(),loadRaffle(),loadRafflePoll(),loadCommunityData(),loadNotifications(),loadSocial(),loadAlbum(),renderLiveStats()]);renderAll()}
+   else if(event==='SIGNED_OUT'){session=null;if(livePollTimer)clearInterval(livePollTimer);if(heartbeatTimer)clearInterval(heartbeatTimer);renderAll()}
+ });
+q('#saveNewPassword').onclick=async()=>{const p1=q('#newPassword').value,p2=q('#newPassword2').value;if(!p1||!p2)return toast('Completa los dos campos');if(p1!==p2)return toast('Las contraseñas no coinciden');if(p1.length<8||!/[A-Z]/.test(p1)||!/[a-z]/.test(p1)||!/[0-9]/.test(p1))return toast('La contraseña debe tener 8+ caracteres, mayúscula, minúscula y número');const {error}=await sb.auth.updateUser({password:p1});if(error)return toast('No se pudo cambiar la contraseña');sessionStorage.removeItem('gp_recovery_mode');q('#newPassword').value='';q('#newPassword2').value='';history.replaceState({},'',APP_URL);await sb.auth.signOut();closeModal('resetPasswordModal');session=null;renderAll();toast('Contraseña actualizada. Ya puedes iniciar sesión con la nueva contraseña')};
 })();
 });
 </script>
