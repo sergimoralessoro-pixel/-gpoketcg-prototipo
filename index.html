@@ -782,7 +782,8 @@ function renderNotifications(){
  cats.innerHTML=defs.map(d=>{
    const notifUnread=notifications.filter(n=>notificationCategory(n)===d.id&&!n.is_read).length;
    const chatUnread=d.id==='compraventa'?privateMessages.filter(m=>m.from_user_id!==session.id&&!messageReads.has(Number(m.id))).length:0;
-   const total=notifUnread+chatUnread;
+   const dmUnread=d.id==='social'?directMessages.filter(m=>m.recipient_id===session.id&&!m.read_at).length:0;
+   const total=notifUnread+chatUnread+dmUnread;
    return '<button class="notifCat '+(activeNotificationCategory===d.id?'active':'')+'" data-cat="'+d.id+'"><span class="notifCatIcon">'+d.icon+'</span><b>'+d.label+'</b>'+(total?'<span class="notifCatCount">'+total+'</span>':'')+'</button>';
  }).join('');
  qa('.notifCat').forEach(b=>b.onclick=()=>{activeNotificationCategory=b.dataset.cat;renderNotifications();renderMessages()});
