@@ -39,6 +39,17 @@ header{position:sticky;top:0;z-index:30;background:#06111df2;border-bottom:1px s
 
 .profileSearchWrap{display:flex;gap:8px}.profileSearchWrap input{flex:1}.userSearchResults{display:grid;gap:8px;margin-top:10px}.searchUserRow,.conversationRow{display:flex;align-items:center;gap:9px;padding:9px;border:1px solid #214967;border-radius:11px;background:#081724}.searchUserRow button,.conversationRow button{margin-left:auto}.privatePanel{display:none;margin-top:10px;border:1px solid #214967;border-radius:14px;overflow:hidden;background:#06121d}.privatePanel.open{display:block}.privateHead{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:10px 12px;background:#081724;border-bottom:1px solid #214967}.privateBody{height:360px;overflow:auto;padding:12px}.privateComposer{display:flex;gap:8px;padding:10px;background:#081724;border-top:1px solid #214967}.privateComposer input{flex:1}.miniArrow{width:38px;height:38px;border-radius:10px;border:1px solid #2a5877;background:#0c2538;color:#fff;font-size:20px}
 @media(max-width:760px){.privateBody{height:310px}.profileSearchWrap{flex-direction:column}}
+
+/* v45 · filtros avanzados, rifas compactas y más comunidad */
+.marketTools{grid-template-columns:1.5fr 1fr 1fr 1fr 1fr}
+.raffleTop{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.raffleMiniCard{padding:13px}.raffleMiniCard .productArt{height:160px;margin:9px 0}.raffleMiniCard h2{font-size:19px;margin:7px 0}.raffleMiniCard .stats{grid-template-columns:repeat(3,1fr)}
+.raffleDetails{display:none;margin-top:10px}.raffleDetails.open{display:block}.raffleToggle{width:100%;margin-top:9px}
+.raffleWheelCard{text-align:center;margin-top:12px}.raffleWheelCard canvas{width:min(520px,100%);height:auto}
+.raffleChatCard{margin-top:12px}.raffleHow{margin-top:12px}
+.homeCommunityGrid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:14px}
+.homeCommunityGrid .item{margin-bottom:7px}
+@media(max-width:760px){.marketTools{grid-template-columns:1fr 1fr}.raffleTop,.homeCommunityGrid{grid-template-columns:1fr}.raffleMiniCard .productArt{height:135px}}
 </style>
 </head>
 <body>
@@ -73,42 +84,48 @@ header{position:sticky;top:0;z-index:30;background:#06111df2;border-bottom:1px s
 <div class="card"><h3>Vende tus cartas</h3><p class="muted">Envía una oferta privada al administrador.</p><button class="btn dark" data-go="vender">Ofrecer carta</button></div>
 <a class="card" href="https://www.instagram.com/gpoketcg?stkn=cWw4d3ZjdmNnZnNt" target="_blank"><h3>Instagram</h3><p>@gpoketcg</p></a>
 </div>
+<div class="homeCommunityGrid">
+  <div class="card"><div class="title"><h3 style="margin:0">📢 Últimas noticias</h3><button class="btn dark" data-go="comunidad">Ver todas</button></div><div id="homeNews"></div></div>
+  <div class="card"><div class="title"><h3 style="margin:0">📅 Próximos eventos</h3><button class="btn dark" data-go="comunidad">Ver todos</button></div><div id="homeEvents"></div></div>
+</div>
 </section>
 
-<section class="page" id="tienda"><div class="title"><h2>Tienda</h2><span class="tag">Mercado</span></div><div class="marketTools"><input id="marketSearch" placeholder="Buscar carta..."><select id="marketAvailability"><option value="all">Todas</option><option value="available">Con stock</option><option value="sold">Agotadas</option></select><select id="marketState"><option value="all">Todos los estados</option></select><input id="marketMaxPrice" type="number" min="0" step="0.01" placeholder="Precio máx."></div>
+<section class="page" id="tienda"><div class="title"><h2>Tienda</h2><span class="tag">Mercado</span></div><div class="marketTools"><input id="marketSearch" placeholder="Buscar carta, set, edición..."><select id="marketAvailability"><option value="all">Todas</option><option value="available">Con stock</option><option value="sold">Agotadas</option></select><select id="marketState"><option value="all">Todos los estados</option></select><select id="marketGrade"><option value="all">Cualquier grado</option><option value="ungraded">Sin graduar</option><option value="graded">Graduadas</option><option value="psa10">PSA 10</option><option value="psa9">PSA 9</option><option value="psa8">PSA 8</option><option value="psa7">PSA 7</option><option value="psa6">PSA 6 o menos</option></select><input id="marketMaxPrice" type="number" min="0" step="0.01" placeholder="Precio máx."></div>
 <div class="catalogSection"><div class="title"><h3 style="margin:0">✨ Novedades</h3><span class="tag">Últimas 3</span></div><div class="catalogGrid" id="featuredGrid"></div></div>
 <div class="catalogSection"><div class="title"><h3 style="margin:0">Cartas disponibles</h3><span class="tag">Catálogo</span></div><div class="catalogGrid" id="shopGrid"></div></div></section>
 <section class="page" id="subastas"><div class="title"><h2>Subastas</h2><span class="tag">En directo</span></div><div class="catalogGrid" id="auctionGrid"></div></section>
 
 <section class="page" id="rifas"><div class="title"><h2>Rifas</h2><span class="badge">EN DIRECTO</span></div>
-<div class="two" style="margin-bottom:12px">
-  <div class="card">
-    <span class="tag">ENCUESTA · PRÓXIMA RIFA</span>
-    <div class="productArt" id="pollImageBox" style="margin-top:10px">🃏</div>
+<div class="raffleTop">
+  <div class="card raffleMiniCard">
+    <div class="title"><span class="tag">1 · ENCUESTA</span><span id="pollStatus" class="miniMeta">—</span></div>
+    <div class="productArt" id="pollImageBox">🃏</div>
     <h2 id="pollTitle">Sin encuesta activa</h2>
     <p class="muted" id="pollDesc"></p>
-    <div class="stats">
-      <div class="stat"><small>Precio previsto</small><b id="pollPrice">—</b></div>
-      <div class="stat"><small>Apuntados</small><b id="pollVotes">0 / 0</b></div>
-      <div class="stat"><small>Estado</small><b id="pollStatus">—</b></div>
-    </div>
+    <div class="stats"><div class="stat"><small>Precio</small><b id="pollPrice">—</b></div><div class="stat"><small>Votos</small><b id="pollVotes">0 / 0</b></div><div class="stat"><small>Orden</small><b>Primero</b></div></div>
     <button class="btn blue" id="votePollBtn">Me apunto a esta rifa</button>
-    <div class="list" id="pollVoters" style="margin-top:10px"></div>
+    <button class="btn dark raffleToggle" id="togglePollPeople">👥 Ver quién ha votado</button>
+    <div class="raffleDetails" id="pollVotersWrap"><div class="list" id="pollVoters"></div></div>
   </div>
-  <div class="card">
-    <h3>💬 Chat general de rifas</h3>
-    <p class="muted">Para hablar de encuestas, próximas cartas y rifas abiertas.</p>
-    <div class="chat" id="raffleGeneralChat"></div>
-    <div class="chatbar"><input id="raffleGeneralInput" placeholder="Escribe..."><button class="btn blue" id="raffleGeneralSend">Enviar</button></div>
+
+  <div class="card raffleMiniCard">
+    <div class="title"><span class="tag">2 · RIFA</span><span class="miniMeta" id="raffleStatusTag">SIN RIFA</span></div>
+    <div class="productArt" id="raffleImageBox">🃏</div>
+    <h2 id="raffleTitle">Sin rifa activa</h2>
+    <p class="muted" id="raffleDesc"></p>
+    <div class="stats"><div class="stat"><small>Precio</small><b id="rafflePrice">—</b></div><div class="stat"><small>Reservados</small><b id="soldCount">0 / 0</b></div><div class="stat"><small>Pagados</small><b id="paidCount">0 / 0</b></div></div>
+    <button class="btn" id="buyRaffleBtn">Comprar números</button>
+    <button class="btn dark raffleToggle" id="toggleRafflePeople">👥 Ver participantes</button>
+    <div class="raffleDetails" id="rafflePeopleWrap"><div class="tablewrap"><table><thead><tr><th>Usuario</th><th>Números</th><th>Estado</th></tr></thead><tbody id="participantRows"></tbody></table></div></div>
   </div>
 </div>
-<div class="title"><h2>Rifa activa</h2><span class="tag" id="raffleStatusTag">SIN RIFA</span></div><p class="muted" style="margin-top:-4px">Cuando una rifa está abierta, el pago de los números se realiza al momento. No se retiene dinero.</p>
-<div class="two"><div class="card"><div class="productArt" id="raffleImageBox">🃏</div><h2 id="raffleTitle"></h2><p class="muted" id="raffleDesc"></p><div class="stats"><div class="stat"><small>Precio</small><b id="rafflePrice"></b></div><div class="stat"><small>Pago pendientes</small><b id="soldCount"></b></div><div class="stat"><small>Pagados</small><b id="paidCount">0 / 0</b></div></div><button class="btn" id="buyRaffleBtn" >Comprar números</button></div><div class="card"><h3>Cómo funciona</h3><div class="list"><div class="item">1. Primero se completa la encuesta de interés</div><div class="item">2. Al llenarse, se abre automáticamente la rifa</div><div class="item">3. Cuando la rifa está abierta, cada usuario elige sus números y paga en ese momento</div><div class="item">4. Cada pago confirmado añade al usuario a la rifa</div><div class="item">5. Cuando todas las plazas están vendidas y pagadas, se habilita el sorteo</div></div></div></div>
-<div class="raffleGrid" style="margin-top:12px">
-<div class="card"><h3>Participantes</h3><div class="tablewrap"><table><thead><tr><th>Usuario</th><th>Números</th><th>Estado</th></tr></thead><tbody id="participantRows"></tbody></table></div></div>
-<div class="card wheel"><h3>Ruleta</h3><canvas id="wheel" width="600" height="600"></canvas><button class="btn blue" id="spinBtn">GIRAR · SOLO ADMIN</button><div class="muted" id="spinNote">El administrador iniciará el sorteo.</div><div class="price" id="winnerText"></div></div>
-<div class="card"><h3>Chat de la rifa</h3><div class="chat" id="raffleChat"></div><div class="chatbar"><input id="raffleChatInput" placeholder="Mensaje"><button class="btn blue" id="raffleChatSend">Enviar</button></div></div>
-</div></section>
+
+<div class="card wheel raffleWheelCard"><h3>🎡 Ruleta</h3><canvas id="wheel" width="600" height="600"></canvas><button class="btn blue" id="spinBtn">GIRAR · SOLO ADMIN</button><div class="muted" id="spinNote">El administrador iniciará el sorteo.</div><div class="price" id="winnerText"></div></div>
+
+<div class="card raffleChatCard"><h3>💬 Chat de la rifa</h3><div class="chat" id="raffleChat"></div><div class="chatbar"><input id="raffleChatInput" placeholder="Mensaje"><button class="btn blue" id="raffleChatSend">Enviar</button></div></div>
+
+<div class="card raffleHow"><h3>Cómo funciona</h3><div class="list"><div class="item">1. Primero se completa la encuesta de interés</div><div class="item">2. Al llenarse, se abre automáticamente la rifa</div><div class="item">3. Cuando la rifa está abierta, cada usuario elige sus números y paga en ese momento</div><div class="item">4. Cada pago confirmado añade al usuario a la rifa</div><div class="item">5. Cuando todas las plazas están vendidas y pagadas, se habilita el sorteo</div></div></div>
+</section>
 
 <section class="page" id="comunidad"><div class="title"><h2>Comunidad</h2><span class="tag">Noticias · Eventos</span></div><div class="two">
 <div class="card"><h3>📢 Noticias</h3><div class="list" id="newsFeed"></div></div>
@@ -120,7 +137,7 @@ header{position:sticky;top:0;z-index:30;background:#06111df2;border-bottom:1px s
   <div class="chatGeneralHead"><h3>🌍 Comunidad GPokeTCG</h3><small class="muted">Pulsa un nickname para ver su perfil · archivos e imágenes sí · audios no</small></div>
   <div class="chatGeneralBody" id="communityChat"></div>
   <div class="stickerTray" id="stickerTray">
-    <button class="stickerBtn" data-sticker="ball">🔴</button><button class="stickerBtn" data-sticker="electric">⚡</button><button class="stickerBtn" data-sticker="fire">🔥</button><button class="stickerBtn" data-sticker="water">💧</button><button class="stickerBtn" data-sticker="leaf">🍃</button><button class="stickerBtn" data-sticker="dragon">🐉</button><button class="stickerBtn" data-sticker="star">⭐</button><button class="stickerBtn" data-sticker="cards">🃏</button>
+    <button class="stickerBtn" data-sticker="ball">🔴</button><button class="stickerBtn" data-sticker="electric">⚡</button><button class="stickerBtn" data-sticker="fire">🔥</button><button class="stickerBtn" data-sticker="water">💧</button><button class="stickerBtn" data-sticker="leaf">🍃</button><button class="stickerBtn" data-sticker="dragon">🐉</button><button class="stickerBtn" data-sticker="star">⭐</button><button class="stickerBtn" data-sticker="cards">🃏</button><button class="stickerBtn" data-sticker="party">🥳</button><button class="stickerBtn" data-sticker="wow">🤯</button><button class="stickerBtn" data-sticker="cool">😎</button><button class="stickerBtn" data-sticker="laugh">🤣</button><button class="stickerBtn" data-sticker="love">😍</button><button class="stickerBtn" data-sticker="rage">😤</button><button class="stickerBtn" data-sticker="cry">😭</button><button class="stickerBtn" data-sticker="win">🏆</button><button class="stickerBtn" data-sticker="gem">💎</button><button class="stickerBtn" data-sticker="rocket">🚀</button><button class="stickerBtn" data-sticker="ghost">👻</button><button class="stickerBtn" data-sticker="clap">👏</button><button class="stickerBtn" data-sticker="eyes">👀</button><button class="stickerBtn" data-sticker="hundred">💯</button>
   </div>
   <div class="chatGeneralComposer">
     <button class="chatToolBtn" id="chatFileBtn" title="Adjuntar archivo">📎</button>
@@ -414,6 +431,8 @@ function renderRafflePoll(){
    if(db)db.onclick=async()=>{if(!isAdmin()||!rafflePoll.id)return;if(!confirm('¿Eliminar esta encuesta?'))return;const {error}=await sb.rpc('admin_delete_raffle_poll',{p_poll_id:rafflePoll.id});if(error)return toast('No se pudo eliminar la encuesta');delete q('#createRafflePoll').dataset.editId;q('#createRafflePoll').textContent='Publicar encuesta';await loadRafflePoll();toast('Encuesta eliminada')};
  }
 }
+q('#togglePollPeople').onclick=()=>{q('#pollVotersWrap').classList.toggle('open');q('#togglePollPeople').textContent=q('#pollVotersWrap').classList.contains('open')?'👥 Ocultar votantes':'👥 Ver quién ha votado'};
+q('#toggleRafflePeople').onclick=()=>{q('#rafflePeopleWrap').classList.toggle('open');q('#toggleRafflePeople').textContent=q('#rafflePeopleWrap').classList.contains('open')?'👥 Ocultar participantes':'👥 Ver participantes'};
 q('#votePollBtn').onclick=async()=>{if(!rafflePoll.id)return toast('No hay encuesta activa');if(rafflePoll.status!=='open')return toast('La encuesta ya no está abierta');const btn=q('#votePollBtn'),joined=pollVoters.some(v=>v.user_id===session?.id);btn.disabled=true;if(joined){const {data,error}=await sb.rpc('leave_raffle_poll',{p_poll_id:rafflePoll.id});if(error){btn.disabled=false;return toast(error.message)}await loadRafflePoll();toast(data?.removed?'Te has quitado de la encuesta':'No estabas apuntado')}else{const {data,error}=await sb.rpc('vote_raffle_poll',{p_poll_id:rafflePoll.id});if(error){btn.disabled=false;return toast(error.message)}await Promise.all([loadRafflePoll(),loadRaffle()]);toast(data?.opened?'¡Encuesta completa! La rifa ya está abierta':'Te has apuntado a la encuesta')}};
 q('#createRafflePoll').onclick=async()=>{if(!isAdmin())return toast('Solo administrador');const title=q('#pollAdminTitle').value.trim(),price=Number(q('#pollAdminPrice').value),target=Number(q('#pollAdminTarget').value),editId=Number(q('#createRafflePoll').dataset.editId||0);if(!title||price<=0||target<=0)return toast('Completa carta, precio y personas necesarias');const photo=await fileData(q('#pollAdminPhoto'));let error;if(editId){const payload={title,price_per_slot:price,target_votes:Math.max(1,target),description:q('#pollAdminDesc').value.trim()};if(photo)payload.photo_url=photo;({error}=await sb.from('raffle_polls').update(payload).eq('id',editId))}else{({error}=await sb.from('raffle_polls').insert({title,price_per_slot:price,target_votes:Math.max(1,target),description:q('#pollAdminDesc').value.trim(),photo_url:photo||null,status:'open'}))}if(error)return toast(editId?'No se pudo editar la encuesta':'No se pudo publicar la encuesta');q('#pollAdminTitle').value='';q('#pollAdminPrice').value='';q('#pollAdminTarget').value='';q('#pollAdminDesc').value='';q('#pollAdminPhoto').value='';delete q('#createRafflePoll').dataset.editId;q('#createRafflePoll').textContent='Publicar encuesta';await loadRafflePoll();toast(editId?'Encuesta actualizada':'Encuesta publicada')};
 async function loadCommunityData(){
@@ -490,7 +509,7 @@ async function setSessionFromUser(user){
  session={user,id:user.id,name,email:user.email,role,memberNumber:p?.member_number||null,communityRole:p?.community_role||'Entrenador'};
 }
 function renderAuth(){q('#authGate').classList.toggle('open',!logged());q('#adminBtn').style.display=isAdmin()?'inline-block':'none';q('#drawerAdmin').style.display=isAdmin()?'block':'none';q('#spinBtn').style.display=isAdmin()?'inline-block':'none';q('#spinNote').style.display=isAdmin()?'none':'block';q('#roleText').textContent=!logged()?'Invitado':(isAdmin()?'Administrador':session.name)}
-function avatarSymbol(k){return ({none:'👤',ball:'🔴',electric:'⚡',fire:'🔥',water:'💧',leaf:'🍃',dragon:'🐉',trainer:'🧢',star:'⭐'})[k]||'👤'}
+function avatarSymbol(k){return ({none:'👤',ball:'🔴',electric:'⚡',fire:'🔥',water:'💧',leaf:'🍃',dragon:'🐉',trainer:'🧢',star:'⭐',fox:'🦊',cat:'🐱',dog:'🐶',panda:'🐼',lion:'🦁',wolf:'🐺',owl:'🦉',frog:'🐸',shark:'🦈',bear:'🐻',ghost:'👻',robot:'🤖',crown:'👑',rocket:'🚀',planet:'🪐',moon:'🌙',sun:'☀️',gem:'💎',shield:'🛡️',controller:'🎮'})[k]||'👤'}
 function renderProfile(){q('#profileName').textContent=session?session.name:'Invitado';q('#profileEmail').textContent=session?session.email:'';const member=q('#profileMember');if(member)member.textContent=session?.memberNumber?'Socio #'+session.memberNumber:'Socio —';const rank=isAdmin()?'Admin':(session?.communityRole||'Entrenador');q('#profileRole').textContent=rank;q('#profileRoleBig').textContent=rank;const me=communityMembers.find(m=>m.user_id===session?.id),fc=Number(me?.friend_count||0);const ft=q('#profileFriendsText');if(ft)ft.textContent='👥 '+fc+' '+(fc===1?'amigo':'amigos');const av=q('#profileAvatar');if(av)av.textContent=avatarSymbol(me?.avatar_key||'none');renderAvatarPicker(me?.avatar_key||'none');renderProfileHistory();renderSocial();renderAlbum()}
 function productCardHtml(p){
  const sold=Number(p.stock)<=0,low=Number(p.stock)===1;
@@ -501,8 +520,9 @@ function bindProductCards(){
 }
 function renderProducts(){
  const stateSel=q('#marketState');if(stateSel){const current=stateSel.value||'all';const states=[...new Set(products.filter(p=>p.active!==false).map(p=>p.state).filter(Boolean))].sort();stateSel.innerHTML='<option value="all">Todos los estados</option>'+states.map(s=>'<option value="'+esc(s)+'">'+esc(s)+'</option>').join('');if(states.includes(current))stateSel.value=current}
- const search=(q('#marketSearch')?.value||'').trim().toLowerCase(),availability=q('#marketAvailability')?.value||'all',state=q('#marketState')?.value||'all',maxPrice=Number(q('#marketMaxPrice')?.value||0);
- const visible=products.filter(p=>p.active!==false).filter(p=>!search||p.name.toLowerCase().includes(search)||(p.desc||'').toLowerCase().includes(search)).filter(p=>availability==='all'||(availability==='available'?Number(p.stock)>0:Number(p.stock)<=0)).filter(p=>state==='all'||p.state===state).filter(p=>!maxPrice||Number(p.price)<=maxPrice);
+ const search=(q('#marketSearch')?.value||'').trim().toLowerCase(),availability=q('#marketAvailability')?.value||'all',state=q('#marketState')?.value||'all',grade=q('#marketGrade')?.value||'all',maxPrice=Number(q('#marketMaxPrice')?.value||0);
+ const gradePass=p=>{const t=((p.name||'')+' '+(p.state||'')+' '+(p.desc||'')).toLowerCase();const m=t.match(/psa\s*([0-9]{1,2})/i),n=m?Number(m[1]):null;if(grade==='all')return true;if(grade==='graded')return /\bpsa\b|graded|bgs|cgc/.test(t);if(grade==='ungraded')return !(/\bpsa\b|graded|bgs|cgc/.test(t));if(grade==='psa10')return n===10;if(grade==='psa9')return n===9;if(grade==='psa8')return n===8;if(grade==='psa7')return n===7;if(grade==='psa6')return n!==null&&n<=6;return true};
+ const visible=products.filter(p=>p.active!==false).filter(p=>!search||p.name.toLowerCase().includes(search)||(p.state||'').toLowerCase().includes(search)||(p.desc||'').toLowerCase().includes(search)).filter(p=>availability==='all'||(availability==='available'?Number(p.stock)>0:Number(p.stock)<=0)).filter(p=>state==='all'||p.state===state).filter(gradePass).filter(p=>!maxPrice||Number(p.price)<=maxPrice);
  const featured=visible.slice(0,3),regular=visible.slice(3);
  const fg=q('#featuredGrid');if(fg)fg.innerHTML=featured.length?featured.map(productCardHtml).join(''):'<p class="muted">Aún no hay novedades.</p>';
  q('#shopGrid').innerHTML=regular.length?regular.map(productCardHtml).join(''):(visible.length?'<p class="muted">Estas son todas las cartas disponibles ahora mismo.</p>':'<p class="muted">No hay productos que coincidan con los filtros.</p>');
@@ -512,7 +532,7 @@ function renderProducts(){
  qa('.editProd').forEach(b=>b.onclick=async()=>{if(!isAdmin())return;const p=products.find(x=>x.id===Number(b.dataset.id));const name=prompt('Nombre del producto',p.name);if(name===null)return;const price=prompt('Precio (€)',p.price);if(price===null)return;const state=prompt('Estado',p.state);if(state===null)return;const stock=prompt('Stock',p.stock);if(stock===null)return;const desc=prompt('Descripción / detalles',p.desc||'');if(desc===null)return;const {error}=await sb.from('products').update({name:name.trim()||p.name,price:Number(price)||p.price,state:state.trim()||p.state,stock:Math.max(0,Number(stock)||0),description:desc,active:true}).eq('id',p.id);if(error)return toast('No se pudo editar el producto');await loadProducts();toast('Producto editado')});
  qa('.delProd').forEach(b=>b.onclick=async()=>{if(!isAdmin())return;const {error}=await sb.from('products').update({active:false}).eq('id',Number(b.dataset.id));if(error)return toast('No se pudo eliminar');await loadProducts();toast('Producto retirado')})
 }
-['#marketSearch','#marketAvailability','#marketState','#marketMaxPrice'].forEach(sel=>{const el=q(sel);if(el){el.addEventListener('input',renderProducts);el.addEventListener('change',renderProducts)}});q('#addProduct').onclick=async()=>{if(!isAdmin())return toast('Solo administrador');const name=q('#pName').value.trim(),price=Number(q('#pPrice').value);if(!name||!price)return toast('Completa nombre y precio');const photo=await fileData(q('#pPhoto'));const {error}=await sb.from('products').insert({name,price,state:q('#pState').value.trim()||'Near Mint',stock:Number(q('#pStock').value)||1,description:q('#pDesc').value.trim(),photo_url:photo||null,active:true});if(error)return toast('No se pudo añadir el producto');q('#pName').value='';q('#pPrice').value='';q('#pDesc').value='';q('#pPhoto').value='';await loadProducts();toast('Producto añadido')};
+['#marketSearch','#marketAvailability','#marketState','#marketGrade','#marketMaxPrice'].forEach(sel=>{const el=q(sel);if(el){el.addEventListener('input',renderProducts);el.addEventListener('change',renderProducts)}});q('#addProduct').onclick=async()=>{if(!isAdmin())return toast('Solo administrador');const name=q('#pName').value.trim(),price=Number(q('#pPrice').value);if(!name||!price)return toast('Completa nombre y precio');const photo=await fileData(q('#pPhoto'));const {error}=await sb.from('products').insert({name,price,state:q('#pState').value.trim()||'Near Mint',stock:Number(q('#pStock').value)||1,description:q('#pDesc').value.trim(),photo_url:photo||null,active:true});if(error)return toast('No se pudo añadir el producto');q('#pName').value='';q('#pPrice').value='';q('#pDesc').value='';q('#pPhoto').value='';await loadProducts();toast('Producto añadido')};
 function renderCart(){q('#cartCount').textContent=cart.reduce((s,x)=>s+x.qty,0);q('#cartRows').innerHTML=cart.length?cart.map((x,i)=>'<div class="item itemRow"><span>'+x.name+' × '+x.qty+'</span><span>'+money(x.price*x.qty)+' <button class="btn dark removeCart" data-i="'+i+'">Quitar</button></span></div>').join(''):'<p class="muted">Carrito vacío.</p>';q('#cartTotal').textContent='Total: '+money(cart.reduce((s,x)=>s+x.price*x.qty,0));qa('.removeCart').forEach(b=>b.onclick=()=>{cart.splice(Number(b.dataset.i),1);save('gp_cart',cart);renderCart()})}
 q('#cartBtn').onclick=()=>{renderCart();if(session){q('#checkoutName').value=q('#checkoutName').value||session.name||'';q('#checkoutEmail').value=q('#checkoutEmail').value||session.email||''}openModal('cartModal')};q('#addToCart').onclick=()=>{if(!selectedProduct)return;if(selectedProduct.stock<=0)return toast('Producto sin stock');const x=cart.find(c=>c.id===selectedProduct.id);if(x){if(x.qty>=selectedProduct.stock)return toast('No queda más stock');x.qty++}else cart.push({id:selectedProduct.id,name:selectedProduct.name,price:selectedProduct.price,qty:1});save('gp_cart',cart);renderCart();closeModal('productModal');toast('Añadido al carrito')};
 q('#checkoutBtn').onclick=async()=>{
@@ -664,7 +684,7 @@ async function loadChatsOnly(){
  renderChats();
 }
 function roleClass(role){return 'role-'+String(role||'Entrenador').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().replace(/[^a-z]/g,'')}
-function stickerSymbol(k){return ({ball:'🔴',electric:'⚡',fire:'🔥',water:'💧',leaf:'🍃',dragon:'🐉',star:'⭐',cards:'🃏'})[k]||'⭐'}
+function stickerSymbol(k){return ({ball:'🔴',electric:'⚡',fire:'🔥',water:'💧',leaf:'🍃',dragon:'🐉',star:'⭐',cards:'🃏',party:'🥳',wow:'🤯',cool:'😎',laugh:'🤣',love:'😍',rage:'😤',cry:'😭',win:'🏆',gem:'💎',rocket:'🚀',ghost:'👻',clap:'👏',eyes:'👀',hundred:'💯'})[k]||'⭐'}
 function chatMsgHtml(x){
  const mem=memberById(x.uid),avatar=avatarSymbol(mem?.avatar_key||'none');
  let extra='';
@@ -683,7 +703,7 @@ q('#raffleChatSend').onclick=async()=>{const m=q('#raffleChatInput').value.trim(
 async function sendGeneralChat(payload){const {error}=await sb.from('chat_messages').insert({channel:'community',raffle_id:null,...payload});if(error)return toast(error.message||'No se pudo enviar');await loadChatsOnly()}
 q('#communitySend').onclick=async()=>{const m=q('#communityInput').value.trim();if(!m)return;await sendGeneralChat({message:m});q('#communityInput').value=''};
 q('#communityInput').addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();q('#communitySend').click()}});
-q('#raffleGeneralSend').onclick=async()=>{const m=q('#raffleGeneralInput').value.trim();if(!m)return;const {error}=await sb.from('chat_messages').insert({channel:'community',raffle_id:null,message:m});if(error)return toast(error.message||'No se pudo enviar');q('#raffleGeneralInput').value='';await loadChatsOnly()};
+const raffleGeneralSend=q('#raffleGeneralSend');if(raffleGeneralSend)raffleGeneralSend.onclick=async()=>{const m=q('#raffleGeneralInput').value.trim();if(!m)return;const {error}=await sb.from('chat_messages').insert({channel:'community',raffle_id:null,message:m});if(error)return toast(error.message||'No se pudo enviar');q('#raffleGeneralInput').value='';await loadChatsOnly()};
 q('#chatStickerBtn').onclick=()=>q('#stickerTray').classList.toggle('open');
 qa('.stickerBtn').forEach(b=>b.onclick=async()=>{await sendGeneralChat({message:'',sticker_key:b.dataset.sticker});q('#stickerTray').classList.remove('open')});
 q('#chatFileBtn').onclick=()=>q('#chatFileInput').click();
@@ -712,7 +732,7 @@ function subscribeSocial(){
  .subscribe();
 }
 function renderAvatarPicker(active){
- const box=q('#avatarPicker');if(!box)return;const defs=[['none','👤'],['ball','🔴'],['electric','⚡'],['fire','🔥'],['water','💧'],['leaf','🍃'],['dragon','🐉'],['trainer','🧢'],['star','⭐']];
+ const box=q('#avatarPicker');if(!box)return;const defs=[['none','👤'],['ball','🔴'],['electric','⚡'],['fire','🔥'],['water','💧'],['leaf','🍃'],['dragon','🐉'],['trainer','🧢'],['star','⭐'],['fox','🦊'],['cat','🐱'],['dog','🐶'],['panda','🐼'],['lion','🦁'],['wolf','🐺'],['owl','🦉'],['frog','🐸'],['shark','🦈'],['bear','🐻'],['ghost','👻'],['robot','🤖'],['crown','👑'],['rocket','🚀'],['planet','🪐'],['moon','🌙'],['sun','☀️'],['gem','💎'],['shield','🛡️'],['controller','🎮']];
  box.innerHTML=defs.map(d=>'<button class="avatarChoice '+(active===d[0]?'active':'')+'" data-avatar="'+d[0]+'">'+d[1]+'</button>').join('');
  qa('.avatarChoice').forEach(b=>b.onclick=async()=>{const {error}=await sb.rpc('set_profile_avatar',{p_avatar_key:b.dataset.avatar});if(error)return toast(error.message||'No se pudo cambiar');await setSessionFromUser(session.user);await loadSocial();toast('Foto de perfil actualizada')});
 }
@@ -778,6 +798,7 @@ q('#openAlbumBtn').onclick=async()=>{await loadAlbum();openModal('albumModal')};
 function renderCommunity(){
  q('#newsFeed').innerHTML=news.map(x=>'<div class="item"><b>'+esc(x.title)+'</b><div class="muted">'+esc(x.date)+'</div><p>'+esc(x.text)+'</p></div>').join('');
  q('#eventsFeed').innerHTML=events.map(x=>'<div class="item"><b>'+esc(x.title)+'</b><div class="muted">'+esc(x.date)+'</div><p>'+esc(x.text)+'</p></div>').join('');
+ const hn=q('#homeNews'),he=q('#homeEvents');if(hn)hn.innerHTML=news.slice(0,3).map(x=>'<div class="item"><b>'+esc(x.title)+'</b><br><small class="muted">'+esc(x.date)+'</small></div>').join('')||'<p class="muted">Sin noticias publicadas.</p>';if(he)he.innerHTML=events.slice(0,3).map(x=>'<div class="item"><b>'+esc(x.title)+'</b><br><small class="muted">'+esc(x.date)+'</small></div>').join('')||'<p class="muted">Sin eventos publicados.</p>';
  q('#adminCommunityList').innerHTML=news.map((x,i)=>'<div class="adminItem itemRow"><span>📰 '+esc(x.title)+'</span><span><button class="btn dark editNews" data-i="'+i+'">Editar</button> <button class="btn dark delNews" data-i="'+i+'">Eliminar</button></span></div>').join('')+events.map((x,i)=>'<div class="adminItem itemRow"><span>📅 '+esc(x.title)+'</span><span><button class="btn dark editEvent" data-i="'+i+'">Editar</button> <button class="btn dark delEvent" data-i="'+i+'">Eliminar</button></span></div>').join('');
  qa('.editNews').forEach(b=>b.onclick=async()=>{if(!isAdmin())return;const x=news[Number(b.dataset.i)],t=prompt('Título',x.title);if(t===null)return;const d=prompt('Fecha/etiqueta',x.date);if(d===null)return;const tx=prompt('Texto',x.text);if(tx===null)return;const {error}=await sb.from('news').update({title:t||x.title,label:d||x.date,body:tx||x.text}).eq('id',x.id);if(error)return toast('No se pudo editar');await loadCommunityData()});
  qa('.delNews').forEach(b=>b.onclick=async()=>{if(!isAdmin())return;const x=news[Number(b.dataset.i)];const {error}=await sb.from('news').delete().eq('id',x.id);if(error)return toast('No se pudo eliminar');await loadCommunityData()});
