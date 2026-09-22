@@ -139,6 +139,19 @@ header{position:sticky;top:0;z-index:30;background:#06111df2;border-bottom:1px s
 <p class="muted" style="font-size:12px;margin:10px 0 0">Usaremos estos datos únicamente para gestionar y entregar tu pedido.</p>
 <div class="actions" style="margin-top:12px"><button class="btn" id="checkoutBtn">Continuar con el pedido</button><button class="btn dark" data-close="cartModal">Cerrar</button></div></div></div>
 <div class="modal" id="orderReceiptModal"><div class="box"><h2>Pedido recibido</h2><div id="orderReceipt"></div><div class="actions" style="margin-top:12px"><button class="btn dark" data-close="orderReceiptModal">Cerrar</button></div></div></div>
+<div class="modal" id="auctionShippingModal"><div class="box"><h2>Has ganado la subasta 🎉</h2><p class="muted" id="auctionWinSummary"></p><h3 style="margin:18px 0 8px">Datos de entrega</h3><div class="formgrid">
+<input id="auctionShipName" autocomplete="name" placeholder="Nombre y apellidos">
+<input id="auctionShipEmail" type="email" autocomplete="email" placeholder="Correo electrónico">
+<input id="auctionShipPhone" type="tel" autocomplete="tel" placeholder="Teléfono">
+<input id="auctionShipAddress1" autocomplete="address-line1" placeholder="Dirección (calle, número, piso)">
+<input id="auctionShipAddress2" autocomplete="address-line2" placeholder="Información adicional (opcional)">
+<input id="auctionShipPostal" autocomplete="postal-code" placeholder="Código postal">
+<input id="auctionShipCity" autocomplete="address-level2" placeholder="Ciudad / localidad">
+<input id="auctionShipProvince" autocomplete="address-level1" placeholder="Provincia">
+<input id="auctionShipCountry" autocomplete="country-name" value="España" placeholder="País">
+<textarea id="auctionShipNotes" placeholder="Notas para la entrega (opcional)"></textarea>
+</div><p class="muted" style="font-size:12px;margin:10px 0 0">El importe ganador quedará pendiente hasta que conectemos el pago real. Estos datos llegarán al administrador para preparar el envío.</p>
+<div class="actions" style="margin-top:12px"><button class="btn" id="saveAuctionShipping">Guardar datos del ganador</button><button class="btn dark" data-close="auctionShippingModal">Cerrar</button></div></div></div>
 <div class="modal" id="raffleModal"><div class="box"><h2>Comprar números</h2><input id="raffleBuyer" placeholder="Usuario"><input id="raffleQty" type="number" value="1" min="1" max="20" style="margin-top:8px"><div class="actions" style="margin-top:10px"><button class="btn" id="confirmRaffle" >Comprar números</button><button class="btn dark" data-close="raffleModal">Cancelar</button></div></div></div>
 <div class="modal" id="resetPasswordModal"><div class="box"><h2>Nueva contraseña</h2><p class="muted">Introduce una contraseña nueva para tu cuenta.</p><input id="newPassword" type="password" placeholder="Nueva contraseña" autocomplete="new-password"><input id="newPassword2" type="password" placeholder="Repite la contraseña" autocomplete="new-password" style="margin-top:8px"><div class="actions" style="margin-top:10px"><button class="btn blue" id="saveNewPassword">Guardar contraseña</button></div></div></div>
 <div class="toast" id="toast"></div>
@@ -189,7 +202,7 @@ let privateMessages=[];
 let messageReads=new Set();
 let activeConversation=null;
 let communityChannel=null;
-let selectedProduct=null,wheelAngle=0,spinning=false,lastSpinSeen=null,pendingWinnerText='';
+let selectedProduct=null,selectedAuctionWinner=null,wheelAngle=0,spinning=false,lastSpinSeen=null,pendingWinnerText='';
 function money(n){return Number(n).toLocaleString('es-ES',{minimumFractionDigits:2,maximumFractionDigits:2})+' €'}
 async function renderLiveStats(){
  const r=q('#registeredCount'),o=q('#onlineCount');
@@ -243,15 +256,15 @@ function statusLabel(s){return ({pending:'Pendiente',paid:'Pagado',preparing:'Pr
 function orderItemsHtml(o){return (o.items||[]).map(i=>'<div class="itemRow"><span>'+esc(i.product_name)+' × '+i.quantity+'</span><b>'+money(Number(i.unit_price)*i.quantity)+'</b></div>').join('')}
 function renderOrders(){
  const my=q('#myOrders');
- if(my)my.innerHTML=userOrders.length?userOrders.map(o=>'<div class="orderCard"><div class="orderHead"><div><b>'+esc(o.receipt_number||('Pedido #'+o.id))+'</b><br><small>'+new Date(o.created_at).toLocaleString('es-ES')+'</small></div><span class="orderStatus">'+statusLabel(o.status)+'</span></div><div class="orderItems">'+orderItemsHtml(o)+'</div><div class="price" style="margin-top:10px">Total: '+money(o.total)+'</div><p class="muted" style="margin-bottom:0">'+esc(o.shipping_address1||'')+(o.shipping_address2?' · '+esc(o.shipping_address2):'')+' · '+esc(o.shipping_postal_code||'')+' '+esc(o.shipping_city||'')+' · '+esc(o.shipping_province||'')+'</p></div>').join(''):'<p class="muted">Todavía no has realizado ningún pedido.</p>';
+ if(my)my.innerHTML=userOrders.length?userOrders.map(o=>'<div class="orderCard"><div class="orderHead"><div><b>'+esc(o.receipt_number||('Pedido #'+o.id))+'</b><br><small>'+new Date(o.created_at).toLocaleString('es-ES')+(o.source_type==='auction'?' · SUBASTA':' · TIENDA')+'</small></div><span class="orderStatus">'+statusLabel(o.status)+'</span></div><div class="orderItems">'+orderItemsHtml(o)+'</div><div class="price" style="margin-top:10px">Total: '+money(o.total)+'</div><p class="muted" style="margin-bottom:0">'+esc(o.shipping_address1||'')+(o.shipping_address2?' · '+esc(o.shipping_address2):'')+' · '+esc(o.shipping_postal_code||'')+' '+esc(o.shipping_city||'')+' · '+esc(o.shipping_province||'')+'</p></div>').join(''):'<p class="muted">Todavía no has realizado ningún pedido.</p>';
  const ad=q('#adminOrdersList');if(!ad)return;
- ad.innerHTML=adminOrders.length?adminOrders.map(o=>'<div class="orderCard"><div class="orderHead"><div><b>'+esc(o.receipt_number||('Pedido #'+o.id))+'</b><br><small>'+new Date(o.created_at).toLocaleString('es-ES')+' · '+esc(o.customer_name||'')+' · '+esc(o.customer_email||'')+'</small></div><span class="orderStatus">'+statusLabel(o.status)+'</span></div><div class="orderItems">'+orderItemsHtml(o)+'</div><div class="price" style="margin-top:10px">Total: '+money(o.total)+'</div><div class="item" style="margin-top:10px"><b>Entrega</b><br>'+esc(o.customer_name||'')+' · '+esc(o.customer_phone||'')+'<br>'+esc(o.shipping_address1||'')+(o.shipping_address2?'<br>'+esc(o.shipping_address2):'')+'<br>'+esc(o.shipping_postal_code||'')+' '+esc(o.shipping_city||'')+' · '+esc(o.shipping_province||'')+' · '+esc(o.shipping_country||'')+(o.shipping_notes?'<br><small>Nota: '+esc(o.shipping_notes)+'</small>':'')+'</div><div class="adminOrderActions"><select class="orderStatusSelect" data-id="'+o.id+'"><option value="pending" '+(o.status==='pending'?'selected':'')+'>Pendiente</option><option value="paid" '+(o.status==='paid'?'selected':'')+'>Pagado</option><option value="preparing" '+(o.status==='preparing'?'selected':'')+'>Preparando</option><option value="shipped" '+(o.status==='shipped'?'selected':'')+'>Enviado</option><option value="delivered" '+(o.status==='delivered'?'selected':'')+'>Entregado</option><option value="cancelled" '+(o.status==='cancelled'?'selected':'')+'>Cancelado</option></select><button class="btn blue saveOrderStatus" data-id="'+o.id+'">Guardar estado</button></div></div>').join(''):'<p class="muted">Todavía no hay pedidos.</p>';
+ ad.innerHTML=adminOrders.length?adminOrders.map(o=>'<div class="orderCard"><div class="orderHead"><div><b>'+esc(o.receipt_number||('Pedido #'+o.id))+'</b><br><small>'+new Date(o.created_at).toLocaleString('es-ES')+' · '+(o.source_type==='auction'?'SUBASTA':'TIENDA')+' · '+esc(o.customer_name||'')+' · '+esc(o.customer_email||'')+'</small></div><span class="orderStatus">'+statusLabel(o.status)+'</span></div><div class="orderItems">'+orderItemsHtml(o)+'</div><div class="price" style="margin-top:10px">Total: '+money(o.total)+'</div><div class="item" style="margin-top:10px"><b>Entrega</b><br>'+esc(o.customer_name||'')+' · '+esc(o.customer_phone||'')+'<br>'+esc(o.shipping_address1||'')+(o.shipping_address2?'<br>'+esc(o.shipping_address2):'')+'<br>'+esc(o.shipping_postal_code||'')+' '+esc(o.shipping_city||'')+' · '+esc(o.shipping_province||'')+' · '+esc(o.shipping_country||'')+(o.shipping_notes?'<br><small>Nota: '+esc(o.shipping_notes)+'</small>':'')+'</div><div class="adminOrderActions"><select class="orderStatusSelect" data-id="'+o.id+'"><option value="pending" '+(o.status==='pending'?'selected':'')+'>Pendiente</option><option value="paid" '+(o.status==='paid'?'selected':'')+'>Pagado</option><option value="preparing" '+(o.status==='preparing'?'selected':'')+'>Preparando</option><option value="shipped" '+(o.status==='shipped'?'selected':'')+'>Enviado</option><option value="delivered" '+(o.status==='delivered'?'selected':'')+'>Entregado</option><option value="cancelled" '+(o.status==='cancelled'?'selected':'')+'>Cancelado</option></select><button class="btn blue saveOrderStatus" data-id="'+o.id+'">Guardar estado</button></div></div>').join(''):'<p class="muted">Todavía no hay pedidos.</p>';
  qa('.saveOrderStatus').forEach(b=>b.onclick=async()=>{if(!isAdmin())return;const id=Number(b.dataset.id),sel=q('.orderStatusSelect[data-id="'+id+'"]');b.disabled=true;const {error}=await sb.rpc('admin_update_order_status',{p_order_id:id,p_status:sel.value});b.disabled=false;if(error)return toast('No se pudo actualizar el pedido');await loadOrders();toast('Estado del pedido actualizado')});
 }
 async function loadAuctions(){
  const {data,error}=await sb.from('auctions').select('*').order('created_at',{ascending:false});
  if(error){console.error(error);toast('No se pudieron cargar las subastas');return}
- auctions=(data||[]).map(a=>({id:a.id,name:a.name,photo:a.photo_url||'',price:Number(a.current_price),increment:Number(a.min_increment),leader:a.leader_name||'Sin pujas',endAt:a.ends_at,closed:a.closed}));
+ auctions=(data||[]).map(a=>({id:a.id,name:a.name,photo:a.photo_url||'',price:Number(a.current_price),increment:Number(a.min_increment),leader:a.leader_name||'Sin pujas',leaderUserId:a.leader_user_id||null,endAt:a.ends_at,closed:a.closed}));
  const typingBid=document.activeElement&&document.activeElement.classList&&document.activeElement.classList.contains('bidAmount');
  if(!typingBid)renderAuctions();
 }
@@ -427,8 +440,46 @@ function auctionLeft(a){return Math.max(0,new Date(a.endAt).getTime()-Date.now()
 function formatCountdown(ms){const s=Math.max(0,Math.floor(ms/1000)),h=Math.floor(s/3600),m=Math.floor((s%3600)/60),sec=s%60;return String(h).padStart(2,'0')+':'+String(m).padStart(2,'0')+':'+String(sec).padStart(2,'0')}
 function refreshAuctionClocks(){let rerender=false;qa('.auctionClock').forEach(el=>{const a=auctions.find(x=>x.id===Number(el.dataset.id));if(!a)return;const left=auctionLeft(a);el.textContent=formatCountdown(left);if(left<=0)rerender=true});if(rerender)renderAuctions()}
 function renderAuctions(){
- q('#auctionGrid').innerHTML=auctions.map(a=>{const closed=a.closed||auctionLeft(a)<=0;return '<div class="card"><div class="productArt">'+(a.photo?'<img src="'+a.photo+'" alt="">':'🔨')+'</div><h3>'+esc(a.name)+'</h3><div class="auctionMeta"><div class="price">'+money(a.price)+'</div>'+(closed?'<span class="badge">FINALIZADA</span>':'<span class="tag">EN DIRECTO</span>')+'</div>'+(closed?'<div class="finished" style="margin-top:10px">Subasta finalizada<br>Ganador: '+esc(a.leader&&a.leader!=='Sin pujas'?a.leader:'Sin ganador')+' · '+money(a.price)+'</div>':'<div class="countdown auctionClock" data-id="'+a.id+'">'+formatCountdown(auctionLeft(a))+'</div><p><b>Va ganando:</b> <span style="color:var(--green)">'+esc(a.leader||'Sin pujas')+'</span></p><p class="muted">Incremento mínimo: '+money(a.increment)+'</p><input class="bidAmount" data-id="'+a.id+'" type="number" step="0.01" placeholder="Tu puja total (mín. '+(Number(a.price)+Number(a.increment)).toFixed(2)+' €)"><button class="btn bidBtn" data-id="'+a.id+'" style="margin-top:9px">Hacer puja</button>')+'</div>'}).join('');
+ q('#auctionGrid').innerHTML=auctions.map(a=>{
+   const closed=a.closed||auctionLeft(a)<=0;
+   const isWinner=closed&&session&&a.leaderUserId===session.id;
+   const existingOrder=isWinner?userOrders.find(o=>o.source_type==='auction'&&Number(o.source_id)===Number(a.id)):null;
+   return '<div class="card"><div class="productArt">'+(a.photo?'<img src="'+a.photo+'" alt="">':'🔨')+'</div><h3>'+esc(a.name)+'</h3><div class="auctionMeta"><div class="price">'+money(a.price)+'</div>'+(closed?'<span class="badge">FINALIZADA</span>':'<span class="tag">EN DIRECTO</span>')+'</div>'+
+   (closed?'<div class="finished" style="margin-top:10px">Subasta finalizada<br>Ganador: '+esc(a.leader&&a.leader!=='Sin pujas'?a.leader:'Sin ganador')+' · '+money(a.price)+'</div>'+
+      (isWinner?'<button class="btn blue auctionWinnerBtn" data-id="'+a.id+'" style="margin-top:10px">'+(existingOrder?'Datos enviados · pago pendiente':'Completar datos de envío')+'</button>':'')
+    :'<div class="countdown auctionClock" data-id="'+a.id+'">'+formatCountdown(auctionLeft(a))+'</div><p><b>Va ganando:</b> <span style="color:var(--green)">'+esc(a.leader||'Sin pujas')+'</span></p><p class="muted">Incremento mínimo: '+money(a.increment)+'</p><input class="bidAmount" data-id="'+a.id+'" type="number" step="0.01" placeholder="Tu puja total (mín. '+(Number(a.price)+Number(a.increment)).toFixed(2)+' €)"><button class="btn bidBtn" data-id="'+a.id+'" style="margin-top:9px">Hacer puja</button>')+
+   '</div>'
+ }).join('');
  qa('.bidBtn').forEach(b=>b.onclick=async()=>{const id=Number(b.dataset.id),a=auctions.find(x=>x.id===id);if(!a||a.closed||auctionLeft(a)<=0)return toast('La subasta ya ha finalizado');const amount=Number(q('.bidAmount[data-id="'+id+'"]').value),min=Number(a.price)+Number(a.increment);if(!amount||amount<min)return toast('La puja mínima ahora es '+money(min));b.disabled=true;const {error}=await sb.rpc('place_bid',{p_auction_id:id,p_amount:amount});b.disabled=false;if(error)return toast(error.message.includes('finalizado')?'La subasta ya ha finalizado':error.message.includes('insuficiente')?'La puja ya ha sido superada. Actualizando...':'No se pudo registrar la puja');await loadAuctions();toast(session.name+' va primero con '+money(amount))});
+ qa('.auctionWinnerBtn').forEach(b=>b.onclick=()=>{
+   const a=auctions.find(x=>x.id===Number(b.dataset.id));if(!a)return;
+   selectedAuctionWinner=a;
+   q('#auctionWinSummary').textContent='Has ganado '+a.name+' por '+money(a.price)+'. Completa los datos para que el administrador sepa dónde enviarlo.';
+   q('#auctionShipName').value=session?.name||'';
+   q('#auctionShipEmail').value=session?.email||'';
+   q('#auctionShipPhone').value='';
+   q('#auctionShipAddress1').value='';
+   q('#auctionShipAddress2').value='';
+   q('#auctionShipPostal').value='';
+   q('#auctionShipCity').value='';
+   q('#auctionShipProvince').value='';
+   q('#auctionShipCountry').value='España';
+   q('#auctionShipNotes').value='';
+   const existing=userOrders.find(o=>o.source_type==='auction'&&Number(o.source_id)===Number(a.id));
+   if(existing){
+     q('#auctionShipName').value=existing.customer_name||session?.name||'';
+     q('#auctionShipEmail').value=existing.customer_email||session?.email||'';
+     q('#auctionShipPhone').value=existing.customer_phone||'';
+     q('#auctionShipAddress1').value=existing.shipping_address1||'';
+     q('#auctionShipAddress2').value=existing.shipping_address2||'';
+     q('#auctionShipPostal').value=existing.shipping_postal_code||'';
+     q('#auctionShipCity').value=existing.shipping_city||'';
+     q('#auctionShipProvince').value=existing.shipping_province||'';
+     q('#auctionShipCountry').value=existing.shipping_country||'España';
+     q('#auctionShipNotes').value=existing.shipping_notes||'';
+   }
+   openModal('auctionShippingModal');
+ });
  renderAdminAuctions()
 }
 function renderAdminAuctions(){
@@ -557,6 +608,29 @@ function renderMessages(){
  if(off){const conv=messagesForOffer(off.id);q('#conversationBox').innerHTML='<div class="item"><b>Oferta: '+esc(off.name)+'</b><br><small>'+esc(off.price)+' € · '+esc(off.state)+' · '+esc(off.status)+'</small><br>'+esc(off.message||'')+'</div>'+conv.map(m=>'<div class="msg"><b>'+esc(m.fromName)+'</b><br>'+esc(m.text)+'</div>').join('');q('#conversationBox').scrollTop=q('#conversationBox').scrollHeight}else{q('#conversationBox').innerHTML='<p class="muted">Selecciona una oferta o conversación.</p>'}
 }
 q('#sendPrivateReply').onclick=async()=>{const text=q('#privateReply').value.trim(),off=offerByThread(activeConversation);if(!text||!off)return toast('Selecciona una oferta/conversación y escribe un mensaje');const {error}=await sb.from('offer_messages').insert({offer_id:off.id,sender_user_id:session.id,sender_name:session.name,message:text});if(error)return toast('No se pudo enviar');if(isAdmin()&&off.status==='Nueva')await sb.from('offers').update({status:'Respondida'}).eq('id',off.id);q('#privateReply').value='';await loadCommunityData();toast('Mensaje privado enviado')};
+q('#saveAuctionShipping').onclick=async()=>{
+ if(!selectedAuctionWinner)return toast('No hay subasta seleccionada');
+ const shipping={
+   name:q('#auctionShipName').value.trim(),
+   email:q('#auctionShipEmail').value.trim().toLowerCase(),
+   phone:q('#auctionShipPhone').value.trim(),
+   address1:q('#auctionShipAddress1').value.trim(),
+   address2:q('#auctionShipAddress2').value.trim(),
+   postal_code:q('#auctionShipPostal').value.trim(),
+   city:q('#auctionShipCity').value.trim(),
+   province:q('#auctionShipProvince').value.trim(),
+   country:q('#auctionShipCountry').value.trim()||'España',
+   notes:q('#auctionShipNotes').value.trim()
+ };
+ if(!shipping.name||!shipping.email||!shipping.phone||!shipping.address1||!shipping.postal_code||!shipping.city||!shipping.province||!shipping.country)return toast('Completa todos los datos de entrega obligatorios');
+ if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(shipping.email))return toast('Introduce un correo válido');
+ const btn=q('#saveAuctionShipping');btn.disabled=true;btn.textContent='Guardando...';
+ const {data,error}=await sb.rpc('create_auction_winner_order',{p_auction_id:selectedAuctionWinner.id,p_shipping:shipping});
+ btn.disabled=false;btn.textContent='Guardar datos del ganador';
+ if(error)return toast(error.message||'No se pudieron guardar los datos');
+ await loadOrders();renderAuctions();closeModal('auctionShippingModal');
+ toast('Datos guardados · pedido de subasta creado');
+};
 qa('.adminTab').forEach(b=>b.onclick=()=>{qa('.adminTab').forEach(x=>x.classList.toggle('active',x===b));qa('.adminPane').forEach(x=>x.classList.toggle('active',x.id===b.dataset.admin))});
 function renderAll(){renderAuth();renderLiveStats();renderProfile();renderProducts();renderCart();renderOrders();renderAuctions();renderRaffle();renderRafflePoll();renderChats();renderCommunity();renderOffers();renderMessages()}
 let livePollTimer=null, heartbeatTimer=null, syncBusy=false, syncTick=0;
