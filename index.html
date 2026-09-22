@@ -36,6 +36,9 @@ header{position:sticky;top:0;z-index:30;background:#06111df2;border-bottom:1px s
 .memberEmail{font-size:12px;color:var(--muted);margin:7px 0 0}
 .friendCardList{display:grid;gap:8px}.friendCard{display:flex;align-items:center;gap:9px;padding:9px;border:1px solid #214967;border-radius:11px;background:#081724}.friendCard .personMeta{flex:1}
 @media(max-width:760px){.catalogGrid{grid-template-columns:repeat(3,minmax(0,1fr));gap:7px}.compactProductCard,.compactAuction{padding:7px}.compactProductCard .productArt,.compactAuction .productArt{height:105px}.compactProductCard h3,.compactAuction h3{font-size:13px}.compactProductCard .price,.compactAuction .price{font-size:15px}.compactProductCard .btn,.compactAuction .btn{font-size:11px;padding:7px}.profileBlocks{grid-template-columns:1fr}.albumGrid{grid-template-columns:repeat(2,minmax(0,1fr))}.chatGeneralShell{height:76dvh;min-height:570px}}
+
+.profileSearchWrap{display:flex;gap:8px}.profileSearchWrap input{flex:1}.userSearchResults{display:grid;gap:8px;margin-top:10px}.searchUserRow,.conversationRow{display:flex;align-items:center;gap:9px;padding:9px;border:1px solid #214967;border-radius:11px;background:#081724}.searchUserRow button,.conversationRow button{margin-left:auto}.privatePanel{display:none;margin-top:10px;border:1px solid #214967;border-radius:14px;overflow:hidden;background:#06121d}.privatePanel.open{display:block}.privateHead{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:10px 12px;background:#081724;border-bottom:1px solid #214967}.privateBody{height:360px;overflow:auto;padding:12px}.privateComposer{display:flex;gap:8px;padding:10px;background:#081724;border-top:1px solid #214967}.privateComposer input{flex:1}.miniArrow{width:38px;height:38px;border-radius:10px;border:1px solid #2a5877;background:#0c2538;color:#fff;font-size:20px}
+@media(max-width:760px){.privateBody{height:310px}.profileSearchWrap{flex-direction:column}}
 </style>
 </head>
 <body>
@@ -142,6 +145,8 @@ header{position:sticky;top:0;z-index:30;background:#06111df2;border-bottom:1px s
   <div class="card profileBlock"><div class="title"><h3>👥 Amigos</h3><span class="tag" id="profileFriendCount">0</span></div><div id="profileFriendsList" class="friendCardList"></div></div>
   <div class="card profileBlock"><div class="title"><h3>Solicitudes</h3><span class="tag" id="profileRequestCount">0</span></div><div id="profileFriendRequests" class="friendCardList"></div></div>
 </div>
+<div class="card" style="margin-top:12px"><div class="title"><h3 style="margin:0">🔎 Agregar amigo</h3><span class="muted" style="font-size:12px">Busca por nickname</span></div><div class="profileSearchWrap"><input id="friendSearchInput" placeholder="Escribe un nickname..."><button class="btn blue" id="friendSearchBtn">Buscar</button></div><div id="friendSearchResults" class="userSearchResults"></div></div>
+<div class="card" style="margin-top:12px"><div class="title"><h3 style="margin:0">💬 Conversaciones</h3><span class="tag" id="privateUnreadCount">0</span></div><div id="profileConversations" class="friendCardList"></div><div id="privateChatPanel" class="privatePanel"><div class="privateHead"><button class="miniArrow" id="minimizePrivateChat" title="Minimizar">⌄</button><div><b id="privateChatName">Conversación</b><br><small class="muted" id="privateChatMeta"></small></div><button class="btn dark" id="privateProfileBtn">Ver perfil</button></div><div id="privateChatBody" class="privateBody"></div><div class="privateComposer"><input id="privateCommunityInput" placeholder="Escribe un mensaje privado..."><button class="btn blue" id="privateCommunitySend">Enviar</button></div></div></div>
 <div class="card" style="margin-top:12px"><button class="albumLaunch" id="openAlbumBtn"><span class="albumIcon">🔴</span><span><b>Mi álbum digital</b><br><small class="muted">Cartas conseguidas en tienda, subastas y rifas</small></span></button></div>
 <div class="card" style="margin-top:12px"><div class="profileTabs"><button class="profileTab active" data-profile="profilePurchases">🛒 Compras</button><button class="profileTab" data-profile="profileAuctions">🔨 Subastas</button><button class="profileTab" data-profile="profileRaffles">🎟️ Rifas</button><button class="profileTab" data-profile="profileSales">🃏 Compraventa</button></div><div class="profilePane active" id="profilePurchases"><div id="profilePurchasesList"></div></div><div class="profilePane" id="profileAuctions"><div id="profileAuctionsList"></div></div><div class="profilePane" id="profileRaffles"><div id="profileRafflesList"></div></div><div class="profilePane" id="profileSales"><div id="profileSalesList"></div></div><div id="myOrders" style="display:none"></div></div>
 </section>
@@ -198,7 +203,7 @@ header{position:sticky;top:0;z-index:30;background:#06111df2;border-bottom:1px s
 <div class="authPane" id="registerPane"><input id="regName" placeholder="Nombre de usuario"><input id="regEmail" type="email" placeholder="Correo" style="margin-top:8px"><input id="regPassword" type="password" placeholder="Contraseña segura" autocomplete="new-password" style="margin-top:8px"><input id="regPassword2" type="password" placeholder="Repite la contraseña" autocomplete="new-password" style="margin-top:8px"><p class="muted" style="font-size:12px;margin:8px 0 0">Mínimo 8 caracteres, con mayúscula, minúscula y número.</p><button class="btn blue" id="registerBtn" style="width:100%;margin-top:10px">Crear cuenta</button></div>
 </div></div>
 
-<div class="modal" id="memberProfileModal"><div class="box"><div class="memberModalTop"><div class="memberAvatar" id="memberAvatar">👤</div><h2 id="memberName">Usuario</h2><div><span class="socialBadge" id="memberRank"></span> <span class="socialBadge" id="memberNumber"></span></div><p class="memberEmail" id="memberEmail" style="display:none"></p><p class="friendSummary" id="memberFriends">👥 0 amigos de la comunidad</p></div><div class="actions" style="margin-top:14px;justify-content:center"><button class="btn" id="memberFriendBtn">👥 Agregar amigo</button><button class="btn dark" data-close="memberProfileModal">Cerrar</button></div></div></div>
+<div class="modal" id="memberProfileModal"><div class="box"><div class="memberModalTop"><div class="memberAvatar" id="memberAvatar">👤</div><h2 id="memberName">Usuario</h2><div><span class="socialBadge" id="memberRank"></span> <span class="socialBadge" id="memberNumber"></span></div><p class="memberEmail" id="memberEmail" style="display:none"></p><p class="friendSummary" id="memberFriends">👥 0 amigos de la comunidad</p></div><div class="actions" style="margin-top:14px;justify-content:center"><button class="btn blue" id="memberPrivateBtn">💬 Hablar privado</button><button class="btn" id="memberFriendBtn">👥 Agregar amigo</button><button class="btn dark" data-close="memberProfileModal">Cerrar</button></div></div></div>
 <div class="modal" id="albumModal"><div class="box"><div class="title"><h2>🔴 Mi álbum digital</h2><span class="tag" id="albumCount">0 cartas</span></div><p class="muted">Aquí se guardan las cartas que has conseguido en GPokeTCG.</p><div class="albumGrid" id="albumGrid"></div><div class="actions" style="margin-top:14px"><button class="btn dark" data-close="albumModal">Cerrar</button></div></div></div>
 <div class="modal" id="productModal"><div class="box"><div class="productArt">🃏</div><h2 id="detailName"></h2><div class="price" id="detailPrice"></div><p><b>Estado:</b> <span id="detailState"></span></p><p><b>Stock:</b> <span id="detailStock"></span></p><p><b>Detalles:</b></p><p class="muted" id="detailDesc"></p><div class="actions"><button class="btn" id="addToCart">Añadir al carrito</button><button class="btn dark" data-close="productModal">Cerrar</button></div></div></div>
 <div class="modal" id="cartModal"><div class="box"><h2>Carrito</h2><div id="cartRows"></div><div class="price" id="cartTotal"></div>
@@ -284,7 +289,7 @@ let communityChannel=null;
 let notifications=[];
 let notificationsChannel=null;
 let activeNotificationCategory=null;
-let communityMembers=[],friendships=[],socialChannel=null,selectedMemberId=null,albumCards=[];
+let communityMembers=[],friendships=[],directMessages=[],socialChannel=null,selectedMemberId=null,activeDmUserId=null,albumCards=[];
 let selectedProduct=null,selectedAuctionWinner=null,wheelAngle=0,spinning=false,lastSpinSeen=null,pendingWinnerText='';let adminOrderFilter='all';
 function money(n){return Number(n).toLocaleString('es-ES',{minimumFractionDigits:2,maximumFractionDigits:2})+' €'}
 async function renderLiveStats(){
@@ -695,13 +700,16 @@ q('#chatFileInput').onchange=async()=>{
 };
 async function loadSocial(){
  if(!logged())return;
- const [membersRes,friendsRes]=await Promise.all([sb.rpc('community_members_v2'),sb.rpc('my_friendships')]);
- if(membersRes.error||friendsRes.error){console.error(membersRes.error||friendsRes.error);return}
- communityMembers=membersRes.data||[];friendships=friendsRes.data||[];renderSocial();renderProfile();renderNotifications();
+ const [membersRes,friendsRes,dmRes]=await Promise.all([sb.rpc('community_members_v2'),sb.rpc('my_friendships'),sb.from('direct_messages').select('*').order('created_at',{ascending:true}).limit(1000)]);
+ if(membersRes.error||friendsRes.error||dmRes.error){console.error(membersRes.error||friendsRes.error||dmRes.error);return}
+ communityMembers=membersRes.data||[];friendships=friendsRes.data||[];directMessages=dmRes.data||[];renderSocial();renderProfile();renderNotifications();updateUnreadBadge();
 }
 function subscribeSocial(){
  if(socialChannel)sb.removeChannel(socialChannel);
- socialChannel=sb.channel('gpoketcg-social-live').on('postgres_changes',{event:'*',schema:'public',table:'friendships'},()=>loadSocial()).subscribe();
+ socialChannel=sb.channel('gpoketcg-social-live')
+ .on('postgres_changes',{event:'*',schema:'public',table:'friendships'},()=>loadSocial())
+ .on('postgres_changes',{event:'*',schema:'public',table:'direct_messages'},()=>loadSocial())
+ .subscribe();
 }
 function renderAvatarPicker(active){
  const box=q('#avatarPicker');if(!box)return;const defs=[['none','👤'],['ball','🔴'],['electric','⚡'],['fire','🔥'],['water','💧'],['leaf','🍃'],['dragon','🐉'],['trainer','🧢'],['star','⭐']];
@@ -714,14 +722,54 @@ function renderSocial(){
  const rc=q('#profileRequestCount');if(rc)rc.textContent=incoming.length;
  if(friendsBox){friendsBox.innerHTML=accepted.length?accepted.map(f=>{const m=memberById(f.other_user_id);return '<button class="friendCard friendPerson" data-user="'+f.other_user_id+'"><span class="avatarMini">'+avatarSymbol(m?.avatar_key||'none')+'</span><span class="personMeta"><b class="'+roleClass(f.other_role)+'">'+esc(f.other_username)+'</b><small>'+esc(f.other_role)+' · socio #'+esc(f.other_member_number||'—')+'</small></span></button>'}).join(''):'<p class="muted">Aún no tienes amigos en la comunidad.</p>';qa('.friendPerson').forEach(b=>b.onclick=()=>openMemberProfile(b.dataset.user))}
  if(requests){requests.innerHTML=incoming.length?incoming.map(f=>{const m=memberById(f.other_user_id);return '<div class="friendCard"><span class="avatarMini">'+avatarSymbol(m?.avatar_key||'none')+'</span><span class="personMeta"><b>'+esc(f.other_username)+'</b><small>Quiere agregarte como amigo</small></span><button class="btn blue acceptFriend" data-id="'+f.friendship_id+'">Aceptar</button><button class="btn dark rejectFriend" data-id="'+f.friendship_id+'">No</button></div>'}).join(''):'<p class="muted">No tienes solicitudes pendientes.</p>';qa('.acceptFriend').forEach(b=>b.onclick=async()=>{const {error}=await sb.rpc('respond_friend_request',{p_friendship_id:Number(b.dataset.id),p_accept:true});if(error)return toast(error.message);await loadSocial();toast('Amigo añadido')});qa('.rejectFriend').forEach(b=>b.onclick=async()=>{const {error}=await sb.rpc('respond_friend_request',{p_friendship_id:Number(b.dataset.id),p_accept:false});if(error)return toast(error.message);await loadSocial();toast('Solicitud rechazada')})}
+ renderPrivateConversations();
+}
+function otherDmUserId(m){return m.sender_id===session.id?m.recipient_id:m.sender_id}
+function renderPrivateConversations(){
+ const box=q('#profileConversations'),badge=q('#privateUnreadCount');if(!box)return;
+ const ids=[...new Set(directMessages.map(otherDmUserId))];
+ const rows=ids.map(id=>{const msgs=directMessages.filter(m=>otherDmUserId(m)===id),last=msgs[msgs.length-1],member=memberById(id),unread=msgs.filter(m=>m.recipient_id===session.id&&!m.read_at).length;return {id,last,member,unread}}).sort((a,b)=>new Date(b.last.created_at)-new Date(a.last.created_at));
+ const totalUnread=rows.reduce((s,r)=>s+r.unread,0);if(badge)badge.textContent=totalUnread;
+ box.innerHTML=rows.length?rows.map(r=>'<div class="conversationRow"><span class="avatarMini">'+avatarSymbol(r.member?.avatar_key||'none')+'</span><span class="personMeta"><b class="'+roleClass(r.member?.community_role||'Entrenador')+'">'+esc(r.member?.username||'Usuario')+'</b><small>'+esc(r.last.message||'Mensaje')+'</small></span>'+(r.unread?'<span class="unreadDot">'+r.unread+'</span>':'')+'<button class="btn dark openDm" data-user="'+r.id+'">Abrir</button></div>').join(''):'<p class="muted">Todavía no tienes conversaciones privadas.</p>';
+ qa('.openDm').forEach(b=>b.onclick=()=>openPrivateConversation(b.dataset.user));
+}
+async function openPrivateConversation(uid){
+ if(!uid||uid===session.id)return;
+ activeDmUserId=uid;
+ const m=memberById(uid);q('#privateChatName').textContent=m?.username||'Conversación';q('#privateChatMeta').textContent=m?((m.is_admin?'Admin':m.community_role)+' · socio #'+(m.member_number||'—')):'';
+ q('#privateChatPanel').classList.add('open');
+ await sb.from('direct_messages').update({read_at:new Date().toISOString()}).eq('sender_id',uid).eq('recipient_id',session.id).is('read_at',null);
+ await loadSocial();
+ renderPrivateRoom();
+ q('#privateCommunityInput').focus();
+}
+function renderPrivateRoom(){
+ const body=q('#privateChatBody');if(!body||!activeDmUserId)return;
+ const rows=directMessages.filter(m=>(m.sender_id===session.id&&m.recipient_id===activeDmUserId)||(m.sender_id===activeDmUserId&&m.recipient_id===session.id));
+ body.innerHTML=rows.length?rows.map(m=>'<div class="dmBubble '+(m.sender_id===session.id?'mine':'theirs')+'">'+esc(m.message)+'<small>'+new Date(m.created_at).toLocaleString('es-ES')+'</small></div>').join(''):'<p class="muted">Todavía no hay mensajes. Empieza la conversación.</p>';
+ body.scrollTop=body.scrollHeight;
+}
+q('#privateCommunitySend').onclick=async()=>{const msg=q('#privateCommunityInput').value.trim();if(!msg||!activeDmUserId)return;const {error}=await sb.from('direct_messages').insert({sender_id:session.id,recipient_id:activeDmUserId,message:msg});if(error)return toast(error.message||'No se pudo enviar');q('#privateCommunityInput').value='';await loadSocial();renderPrivateRoom()};
+q('#privateCommunityInput').addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();q('#privateCommunitySend').click()}});
+q('#minimizePrivateChat').onclick=()=>{q('#privateChatPanel').classList.remove('open');activeDmUserId=null;renderPrivateConversations()};
+q('#privateProfileBtn').onclick=()=>{if(activeDmUserId)openMemberProfile(activeDmUserId)};
+q('#friendSearchBtn').onclick=()=>searchCommunityUsers();
+q('#friendSearchInput').addEventListener('keydown',e=>{if(e.key==='Enter')searchCommunityUsers()});
+q('#friendSearchInput').addEventListener('input',()=>{if(q('#friendSearchInput').value.trim().length>=2)searchCommunityUsers()});
+function searchCommunityUsers(){
+ const term=q('#friendSearchInput').value.trim().toLowerCase(),box=q('#friendSearchResults');if(!term){box.innerHTML='';return}
+ const found=communityMembers.filter(m=>m.user_id!==session.id&&String(m.username||'').toLowerCase().includes(term)).slice(0,8);
+ box.innerHTML=found.length?found.map(m=>'<div class="searchUserRow"><span class="avatarMini">'+avatarSymbol(m.avatar_key||'none')+'</span><span class="personMeta"><b class="'+roleClass(m.community_role)+'">'+esc(m.username)+'</b><small>'+esc(m.is_admin?'Admin':m.community_role)+' · socio #'+esc(m.member_number||'—')+'</small></span><button class="btn dark viewSearchUser" data-user="'+m.user_id+'">Ver perfil</button></div>').join(''):'<p class="muted">No se encontró ningún nickname.</p>';
+ qa('.viewSearchUser').forEach(b=>b.onclick=()=>openMemberProfile(b.dataset.user));
 }
 async function openMemberProfile(uid){
  if(!uid)return;
  const {data,error}=await sb.rpc('community_member_profile',{p_user_id:uid});if(error||!data?.length)return toast('No se pudo abrir el perfil');
  const m=data[0];selectedMemberId=uid;q('#memberAvatar').textContent=avatarSymbol(m.avatar_key);q('#memberName').textContent=m.username||'Usuario';q('#memberRank').textContent=m.is_admin?'Admin':m.community_role;q('#memberNumber').textContent='Socio #'+(m.member_number||'—');const fc=Number(m.friend_count||0);q('#memberFriends').textContent='👥 '+fc+' '+(fc===1?'amigo':'amigos')+' de la comunidad';const em=q('#memberEmail');if(m.email){em.textContent=m.email;em.style.display='block'}else{em.textContent='';em.style.display='none'}
- const fb=q('#memberFriendBtn');if(uid===session.id){fb.style.display='none'}else{fb.style.display='inline-flex';fb.disabled=false;if(m.relationship_state==='friend')fb.textContent='✓ Amigos · eliminar';else if(m.relationship_state==='outgoing_pending'){fb.textContent='Solicitud enviada';fb.disabled=true}else if(m.relationship_state==='incoming_pending')fb.textContent='✓ Aceptar amistad';else fb.textContent='👥 Agregar amigo'}
+ const fb=q('#memberFriendBtn'),pb=q('#memberPrivateBtn');if(uid===session.id){fb.style.display='none';pb.style.display='none'}else{pb.style.display='inline-flex';fb.style.display='inline-flex';fb.disabled=false;if(m.relationship_state==='friend')fb.textContent='✓ Amigos · eliminar';else if(m.relationship_state==='outgoing_pending'){fb.textContent='Solicitud enviada';fb.disabled=true}else if(m.relationship_state==='incoming_pending')fb.textContent='✓ Aceptar amistad';else fb.textContent='👥 Agregar amigo'}
  openModal('memberProfileModal');
 }
+q('#memberPrivateBtn').onclick=()=>{if(!selectedMemberId)return;closeModal('memberProfileModal');go('perfil');setTimeout(()=>openPrivateConversation(selectedMemberId),50)};
 q('#memberFriendBtn').onclick=async()=>{const m=communityMembers.find(x=>x.user_id===selectedMemberId);if(!m)return;if(m.relationship_state==='friend'){if(!confirm('¿Eliminar a '+m.username+' de tus amigos?'))return;const {error}=await sb.rpc('remove_friend',{p_target:m.user_id});if(error)return toast(error.message);await loadSocial();closeModal('memberProfileModal');return toast('Amigo eliminado')}if(m.relationship_state==='incoming_pending'){const f=friendships.find(x=>x.other_user_id===m.user_id&&x.status==='pending'&&x.direction==='incoming');if(!f)return;const {error}=await sb.rpc('respond_friend_request',{p_friendship_id:Number(f.friendship_id),p_accept:true});if(error)return toast(error.message);await loadSocial();closeModal('memberProfileModal');return toast('Amigo añadido')}const {data,error}=await sb.rpc('send_friend_request',{p_target:m.user_id});if(error)return toast(error.message);await loadSocial();closeModal('memberProfileModal');toast(data==='accepted'?'Amigo añadido':'Solicitud enviada')};
 async function loadAlbum(){if(!logged())return;const {data,error}=await sb.rpc('my_card_album');if(error){console.error(error);return}albumCards=data||[];renderAlbum()}
 function renderAlbum(){const grid=q('#albumGrid'),count=q('#albumCount');if(count)count.textContent=albumCards.reduce((s,x)=>s+Number(x.quantity||1),0)+' cartas';if(!grid)return;grid.innerHTML=albumCards.length?albumCards.map(x=>'<div class="albumCard"><div class="productArt">'+(x.photo_url?'<img src="'+esc(x.photo_url)+'" alt="">':'🃏')+'</div><h4>'+esc(x.card_name)+'</h4><small class="muted">'+(x.source_type==='auction'?'Subasta':x.source_type==='raffle'?'Rifa':'Tienda')+(Number(x.quantity)>1?' · ×'+x.quantity:'')+'</small></div>').join(''):'<p class="muted">Tu álbum está vacío. Las cartas aparecerán aquí cuando las consigas en GPokeTCG.</p>'}
@@ -770,8 +818,9 @@ async function loadNotifications(){
 function updateUnreadBadge(){
  if(!session)return;
  const privateUnread=privateMessages.filter(m=>m.from_user_id!==session.id&&!messageReads.has(Number(m.id))).length;
+ const dmUnread=directMessages.filter(m=>m.recipient_id===session.id&&!m.read_at).length;
  const notificationUnread=notifications.filter(n=>!n.is_read).length;
- q('#unreadCount').textContent=privateUnread+notificationUnread;
+ q('#unreadCount').textContent=privateUnread+dmUnread+notificationUnread;
 }
 function notificationCategory(n){
  if(['order','order_status'].includes(n.type))return 'pedidos';
@@ -872,7 +921,7 @@ qa('.adminTab').forEach(b=>b.onclick=()=>{qa('.adminTab').forEach(x=>x.classList
 function renderProfileHistory(){if(!session)return;const purchases=userOrders.filter(o=>o.source_type!=='auction'),auctionOrders=userOrders.filter(o=>o.source_type==='auction'),raffleNotes=notifications.filter(n=>notificationCategory(n)==='rifas'),sales=offers.filter(o=>o.user_id===session.id||isAdmin());const orderCard=o=>'<div class="orderCard"><div class="orderHead"><b>'+esc(o.receipt_number||('Pedido #'+o.id))+'</b><span class="orderStatus">'+statusLabel(o.status)+'</span></div><div class="orderItems">'+orderItemsHtml(o)+'</div><div class="price">'+money(o.total)+'</div></div>';const pp=q('#profilePurchasesList');if(pp)pp.innerHTML=purchases.length?purchases.map(orderCard).join(''):'<p class="muted">Todavía no tienes compras.</p>';const pa=q('#profileAuctionsList');if(pa)pa.innerHTML=auctionOrders.length?auctionOrders.map(orderCard).join(''):'<p class="muted">Todavía no tienes subastas ganadas con pedido.</p>';const pr=q('#profileRafflesList');if(pr)pr.innerHTML=raffleNotes.length?raffleNotes.map(n=>'<div class="item"><b>'+esc(n.title)+'</b><br>'+esc(n.body)+'</div>').join(''):'<p class="muted">Todavía no tienes historial de rifas.</p>';const ps=q('#profileSalesList');if(ps)ps.innerHTML=sales.length?sales.map(o=>'<div class="item"><b>'+esc(o.name)+'</b><br><small>'+esc(o.status)+' · '+esc(o.price)+' €</small></div>').join(''):'<p class="muted">Todavía no tienes conversaciones de compraventa visibles.</p>'}
 function renderHomeHighlights(){const hp=q('#homeProducts'),ha=q('#homeAuctions'),hr=q('#homeRaffleMini');if(hp){const ps=products.filter(p=>p.active!==false).slice(0,3);hp.innerHTML=ps.length?ps.map(p=>'<div class="miniItem"><b>'+esc(p.name)+'</b><br><small>'+money(p.price)+' · '+(Number(p.stock)>0?'Disponible':'Agotado')+'</small></div>').join(''):'<p class="muted">Sin productos.</p>'}if(ha){const as=auctions.filter(a=>a.active!==false&&!a.closed&&auctionLeft(a)>0).slice(0,3);ha.innerHTML=as.length?as.map(a=>'<div class="miniItem"><b>'+esc(a.name)+'</b><br><small>'+money(a.price)+' · '+formatCountdown(auctionLeft(a))+'</small></div>').join(''):'<p class="muted">Sin subastas activas.</p>'}if(hr)hr.innerHTML=raffle.id?'<div class="miniItem"><b>'+esc(raffle.title)+'</b><br><small>'+money(raffle.price)+' · '+esc(raffle.status)+'</small></div>':'<p class="muted">Sin rifa activa.</p>'}
 qa('.profileTab').forEach(b=>b.onclick=()=>{qa('.profileTab').forEach(x=>x.classList.toggle('active',x===b));qa('.profilePane').forEach(x=>x.classList.toggle('active',x.id===b.dataset.profile))});
-function renderAll(){renderAuth();renderLiveStats();renderProfile();renderProducts();renderCart();renderOrders();renderAuctions();renderRaffle();renderRafflePoll();renderChats();renderCommunity();renderOffers();renderMessages();renderNotifications();renderHomeHighlights();renderSocial()}
+function renderAll(){renderAuth();renderLiveStats();renderProfile();renderProducts();renderCart();renderOrders();renderAuctions();renderRaffle();renderRafflePoll();renderChats();renderCommunity();renderOffers();renderMessages();renderNotifications();renderHomeHighlights();renderSocial();if(activeDmUserId)renderPrivateRoom()}
 let livePollTimer=null, heartbeatTimer=null, syncBusy=false, syncTick=0;
 async function refreshAllLiveData(){
  if(!logged()||document.hidden||syncBusy)return;
