@@ -16,8 +16,10 @@ header{position:fixed;left:0;right:0;top:0;width:100%;z-index:30;background:#061
   .top{height:60px;padding:8px 10px;flex-wrap:nowrap;gap:7px;max-width:none}
   .desktop{display:none}.menu{display:inline-flex;flex:0 0 auto}
   .top .brand{font-size:20px;white-space:nowrap;margin-right:auto}
-  .topStats,.role,#logoutBtn,#adminBtn{display:none!important}
-  #inboxBtn,#cartBtn,#profileBtn{flex:0 0 auto;padding:8px 9px}
+  .topStats,.role,#adminBtn{display:none!important}
+  #inboxBtn,#cartBtn,#profileBtn,#logoutBtn{flex:0 0 auto;padding:8px 9px}
+  #logoutBtn{display:inline-flex!important;font-size:0;align-items:center;justify-content:center}
+  #logoutBtn::before{content:'🚪';font-size:18px;line-height:1}
   .wrap{padding:12px 10px 70px}
   .grid3,.grid4,.stats,.formgrid{grid-template-columns:1fr}
   .heroMain{min-height:300px;padding:22px}.hero h1{font-size:58px}
