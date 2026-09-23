@@ -71,7 +71,7 @@ header{position:fixed;left:0;right:0;top:0;width:100%;z-index:30;background:#061
 .chatLine{display:flex;gap:9px;align-items:flex-start;margin-bottom:10px}.chatLine .avatarMini{margin-top:1px}.chatLineBody{min-width:0}.chatLineBody p{margin:3px 0 0}.chatImage{width:150px;height:150px;object-fit:cover;border-radius:10px;border:1px solid #214967;display:block;margin-top:7px;cursor:zoom-in}.chatFile{display:inline-flex;margin-top:7px;padding:8px 10px;border-radius:9px;background:#0c2a40;border:1px solid #2a5877;color:#fff;text-decoration:none}.stickerLarge{font-size:44px;line-height:1.1;margin-top:4px}
 .memberEmail{font-size:12px;color:var(--muted);margin:7px 0 0}
 .profileLegalCorner{display:none}.page#perfil.active .profileLegalCorner{display:block;position:fixed;right:18px;bottom:18px;z-index:25}.profileLegalBtn{width:42px;height:42px;border:1px solid #315e7b;background:#081724;color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:20px;box-shadow:0 8px 24px #0008;cursor:pointer}.profileLegalBtn:hover{border-color:#4d81a6;background:#0b2234;transform:translateY(-1px)}
-.friendCardList{display:grid;gap:8px}.friendCard{display:flex;align-items:center;gap:9px;padding:9px;border:1px solid #214967;border-radius:11px;background:#081724}.friendCard .personMeta{flex:1}
+.avatarProfileLink{border:0;padding:0;cursor:pointer;color:inherit}.avatarProfileLink:hover{transform:scale(1.06)}.friendCardList{display:grid;gap:8px}.friendCard{display:flex;align-items:center;gap:9px;padding:9px;border:1px solid #214967;border-radius:11px;background:#081724}.friendCard .personMeta{flex:1}
 @media(max-width:760px){.catalogGrid{grid-template-columns:repeat(3,minmax(0,1fr));gap:7px}.compactProductCard,.compactAuction{padding:7px}.compactProductCard .productArt,.compactAuction .productArt{height:105px}.compactProductCard h3,.compactAuction h3{font-size:13px}.compactProductCard .price,.compactAuction .price{font-size:15px}.compactProductCard .btn,.compactAuction .btn{font-size:11px;padding:7px}.profileBlocks{grid-template-columns:1fr}.albumGrid{grid-template-columns:repeat(3,minmax(0,1fr));gap:9px;max-width:345px}.albumCardNumber{font-size:10px;margin-top:3px}.chatGeneralShell{height:76dvh;min-height:570px}}
 
 .profileSearchWrap{display:flex;gap:8px}.profileSearchWrap input{flex:1}.userSearchResults{display:grid;gap:8px;margin-top:10px}.searchUserRow,.conversationRow{display:flex;align-items:center;gap:9px;padding:9px;border:1px solid #214967;border-radius:11px;background:#081724}.searchUserRow button,.conversationRow button{margin-left:auto}.privatePanel{display:none;margin-top:10px;border:1px solid #214967;border-radius:14px;overflow:hidden;background:#06121d}.privatePanel.open{display:block}.privateHead{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:10px 12px;background:#081724;border-bottom:1px solid #214967}.privateBody{height:360px;overflow:auto;padding:12px}.privateComposer{display:flex;gap:8px;padding:10px;background:#081724;border-top:1px solid #214967}.privateComposer input{flex:1}.miniArrow{width:38px;height:38px;border-radius:10px;border:1px solid #2a5877;background:#0c2538;color:#fff;font-size:20px}
@@ -181,7 +181,7 @@ header{position:fixed;left:0;right:0;top:0;width:100%;z-index:30;background:#061
 @media(max-width:760px){.pollAdminOptions{grid-template-columns:1fr}}
 #resetPasswordModal{z-index:140;background:#000e}#resetPasswordModal .box{width:min(460px,100%)}
 </style>
-<!-- cache v100: perfil usuario restaurado con boton de moderacion admin -->
+<!-- cache v101: avatares de usuario abren perfil -->
 </head>
 <body>
 <header><div class="top">
@@ -1291,7 +1291,7 @@ function chatMsgHtml(x){
  if(x.sticker_key)extra='<div class="stickerLarge '+(String(x.sticker_key).startsWith('type_')?'typeSticker':'')+'">'+stickerSymbol(x.sticker_key)+'</div>';
  else if(x.attachment_url&&x.attachment_type==='image')extra='<a href="'+esc(x.attachment_url)+'" target="_blank" rel="noopener"><img class="chatImage" src="'+esc(x.attachment_url)+'" alt="'+esc(x.attachment_name||'Imagen')+'"></a>';
  else if(x.attachment_url)extra='<a class="chatFile" href="'+esc(x.attachment_url)+'" target="_blank" rel="noopener">📎 '+esc(x.attachment_name||'Archivo')+'</a>';
- return '<div class="chatLine" data-msgid="'+x.id+'"><span class="avatarMini '+avatarClass(avatarKey)+'">'+avatar+'</span><div class="chatLineBody"><button class="chatUserBtn memberLink" data-user="'+esc(x.uid||'')+'"><span class="roleTypeSymbol">'+roleSymbol(role)+'</span><b class="roleName '+roleClass(role)+'">'+esc(x.u)+'</b></button>'+(x.m?'<p>'+esc(x.m)+'</p>':'')+extra+'</div></div>';
+ return '<div class="chatLine" data-msgid="'+x.id+'"><button class="avatarMini avatarProfileLink '+avatarClass(avatarKey)+'" data-user="'+esc(x.uid||'')+'" aria-label="Ver perfil de '+esc(x.u)+'">'+avatar+'</button><div class="chatLineBody"><button class="chatUserBtn memberLink" data-user="'+esc(x.uid||'')+'"><span class="roleTypeSymbol">'+roleSymbol(role)+'</span><b class="roleName '+roleClass(role)+'">'+esc(x.u)+'</b></button>'+(x.m?'<p>'+esc(x.m)+'</p>':'')+extra+'</div></div>';
 }
 function memberById(id){return communityMembers.find(m=>m.user_id===id)||null}
 function updateChatNewBadge(){
@@ -1309,7 +1309,7 @@ function renderChats(){
    const prevTop=room.scrollTop,prevHeight=room.scrollHeight;
    const wasAtBottom=room.scrollHeight-room.scrollTop-room.clientHeight<70;
    room.innerHTML=communityChat.length?communityChat.map(chatMsgHtml).join(''):'<p class="muted">Todavía no hay mensajes.</p>';
-   qa('#communityChat .memberLink').forEach(b=>b.onclick=()=>openMemberProfile(b.dataset.user));
+   qa('#communityChat .memberLink,#communityChat .avatarProfileLink').forEach(b=>b.onclick=()=>openMemberProfile(b.dataset.user));
    recomputeCommunityUnread();
    if(activeChatRoom==='community'){
      if(!chatInitialized||wasAtBottom){
@@ -1325,8 +1325,8 @@ function renderChats(){
    }
    chatInitialized=true;
  }
- q('#raffleChat').innerHTML=raffleChat.map(chatMsgHtml).join('');qa('#raffleChat .memberLink').forEach(b=>b.onclick=()=>openMemberProfile(b.dataset.user));q('#raffleChat').scrollTop=q('#raffleChat').scrollHeight;
- const rg=q('#raffleGeneralChat');if(rg){rg.innerHTML=communityChat.map(chatMsgHtml).join('');qa('#raffleGeneralChat .memberLink').forEach(b=>b.onclick=()=>openMemberProfile(b.dataset.user));rg.scrollTop=rg.scrollHeight}
+ q('#raffleChat').innerHTML=raffleChat.map(chatMsgHtml).join('');qa('#raffleChat .memberLink,#raffleChat .avatarProfileLink').forEach(b=>b.onclick=()=>openMemberProfile(b.dataset.user));q('#raffleChat').scrollTop=q('#raffleChat').scrollHeight;
+ const rg=q('#raffleGeneralChat');if(rg){rg.innerHTML=communityChat.map(chatMsgHtml).join('');qa('#raffleGeneralChat .memberLink,#raffleGeneralChat .avatarProfileLink').forEach(b=>b.onclick=()=>openMemberProfile(b.dataset.user));rg.scrollTop=rg.scrollHeight}
  qa('.chatImage').forEach(img=>img.onclick=e=>{e.preventDefault();q('#chatImageLarge').src=img.src;openModal('chatImageModal')});
 }
 q('#communityChat').addEventListener('scroll',()=>{
@@ -1445,7 +1445,7 @@ function renderSocial(){
  const fc=q('#profileFriendCount');if(fc)fc.textContent=accepted.length;
  const rc=q('#profileRequestCount');if(rc)rc.textContent=incoming.length;
  if(friendsBox){friendsBox.innerHTML=accepted.length?accepted.map(f=>{const m=memberById(f.other_user_id);return '<button class="friendCard friendPerson" data-user="'+f.other_user_id+'"><span class="avatarMini '+avatarClass(m?.avatar_key||'none')+'">'+avatarSymbol(m?.avatar_key||'none')+'</span><span class="personMeta"><b class="'+roleClass(f.other_role)+'">'+roleSymbol(f.other_role)+' '+esc(f.other_username)+'</b><small>'+esc(f.other_role)+' · socio #'+esc(f.other_member_number||'—')+'</small></span></button>'}).join(''):'<p class="muted">Aún no tienes amigos en la comunidad.</p>';qa('.friendPerson').forEach(b=>b.onclick=()=>openMemberProfile(b.dataset.user))}
- if(requests){requests.innerHTML=incoming.length?incoming.map(f=>{const m=memberById(f.other_user_id);return '<div class="friendCard"><span class="avatarMini">'+avatarSymbol(m?.avatar_key||'none')+'</span><span class="personMeta"><b>'+esc(f.other_username)+'</b><small>Quiere agregarte como amigo</small></span><button class="btn blue acceptFriend" data-id="'+f.friendship_id+'">Aceptar</button><button class="btn dark rejectFriend" data-id="'+f.friendship_id+'">No</button></div>'}).join(''):'<p class="muted">No tienes solicitudes pendientes.</p>';qa('.acceptFriend').forEach(b=>b.onclick=async()=>{const {error}=await sb.rpc('respond_friend_request',{p_friendship_id:Number(b.dataset.id),p_accept:true});if(error)return toast(error.message);await loadSocial();toast('Amigo añadido')});qa('.rejectFriend').forEach(b=>b.onclick=async()=>{const {error}=await sb.rpc('respond_friend_request',{p_friendship_id:Number(b.dataset.id),p_accept:false});if(error)return toast(error.message);await loadSocial();toast('Solicitud rechazada')})}
+ if(requests){requests.innerHTML=incoming.length?incoming.map(f=>{const m=memberById(f.other_user_id);return '<div class="friendCard"><button class="avatarMini avatarProfileLink '+avatarClass(m?.avatar_key||'none')+'" data-user="'+f.other_user_id+'" aria-label="Ver perfil">'+avatarSymbol(m?.avatar_key||'none')+'</button><span class="personMeta"><b>'+esc(f.other_username)+'</b><small>Quiere agregarte como amigo</small></span><button class="btn blue acceptFriend" data-id="'+f.friendship_id+'">Aceptar</button><button class="btn dark rejectFriend" data-id="'+f.friendship_id+'">No</button></div>'}).join(''):'<p class="muted">No tienes solicitudes pendientes.</p>';qa('.acceptFriend').forEach(b=>b.onclick=async()=>{const {error}=await sb.rpc('respond_friend_request',{p_friendship_id:Number(b.dataset.id),p_accept:true});if(error)return toast(error.message);await loadSocial();toast('Amigo añadido')});qa('#profileFriendRequests .avatarProfileLink').forEach(b=>b.onclick=()=>openMemberProfile(b.dataset.user));qa('.rejectFriend').forEach(b=>b.onclick=async()=>{const {error}=await sb.rpc('respond_friend_request',{p_friendship_id:Number(b.dataset.id),p_accept:false});if(error)return toast(error.message);await loadSocial();toast('Solicitud rechazada')})}
  renderPrivateConversations();syncProfileAccordions();
 }
 function otherDmUserId(m){return m.sender_id===session.id?m.recipient_id:m.sender_id}
@@ -1454,8 +1454,8 @@ function renderPrivateConversations(){
  const ids=[...new Set(directMessages.map(otherDmUserId))];
  const rows=ids.map(id=>{const msgs=directMessages.filter(m=>otherDmUserId(m)===id),last=msgs[msgs.length-1],member=memberById(id),unread=msgs.filter(m=>m.recipient_id===session.id&&!m.read_at).length;return {id,last,member,unread}}).sort((a,b)=>new Date(b.last.created_at)-new Date(a.last.created_at));
  const totalUnread=rows.reduce((s,r)=>s+r.unread,0);if(badge)badge.textContent=totalUnread;
- box.innerHTML=rows.length?rows.map(r=>'<div class="conversationRow"><span class="avatarMini '+avatarClass(r.member?.avatar_key||'none')+'">'+avatarSymbol(r.member?.avatar_key||'none')+'</span><span class="personMeta"><b class="'+roleClass(r.member?.community_role||'Entrenador')+'">'+roleSymbol(r.member?.community_role||'Entrenador')+' '+esc(r.member?.username||'Usuario')+'</b><small>'+esc(r.last.message||'Mensaje')+'</small></span>'+(r.unread?'<span class="unreadDot">'+r.unread+'</span>':'')+'<button class="btn dark openDm" data-user="'+r.id+'">Abrir</button></div>').join(''):'<p class="muted">Todavía no tienes conversaciones privadas.</p>';
- qa('.openDm').forEach(b=>b.onclick=()=>openPrivateConversation(b.dataset.user));
+ box.innerHTML=rows.length?rows.map(r=>'<div class="conversationRow"><button class="avatarMini avatarProfileLink '+avatarClass(r.member?.avatar_key||'none')+'" data-user="'+r.id+'" aria-label="Ver perfil">'+avatarSymbol(r.member?.avatar_key||'none')+'</button><span class="personMeta"><b class="'+roleClass(r.member?.community_role||'Entrenador')+'">'+roleSymbol(r.member?.community_role||'Entrenador')+' '+esc(r.member?.username||'Usuario')+'</b><small>'+esc(r.last.message||'Mensaje')+'</small></span>'+(r.unread?'<span class="unreadDot">'+r.unread+'</span>':'')+'<button class="btn dark openDm" data-user="'+r.id+'">Abrir</button></div>').join(''):'<p class="muted">Todavía no tienes conversaciones privadas.</p>';
+ qa('.openDm').forEach(b=>b.onclick=()=>openPrivateConversation(b.dataset.user));qa('#profileConversations .avatarProfileLink').forEach(b=>b.onclick=()=>openMemberProfile(b.dataset.user));
 }
 async function openPrivateConversation(uid){
  if(!uid||uid===session.id)return;
@@ -1484,8 +1484,8 @@ q('#friendSearchInput').addEventListener('input',()=>{if(q('#friendSearchInput')
 function searchCommunityUsers(){
  const term=q('#friendSearchInput').value.trim().toLowerCase(),box=q('#friendSearchResults');if(!term){box.innerHTML='';return}
  const found=communityMembers.filter(m=>m.user_id!==session.id&&String(m.username||'').toLowerCase().includes(term)).slice(0,8);
- box.innerHTML=found.length?found.map(m=>'<div class="searchUserRow"><span class="avatarMini">'+avatarSymbol(m.avatar_key||'none')+'</span><span class="personMeta"><b class="'+roleClass(m.community_role)+'">'+esc(m.username)+'</b><small>'+esc(m.is_admin?'Admin':m.community_role)+' · socio #'+esc(m.member_number||'—')+'</small></span><button class="btn dark viewSearchUser" data-user="'+m.user_id+'">Ver perfil</button></div>').join(''):'<p class="muted">No se encontró ningún nickname.</p>';
- qa('.viewSearchUser').forEach(b=>b.onclick=()=>openMemberProfile(b.dataset.user));
+ box.innerHTML=found.length?found.map(m=>'<div class="searchUserRow"><button class="avatarMini avatarProfileLink '+avatarClass(m.avatar_key||'none')+'" data-user="'+m.user_id+'" aria-label="Ver perfil de '+esc(m.username)+'">'+avatarSymbol(m.avatar_key||'none')+'</button><span class="personMeta"><b class="'+roleClass(m.community_role)+'">'+esc(m.username)+'</b><small>'+esc(m.is_admin?'Admin':m.community_role)+' · socio #'+esc(m.member_number||'—')+'</small></span><button class="btn dark viewSearchUser" data-user="'+m.user_id+'">Ver perfil</button></div>').join(''):'<p class="muted">No se encontró ningún nickname.</p>';
+ qa('.viewSearchUser,.searchUserRow .avatarProfileLink').forEach(b=>b.onclick=()=>openMemberProfile(b.dataset.user));
 }
 async function openMemberProfile(uid){
  if(!uid)return;
