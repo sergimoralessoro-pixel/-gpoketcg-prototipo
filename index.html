@@ -77,6 +77,31 @@ header{position:fixed;left:0;right:0;top:0;width:100%;z-index:30;background:#061
 
 .friendSearchCompact{display:grid;grid-template-columns:auto 1fr;gap:8px;align-items:center}.friendSearchToggle{width:44px;height:44px;border-radius:12px;border:1px solid #2a5877;background:#0c2538;color:#fff;font-size:21px;cursor:pointer}.friendSearchInline{display:none;gap:8px;align-items:center}.friendSearchCompact.open .friendSearchInline{display:flex}.friendSearchInline input{flex:1}.friendSearchCompact .userSearchResults{grid-column:1/-1;margin-top:0}.friendSearchCompact:not(.open) .userSearchResults{display:none}.profileAccordionBody.chatOpen #profileConversations{display:none}.profileAccordionBody.chatOpen{max-height:none;overflow:visible}.profileAccordionBody.chatOpen .privatePanel{margin-top:0}
 
+
+.chatChannelPicker{margin-bottom:12px}
+.chatChannelToggle{width:100%;display:flex;align-items:center;justify-content:space-between;gap:10px;padding:12px 14px;border:1px solid #2a5877;border-radius:12px;background:#0b2234;color:#fff;font-weight:900;cursor:pointer}
+.chatChannelMenu{display:none;margin-top:8px;padding:7px;border:1px solid #214967;border-radius:12px;background:#071724}
+.chatChannelMenu.open{display:grid;gap:6px}
+.chatChannelChoice{display:flex;align-items:center;justify-content:space-between;gap:10px;width:100%;padding:10px 12px;border:0;border-radius:9px;background:#0b2234;color:#fff;text-align:left;font-weight:850;cursor:pointer}
+.chatChannelChoice.active{background:#12344f}
+.chatRoomPanel{display:none}.chatRoomPanel.active{display:block}
+.channelUnread{display:none;min-width:22px;height:22px;padding:0 6px;border-radius:999px;background:#e53935;color:#fff;align-items:center;justify-content:center;font-size:11px;font-weight:1000}
+.channelUnread.show{display:inline-flex}
+.pollRoomShell{border:1px solid #214967;border-radius:16px;background:#06121d;overflow:hidden}
+.pollRoomHead{padding:13px 15px;background:#081724;border-bottom:1px solid #214967}
+.pollRoomHead h3{margin:0}
+.pollAdminBox{padding:12px;border-bottom:1px solid #214967;background:#071724}
+.pollAdminOptions{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px}
+.pollFeed{display:grid;gap:12px;padding:12px}
+.chatPollCard{padding:14px;border:1px solid #214967;border-radius:13px;background:#081724}
+.chatPollCard h3{margin:0 0 10px}
+.chatPollOption{display:flex;align-items:center;gap:8px;padding:9px 10px;border:1px solid #244b67;border-radius:10px;margin-top:7px;background:#071725}
+.chatPollOption input{width:auto;margin:0}
+.chatPollOptionText{flex:1}
+.chatPollVotes{font-size:12px;color:#aebdca;font-weight:800}
+.chatPollActions{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+.chatPollMeta{font-size:12px;color:#aebdca;margin-top:9px}
+@media(max-width:760px){.pollAdminOptions{grid-template-columns:1fr}}
 #resetPasswordModal{z-index:140;background:#000e}#resetPasswordModal .box{width:min(460px,100%)}
 </style>
 <!-- cache v49: filtro Gradeada / No gradeada -->
@@ -143,8 +168,8 @@ header{position:fixed;left:0;right:0;top:0;width:100%;z-index:30;background:#061
     <div class="productArt" id="raffleImageBox">🃏</div>
     <h2 id="raffleTitle">Sin rifa activa</h2>
     <p class="muted" id="raffleDesc"></p>
-    <div class="stats"><div class="stat"><small>Precio</small><b id="rafflePrice">—</b></div><div class="stat"><small>Reservados</small><b id="soldCount">0 / 0</b></div><div class="stat"><small>Pagados</small><b id="paidCount">0 / 0</b></div></div>
-    <button class="btn" id="buyRaffleBtn">Comprar números</button>
+    <div class="stats"><div class="stat"><small>Precio</small><b id="rafflePrice">—</b></div><div class="stat"><small>Reservados</small><b id="soldCount">0 / 0</b></div><div class="stat"><small>Confirmados</small><b id="paidCount">0 / 0</b></div></div>
+    <button class="btn" id="buyRaffleBtn">Elegir números</button>
     <button class="btn dark raffleToggle" id="toggleRafflePeople">👥 Ver participantes</button>
     <div class="raffleDetails" id="rafflePeopleWrap"><div class="tablewrap"><table><thead><tr><th>Usuario</th><th>Números</th><th>Estado</th></tr></thead><tbody id="participantRows"></tbody></table></div></div>
   </div>
@@ -154,7 +179,7 @@ header{position:fixed;left:0;right:0;top:0;width:100%;z-index:30;background:#061
 
 <div class="card raffleChatCard"><h3>💬 Chat de la rifa</h3><div class="chat" id="raffleChat"></div><div class="chatbar"><input id="raffleChatInput" placeholder="Mensaje"><button class="btn blue" id="raffleChatSend">Enviar</button></div></div>
 
-<div class="card raffleHow"><h3>Cómo funciona</h3><div class="list"><div class="item">1. Primero se completa la encuesta de interés</div><div class="item">2. Al llenarse, se abre automáticamente la rifa</div><div class="item">3. Cuando la rifa está abierta, cada usuario elige sus números y paga en ese momento</div><div class="item">4. Cada pago confirmado añade al usuario a la rifa</div><div class="item">5. Cuando todas las plazas están vendidas y pagadas, se habilita el sorteo</div></div></div>
+<div class="card raffleHow"><h3>Cómo funciona</h3><div class="list"><div class="item">1. Primero se completa la encuesta de interés</div><div class="item">2. Al llenarse, se abre automáticamente la rifa</div><div class="item">3. Cuando la rifa está abierta, cada usuario elige sus números</div><div class="item">4. El administrador confirma las participaciones</div><div class="item">5. Cuando todas las plazas están completas y confirmadas, se habilita el sorteo</div></div></div>
 </section>
 
 <section class="page" id="comunidad"><div class="title"><h2>Comunidad</h2><span class="tag">Noticias · Eventos</span></div><div class="two">
@@ -162,7 +187,16 @@ header{position:fixed;left:0;right:0;top:0;width:100%;z-index:30;background:#061
 <div class="card"><h3>📅 Eventos</h3><div class="list" id="eventsFeed"></div></div>
 </div></section>
 
-<section class="page" id="chat"><div class="title"><h2>Chat general</h2><span class="tag">EN DIRECTO</span></div>
+<section class="page" id="chat">
+<div class="title"><h2>Chat</h2><span class="tag">COMUNIDAD</span></div>
+<div class="chatChannelPicker">
+  <button class="chatChannelToggle" id="chatChannelToggle"><span id="chatChannelCurrent">💬 Chat general</span><span>⌄</span></button>
+  <div class="chatChannelMenu" id="chatChannelMenu">
+    <button class="chatChannelChoice active" data-chat-room="community"><span>💬 Chat general</span><span class="channelUnread" id="generalUnreadBadge">0</span></button>
+    <button class="chatChannelChoice" data-chat-room="polls"><span>📊 Encuestas</span></button>
+  </div>
+</div>
+<div class="chatRoomPanel active" id="chatRoomCommunity">
 <div class="chatGeneralShell">
   <div class="chatGeneralHead"><h3>🌍 Comunidad GPokeTCG</h3><small class="muted">Pulsa un nickname para ver su perfil · archivos e imágenes sí · audios no</small></div>
   <div class="chatGeneralBody" id="communityChat"></div><button class="chatNewBadge" id="chatNewBadge">0 ↓</button>
@@ -176,7 +210,25 @@ header{position:fixed;left:0;right:0;top:0;width:100%;z-index:30;background:#061
     <input id="communityInput" type="text" placeholder="Escribe en el chat general...">
     <button class="btn blue" id="communitySend">Enviar</button>
   </div>
-</div></section>
+</div>
+</div>
+<div class="chatRoomPanel" id="chatRoomPolls">
+  <div class="pollRoomShell">
+    <div class="pollRoomHead"><h3>📊 Encuestas GPokeTCG</h3><small class="muted">Los administradores publican las encuestas y la comunidad solo puede votar.</small></div>
+    <div class="pollAdminBox" id="chatPollAdminBox" style="display:none">
+      <input id="chatPollQuestion" maxlength="240" placeholder="Pregunta de la encuesta">
+      <div class="pollAdminOptions">
+        <input class="chatPollOptionInput" placeholder="Opción 1">
+        <input class="chatPollOptionInput" placeholder="Opción 2">
+        <input class="chatPollOptionInput" placeholder="Opción 3 (opcional)">
+        <input class="chatPollOptionInput" placeholder="Opción 4 (opcional)">
+      </div>
+      <button class="btn blue" id="createChatPoll" style="margin-top:9px">Publicar encuesta</button>
+    </div>
+    <div class="pollFeed" id="chatPollFeed"></div>
+  </div>
+</div>
+</section>
 
 <section class="page" id="vender"><div class="title"><h2>Vender tus cartas</h2><span class="tag">Privado al admin</span></div><div class="card"><p class="muted">Tu propuesta privada llegará al administrador de GPokeTCG.</p><div class="formgrid"><input id="sellName" placeholder="Nombre de la carta"><input id="sellPrice" type="number" placeholder="Precio solicitado (€)"><select id="sellState"><option>Near Mint</option><option>Excellent</option><option>Played</option><option>PSA / Graded</option></select><textarea id="sellMessage" placeholder="Detalles..."></textarea><div class="upload"><b>Foto de la carta</b><input id="sellPhoto" type="file" accept="image/*"><small class="muted">JPG, PNG o foto desde el móvil · máximo 5 MB</small></div></div><button class="btn" id="sendOffer" style="margin-top:10px">Enviar propuesta privada</button></div></section>
 
@@ -285,7 +337,7 @@ header{position:fixed;left:0;right:0;top:0;width:100%;z-index:30;background:#061
 <textarea id="auctionShipNotes" placeholder="Notas para la entrega (opcional)"></textarea>
 </div><p class="muted" style="font-size:12px;margin:10px 0 0">El importe ganador quedará pendiente hasta que conectemos el pago real. Estos datos llegarán al administrador para preparar el envío.</p>
 <div class="actions" style="margin-top:12px"><button class="btn" id="saveAuctionShipping">Guardar datos del ganador</button><button class="btn dark" data-close="auctionShippingModal">Cerrar</button></div></div></div>
-<div class="modal" id="raffleModal"><div class="box"><h2>Comprar números</h2><input id="raffleBuyer" placeholder="Usuario"><input id="raffleQty" type="number" value="1" min="1" max="20" style="margin-top:8px"><div class="actions" style="margin-top:10px"><button class="btn" id="confirmRaffle" >Comprar números</button><button class="btn dark" data-close="raffleModal">Cancelar</button></div></div></div>
+<div class="modal" id="raffleModal"><div class="box"><h2>Elegir números</h2><input id="raffleBuyer" placeholder="Usuario"><input id="raffleQty" type="number" value="1" min="1" max="20" style="margin-top:8px"><div class="actions" style="margin-top:10px"><button class="btn" id="confirmRaffle" >Confirmar números</button><button class="btn dark" data-close="raffleModal">Cancelar</button></div></div></div>
 <div class="modal" id="resetPasswordModal"><div class="box"><h2>Nueva contraseña</h2><p class="muted">Introduce una contraseña nueva para tu cuenta.</p><input id="newPassword" type="password" placeholder="Nueva contraseña" autocomplete="new-password"><input id="newPassword2" type="password" placeholder="Repite la contraseña" autocomplete="new-password" style="margin-top:8px"><div class="actions" style="margin-top:10px"><button class="btn blue" id="saveNewPassword">Guardar contraseña</button></div></div></div>
 <div class="toast" id="toast"></div>
 
@@ -344,7 +396,7 @@ let communityChannel=null;
 let notifications=[];
 let notificationsChannel=null;
 let activeNotificationCategory=null;
-let communityMembers=[],friendships=[],directMessages=[],socialChannel=null,selectedMemberId=null,activeDmUserId=null,albumCards=[],albumPage=0;let friendsAccordionOpen=false,conversationsAccordionOpen=false;let chatLastRenderedId=0,chatUnreadLive=0,chatFirstUnreadId=null,chatInitialized=false;
+let communityMembers=[],friendships=[],directMessages=[],socialChannel=null,selectedMemberId=null,activeDmUserId=null,albumCards=[],albumPage=0;let friendsAccordionOpen=false,conversationsAccordionOpen=false;let chatLastRenderedId=0,chatUnreadLive=0,chatFirstUnreadId=null,chatInitialized=false;let activeChatRoom='community',chatReadLastId=0,chatPersistentUnread=0,chatPolls=[],chatPollVotes=[],chatPollResults=[];
 let selectedProduct=null,selectedAuctionWinner=null,wheelAngle=0,spinning=false,lastSpinSeen=null,pendingWinnerText='';let adminOrderFilter='all';
 function money(n){return Number(n).toLocaleString('es-ES',{minimumFractionDigits:2,maximumFractionDigits:2})+' €'}
 async function renderLiveStats(){
@@ -493,7 +545,7 @@ async function loadCommunityData(){
  offers=(offerRes.data||[]).filter(o=>!hiddenOfferIds.has(Number(o.id))).map(o=>({id:o.id,user_id:o.user_id,name:o.card_name,price:o.requested_price??'—',state:o.card_state,contact:o.contact,message:o.message,photo:o.photo_url||'',sender:o.sender_name,senderEmail:o.sender_email,status:o.status,created:new Date(o.created_at).getTime()}));
  privateMessages=(msgRes.data||[]).filter(m=>!hiddenOfferIds.has(Number(m.offer_id))).map(m=>({id:m.id,offer_id:m.offer_id,from_user_id:m.sender_user_id,fromName:m.sender_name,text:m.message,attachment_url:m.attachment_url||'',attachment_name:m.attachment_name||'',attachment_type:m.attachment_type||'',time:new Date(m.created_at).getTime()}));
  messageReads=new Set((readRes.data||[]).map(r=>Number(r.message_id)));
- renderChats();renderCommunity();renderOffers();renderMessages();
+ await loadChatExtras();renderChats();renderCommunity();renderOffers();renderMessages();
 }
 function subscribeCommunity(){
  if(communityChannel)sb.removeChannel(communityChannel);
@@ -503,6 +555,9 @@ function subscribeCommunity(){
    .on('postgres_changes',{event:'*',schema:'public',table:'events'},()=>loadCommunityData())
    .on('postgres_changes',{event:'*',schema:'public',table:'offers'},()=>loadCommunityData())
    .on('postgres_changes',{event:'*',schema:'public',table:'offer_messages'},()=>loadCommunityData())
+   .on('postgres_changes',{event:'*',schema:'public',table:'chat_polls'},()=>loadChatExtras())
+   .on('postgres_changes',{event:'*',schema:'public',table:'chat_poll_votes'},()=>loadChatExtras())
+   .on('postgres_changes',{event:'*',schema:'public',table:'chat_room_reads'},payload=>{if(payload.new?.user_id===session?.id||payload.old?.user_id===session?.id)loadChatExtras()})
    .subscribe();
 }
 function compressDataUrl(src,maxW=900,maxH=900,quality=.78){return new Promise(resolve=>{if(!src)return resolve('');const img=new Image();img.onload=()=>{let w=img.naturalWidth,h=img.naturalHeight,scale=Math.min(1,maxW/w,maxH/h);w=Math.max(1,Math.round(w*scale));h=Math.max(1,Math.round(h*scale));const cv=document.createElement('canvas');cv.width=w;cv.height=h;cv.getContext('2d').drawImage(img,0,0,w,h);resolve(cv.toDataURL('image/jpeg',quality))};img.onerror=()=>resolve(src);img.src=src})}
@@ -527,7 +582,7 @@ function esc(s){return String(s??'').replace(/[&<>\"]/g,m=>({'&':'&amp;','<':'&l
 function isAdmin(){return session&&session.role==='admin'}
 function logged(){return !!session}
 function toast(t){const x=q('#toast');x.textContent=t;x.style.display='block';clearTimeout(window._t);window._t=setTimeout(()=>x.style.display='none',2200)}
-function go(id){if(id==='adminPage'&&!isAdmin())return toast('Solo el administrador puede entrar');qa('.page').forEach(p=>p.classList.toggle('active',p.id===id));qa('[data-page]').forEach(b=>b.classList.toggle('active',b.dataset.page===id));closeDrawer();window.scrollTo({top:0,behavior:'smooth'})}
+function go(id){if(id==='adminPage'&&!isAdmin())return toast('Solo el administrador puede entrar');qa('.page').forEach(p=>p.classList.toggle('active',p.id===id));qa('[data-page]').forEach(b=>b.classList.toggle('active',b.dataset.page===id));closeDrawer();window.scrollTo({top:0,behavior:'smooth'});if(id==='chat')setTimeout(()=>openChatChannel(activeChatRoom||'community',true),80)}
 function openModal(id){q('#'+id).classList.add('open')}function closeModal(id){q('#'+id).classList.remove('open')}
 function closeDrawer(){q('#drawer').classList.remove('open');q('#drawerBack').classList.remove('open')}
 qa('[data-page]').forEach(b=>b.addEventListener('click',()=>go(b.dataset.page)));qa('[data-go]').forEach(b=>b.addEventListener('click',()=>go(b.dataset.go)));qa('[data-close]').forEach(b=>b.addEventListener('click',()=>closeModal(b.dataset.close)));
@@ -662,15 +717,15 @@ function drawWheel(){const c=q('#wheel'),ctx=c.getContext('2d'),e=paidEntries();
 function renderRaffle(){
  q('#raffleTitle').textContent=raffle.title||'Sin rifa activa';q('#raffleDesc').textContent=raffle.desc||'';q('#rafflePrice').textContent=money(raffle.price||0);const rs=q('#raffleSlots');if(rs)rs.textContent=raffle.slots||0;q('#homeRaffleTitle').textContent=raffle.title||'Sin rifa activa';q('#homeRaffleMeta').textContent=(raffle.slots||0)+' números · '+money(raffle.price||0)+' por número';
  const reserved=participants.reduce((s,p)=>s+p.qty,0),paid=participants.filter(p=>p.status==='Pagado').reduce((s,p)=>s+p.qty,0);q('#soldCount').textContent=reserved+' / '+(raffle.slots||0);q('#paidCount').textContent=paid+' / '+(raffle.slots||0);
- const statusLabel=raffle.status==='active'?'RESERVAS ABIERTAS':raffle.status==='payment_processing'?'PROCESANDO PAGOS':raffle.status==='ready_to_draw'?'LISTA PARA SORTEO':raffle.status==='closed'?'FINALIZADA':'SIN RIFA';q('#raffleStatusTag').textContent=statusLabel;
- q('#participantRows').innerHTML=participants.map(p=>'<tr><td>'+esc(p.alias)+'</td><td>'+p.qty+'</td><td class="'+(p.status==='Pagado'?'paid':'pending')+'">'+(p.status==='Pagado'?'Pagado':'Pago pendiente')+'</td></tr>').join('');
- q('#adminParticipants').innerHTML=participants.map(p=>'<div class="adminItem itemRow"><span>'+esc(p.alias)+' · '+p.qty+' · '+(p.status==='Pagado'?'Pagado':'Pago pendiente')+'</span><span>'+(p.status==='Pendiente'?'<button class="btn blue markPaid" data-id="'+p.id+'">Confirmar pago</button> ':'')+'<button class="btn dark delPart" data-id="'+p.id+'">Eliminar</button></span></div>').join('');
- qa('.markPaid').forEach(b=>b.onclick=async()=>{if(!isAdmin())return;const {error}=await sb.rpc('admin_mark_raffle_entry_paid',{p_entry_id:Number(b.dataset.id)});if(error)return toast('No se pudo confirmar el pago');await loadRaffle();toast('Pago confirmado')});
+ const statusLabel=raffle.status==='active'?'RESERVAS ABIERTAS':raffle.status==='payment_processing'?'COMPLETANDO PARTICIPACIONES':raffle.status==='ready_to_draw'?'LISTA PARA SORTEO':raffle.status==='closed'?'FINALIZADA':'SIN RIFA';q('#raffleStatusTag').textContent=statusLabel;
+ q('#participantRows').innerHTML=participants.map(p=>'<tr><td>'+esc(p.alias)+'</td><td>'+p.qty+'</td><td class="'+(p.status==='Pagado'?'paid':'pending')+'">'+(p.status==='Pagado'?'Confirmado':'Pendiente')+'</td></tr>').join('');
+ q('#adminParticipants').innerHTML=participants.map(p=>'<div class="adminItem itemRow"><span>'+esc(p.alias)+' · '+p.qty+' · '+(p.status==='Pagado'?'Confirmado':'Pendiente')+'</span><span>'+(p.status==='Pendiente'?'<button class="btn blue markPaid" data-id="'+p.id+'">Confirmar participación</button> ':'')+'<button class="btn dark delPart" data-id="'+p.id+'">Eliminar</button></span></div>').join('');
+ qa('.markPaid').forEach(b=>b.onclick=async()=>{if(!isAdmin())return;const {error}=await sb.rpc('admin_mark_raffle_entry_paid',{p_entry_id:Number(b.dataset.id)});if(error)return toast('No se pudo confirmar la participación');await loadRaffle();toast('Participación confirmada')});
  qa('.delPart').forEach(b=>b.onclick=async()=>{if(!isAdmin())return;const {error}=await sb.from('raffle_entries').delete().eq('id',Number(b.dataset.id));if(error)return toast('No se pudo eliminar');await loadRaffle()});
  q('#rTitle').value=raffle.title||'';q('#rPrice').value=raffle.price||'';q('#rSlots').value=raffle.slots||'';q('#rDesc').value=raffle.desc||'';
  const rb=q('#raffleImageBox');rb.innerHTML=raffle.photo?'<img src="'+raffle.photo+'" alt="">':'🃏';
  if(!spinning)q('#winnerText').textContent=raffle.winner?'🏆 Ganador: '+raffle.winner+(raffle.winnerTicket?' · Nº '+raffle.winnerTicket:''):'';
- q('#buyRaffleBtn').disabled=!raffle.id||raffle.status!=='active';q('#buyRaffleBtn').textContent=raffle.status==='active'?'Comprar números':raffle.status==='payment_processing'?'Rifa completa · verificando pagos':raffle.status==='ready_to_draw'?'Pagos confirmados · esperando sorteo':'Rifa cerrada';
+ q('#buyRaffleBtn').disabled=!raffle.id||raffle.status!=='active';q('#buyRaffleBtn').textContent=raffle.status==='active'?'Elegir números':raffle.status==='payment_processing'?'Rifa completa · confirmando participaciones':raffle.status==='ready_to_draw'?'Participaciones confirmadas · esperando sorteo':'Rifa cerrada';
  const adminR=q('#adminCurrentRaffle');
  if(adminR){
    adminR.innerHTML=raffle.id?'<div class="adminItem"><div class="itemRow"><span><b>'+esc(raffle.title)+'</b><br><small>'+money(raffle.price)+' · '+raffle.slots+' plazas · '+esc(raffle.status)+'</small></span><span><button class="btn dark" id="editCurrentRaffle">Editar</button> <button class="btn dark" id="deleteCurrentRaffle">Eliminar</button></span></div></div>':'<p class="muted">No hay rifa activa.</p>';
@@ -682,7 +737,7 @@ function renderRaffle(){
  if(!spinning)drawWheel()
 }
 q('#buyRaffleBtn').onclick=()=>{if(!raffle.id||raffle.status!=='active')return toast('No hay una rifa activa');q('#raffleBuyer').value=session?session.name:'';openModal('raffleModal')};
-q('#confirmRaffle').onclick=async()=>{if(!raffle.id)return toast('No hay rifa activa');const alias=q('#raffleBuyer').value.trim()||(session&&session.name)||'Usuario',qty=Math.max(1,Math.min(20,Number(q('#raffleQty').value)||1));const btn=q('#confirmRaffle');btn.disabled=true;const {error}=await sb.rpc('buy_raffle_slots',{p_raffle_id:raffle.id,p_quantity:qty,p_alias:alias});btn.disabled=false;if(error)return toast(error.message.includes('suficientes')?'No quedan suficientes números':'No se pudo reservar los números');closeModal('raffleModal');await loadRaffle();toast('Números seleccionados. El pago se realizará ahora; al conectarlo, la pasarela confirmará el cobro automáticamente')};
+q('#confirmRaffle').onclick=async()=>{if(!raffle.id)return toast('No hay rifa activa');const alias=q('#raffleBuyer').value.trim()||(session&&session.name)||'Usuario',qty=Math.max(1,Math.min(20,Number(q('#raffleQty').value)||1));const btn=q('#confirmRaffle');btn.disabled=true;const {error}=await sb.rpc('buy_raffle_slots',{p_raffle_id:raffle.id,p_quantity:qty,p_alias:alias});btn.disabled=false;if(error)return toast(error.message.includes('suficientes')?'No quedan suficientes números':'No se pudo reservar los números');closeModal('raffleModal');await loadRaffle();toast('Números seleccionados. La participación queda pendiente de confirmación por el administrador')};
 function animateLiveWheel(){
  if(spinning)return;
  spinning=true;
@@ -711,15 +766,88 @@ function animateLiveWheel(){
  }
  requestAnimationFrame(frame);
 }
-q('#spinBtn').onclick=async()=>{if(!isAdmin())return toast('Solo el administrador puede girar');if(!raffle.id||spinning)return;const e=paidEntries();if(!e.length)return toast('No hay participantes pagados');q('#winnerText').textContent='🎡 Sorteo en directo...';const {data,error}=await sb.rpc('draw_raffle_winner',{p_raffle_id:raffle.id});if(error)return toast(error.message);await loadRaffle();if(data&&data[0])toast('Sorteo iniciado')};
+q('#spinBtn').onclick=async()=>{if(!isAdmin())return toast('Solo el administrador puede girar');if(!raffle.id||spinning)return;const e=paidEntries();if(!e.length)return toast('No hay participantes confirmados');q('#winnerText').textContent='🎡 Sorteo en directo...';const {data,error}=await sb.rpc('draw_raffle_winner',{p_raffle_id:raffle.id});if(error)return toast(error.message);await loadRaffle();if(data&&data[0])toast('Sorteo iniciado')};
 q('#saveRaffle').onclick=async()=>{try{if(!isAdmin())return toast('Solo administrador');const title=q('#rTitle').value.trim(),price=Number(q('#rPrice').value),slots=Number(q('#rSlots').value);if(!title||price<=0||slots<=0)return toast('Completa carta, precio por número y plazas');const photo=await fileData(q('#rPhoto'));let error;if(raffle.id){const payload={title,price_per_slot:price,total_slots:Math.max(1,slots),description:q('#rDesc').value.trim()};if(photo)payload.photo_url=photo;({error}=await sb.from('raffles').update(payload).eq('id',raffle.id))}else{({error}=await sb.from('raffles').insert({title,price_per_slot:price,total_slots:Math.max(1,slots),description:q('#rDesc').value.trim(),photo_url:photo||null,status:'active'}))}if(error)return toast('No se pudo guardar la rifa');q('#rPhoto').value='';await loadRaffle();toast(raffle.id?'Rifa actualizada correctamente':'Rifa creada correctamente')}catch(e){console.error(e);toast('No se pudo guardar la rifa')}};
 q('#addParticipant').onclick=async()=>{if(!isAdmin())return toast('Solo administrador');if(!raffle.id)return toast('No hay rifa');const alias=q('#aAlias').value.trim();if(!alias)return toast('Pon un alias');const qty=Math.max(1,Number(q('#aQty').value)||1),status=q('#aStatus').value==='Pagado'?'paid':'pending';const {error}=await sb.from('raffle_entries').insert({raffle_id:raffle.id,user_id:null,alias,quantity:qty,status});if(error)return toast('No se pudo añadir participante');q('#aAlias').value='';await loadRaffle()};
+async function loadChatExtras(){
+ if(!logged())return;
+ const [readRes,pollRes,voteRes,resultRes]=await Promise.all([
+   sb.from('chat_room_reads').select('last_read_message_id').eq('channel','community').maybeSingle(),
+   sb.from('chat_polls').select('*').order('created_at',{ascending:false}),
+   sb.from('chat_poll_votes').select('poll_id,option_index').eq('user_id',session.id),
+   sb.rpc('chat_poll_results')
+ ]);
+ if(!readRes.error)chatReadLastId=Number(readRes.data?.last_read_message_id||0);
+ if(!pollRes.error)chatPolls=pollRes.data||[];
+ if(!voteRes.error)chatPollVotes=voteRes.data||[];
+ if(!resultRes.error)chatPollResults=resultRes.data||[];
+ recomputeCommunityUnread();
+ renderChatPolls();
+}
+async function markCommunityRead(messageId){
+ const id=Number(messageId||0);if(!logged()||!id||id<=chatReadLastId)return;
+ const {error}=await sb.from('chat_room_reads').upsert({user_id:session.id,channel:'community',last_read_message_id:id,updated_at:new Date().toISOString()},{onConflict:'user_id,channel'});
+ if(!error){chatReadLastId=id;recomputeCommunityUnread()}
+}
+function recomputeCommunityUnread(){
+ const unread=communityChat.filter(x=>(Number(x.id)||0)>chatReadLastId&&x.uid!==session?.id);
+ chatPersistentUnread=unread.length;
+ chatFirstUnreadId=unread.length?unread[0].id:null;
+ const b=q('#generalUnreadBadge');if(b){b.textContent=chatPersistentUnread;b.classList.toggle('show',chatPersistentUnread>0)}
+ updateChatNewBadge();
+}
+function openChatChannel(room,fromNavigation=false){
+ activeChatRoom=room==='polls'?'polls':'community';
+ q('#chatRoomCommunity')?.classList.toggle('active',activeChatRoom==='community');
+ q('#chatRoomPolls')?.classList.toggle('active',activeChatRoom==='polls');
+ qa('.chatChannelChoice').forEach(b=>b.classList.toggle('active',b.dataset.chatRoom===activeChatRoom));
+ const current=q('#chatChannelCurrent');if(current)current.textContent=activeChatRoom==='community'?'💬 Chat general':'📊 Encuestas';
+ q('#chatChannelMenu')?.classList.remove('open');
+ if(activeChatRoom==='community'){
+   const roomEl=q('#communityChat');if(!roomEl)return;
+   requestAnimationFrame(()=>{
+     if(chatPersistentUnread&&chatFirstUnreadId){
+       const first=roomEl.querySelector('[data-msgid="'+chatFirstUnreadId+'"]');
+       if(first)first.scrollIntoView({block:'start'});
+     }else{
+       roomEl.scrollTop=roomEl.scrollHeight;
+       const newest=communityChat.length?Math.max(...communityChat.map(x=>Number(x.id)||0)):0;
+       if(newest)markCommunityRead(newest);
+     }
+   });
+ }
+}
+function renderChatPolls(){
+ const adminBox=q('#chatPollAdminBox');if(adminBox)adminBox.style.display=isAdmin()?'block':'none';
+ const feed=q('#chatPollFeed');if(!feed)return;
+ if(!chatPolls.length){feed.innerHTML='<p class="muted">Todavía no hay encuestas publicadas.</p>';return}
+ feed.innerHTML=chatPolls.map(p=>{
+   const opts=Array.isArray(p.options)?p.options:[];
+   const mine=chatPollVotes.find(v=>Number(v.poll_id)===Number(p.id));
+   const total=chatPollResults.filter(r=>Number(r.poll_id)===Number(p.id)).reduce((s,r)=>s+Number(r.votes||0),0);
+   const options=opts.map((o,i)=>{
+     const count=Number(chatPollResults.find(r=>Number(r.poll_id)===Number(p.id)&&Number(r.option_index)===i)?.votes||0);
+     return '<label class="chatPollOption"><input type="radio" name="chatPoll'+p.id+'" value="'+i+'" '+(mine&&Number(mine.option_index)===i?'checked':'')+' '+(!p.active?'disabled':'')+'><span class="chatPollOptionText">'+esc(o)+'</span><span class="chatPollVotes">'+count+' voto'+(count===1?'':'s')+'</span></label>';
+   }).join('');
+   const userAction=p.active?'<button class="btn blue voteChatPoll" data-id="'+p.id+'">'+(mine?'Cambiar voto':'Votar')+'</button>':'<span class="tag">CERRADA</span>';
+   const adminAction=isAdmin()?'<button class="btn dark closeChatPoll" data-id="'+p.id+'">'+(p.active?'Cerrar':'Reabrir')+'</button><button class="btn dark deleteChatPoll" data-id="'+p.id+'">Eliminar</button>':'';
+   return '<div class="chatPollCard"><h3>'+esc(p.question)+'</h3>'+options+'<div class="chatPollActions">'+userAction+adminAction+'</div><div class="chatPollMeta">'+total+' voto'+(total===1?'':'s')+' en total'+(mine?' · Tu voto está registrado':'')+'</div></div>';
+ }).join('');
+ qa('.voteChatPoll').forEach(b=>b.onclick=async()=>{
+   const pollId=Number(b.dataset.id),checked=q('input[name="chatPoll'+pollId+'"]:checked');if(!checked)return toast('Elige una opción');
+   const {error}=await sb.from('chat_poll_votes').upsert({poll_id:pollId,user_id:session.id,option_index:Number(checked.value)},{onConflict:'poll_id,user_id'});
+   if(error)return toast('No se pudo registrar el voto');await loadChatExtras();toast('Voto registrado');
+ });
+ qa('.closeChatPoll').forEach(b=>b.onclick=async()=>{if(!isAdmin())return;const p=chatPolls.find(x=>Number(x.id)===Number(b.dataset.id));if(!p)return;const {error}=await sb.from('chat_polls').update({active:!p.active}).eq('id',p.id);if(error)return toast('No se pudo actualizar');await loadChatExtras()});
+ qa('.deleteChatPoll').forEach(b=>b.onclick=async()=>{if(!isAdmin())return;if(!confirm('¿Eliminar esta encuesta?'))return;const {error}=await sb.from('chat_polls').delete().eq('id',Number(b.dataset.id));if(error)return toast('No se pudo eliminar');await loadChatExtras()});
+}
 async function loadChatsOnly(){
  if(!logged())return;
  const {data,error}=await sb.from('chat_messages').select('*').order('created_at',{ascending:true}).limit(500);
  if(error){console.error(error);return}
  raffleChat=(data||[]).filter(x=>x.channel==='raffle'&&(!raffle.id||Number(x.raffle_id)===Number(raffle.id))).map(x=>({id:x.id,uid:x.user_id,u:x.username,m:x.message,role:x.display_role||'Entrenador',attachment_url:x.attachment_url||'',attachment_type:x.attachment_type||'',attachment_name:x.attachment_name||'',sticker_key:x.sticker_key||'',time:new Date(x.created_at).getTime()}));
  communityChat=(data||[]).filter(x=>x.channel==='community').map(x=>({id:x.id,uid:x.user_id,u:x.username,m:x.message,role:x.display_role||'Entrenador',attachment_url:x.attachment_url||'',attachment_type:x.attachment_type||'',attachment_name:x.attachment_name||'',sticker_key:x.sticker_key||'',time:new Date(x.created_at).getTime()}));
+ await loadChatExtras();
  renderChats();
 }
 function roleClass(role){return 'role-'+String(role||'Entrenador').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().replace(/[^a-z]/g,'')}
@@ -734,33 +862,46 @@ function chatMsgHtml(x){
 }
 function memberById(id){return communityMembers.find(m=>m.user_id===id)||null}
 function updateChatNewBadge(){
- const b=q('#chatNewBadge');if(!b)return;b.textContent=chatUnreadLive+' ↓';b.classList.toggle('show',chatUnreadLive>0);
+ const b=q('#chatNewBadge');if(!b)return;b.textContent=chatPersistentUnread+' ↓';b.classList.toggle('show',activeChatRoom==='community'&&chatPersistentUnread>0);
 }
-function resetChatUnread(){chatUnreadLive=0;chatFirstUnreadId=null;updateChatNewBadge()}
+function resetChatUnread(){
+ const newest=communityChat.length?Math.max(...communityChat.map(x=>Number(x.id)||0)):0;
+ if(newest)markCommunityRead(newest);
+}
 function renderChats(){
  const room=q('#communityChat');
  if(room){
-   const distance=room.scrollHeight-room.scrollTop-room.clientHeight;
-   const wasAtBottom=!chatInitialized||distance<70;
    const prevTop=room.scrollTop,prevHeight=room.scrollHeight;
-   const newest=communityChat.length?Math.max(...communityChat.map(x=>Number(x.id)||0)):0;
-   const newRows=chatInitialized?communityChat.filter(x=>(Number(x.id)||0)>chatLastRenderedId):[];
-   if(chatInitialized&&!wasAtBottom&&newRows.length){
-     if(!chatFirstUnreadId)chatFirstUnreadId=newRows[0].id;
-     chatUnreadLive+=newRows.length;
-   }
+   const wasAtBottom=room.scrollHeight-room.scrollTop-room.clientHeight<70;
    room.innerHTML=communityChat.length?communityChat.map(chatMsgHtml).join(''):'<p class="muted">Todavía no hay mensajes.</p>';
    qa('#communityChat .memberLink').forEach(b=>b.onclick=()=>openMemberProfile(b.dataset.user));
-   if(wasAtBottom){room.scrollTop=room.scrollHeight;resetChatUnread()}
-   else{room.scrollTop=prevTop+(room.scrollHeight-prevHeight)}
-   chatLastRenderedId=Math.max(chatLastRenderedId,newest);chatInitialized=true;updateChatNewBadge();
+   recomputeCommunityUnread();
+   if(activeChatRoom==='community'){
+     if(chatPersistentUnread&&chatFirstUnreadId){
+       const first=room.querySelector('[data-msgid="'+chatFirstUnreadId+'"]');
+       if(first&&!chatInitialized)first.scrollIntoView({block:'start'});
+       else if(wasAtBottom&&!chatPersistentUnread)room.scrollTop=room.scrollHeight;
+       else if(chatInitialized)room.scrollTop=prevTop+(room.scrollHeight-prevHeight);
+     }else room.scrollTop=room.scrollHeight;
+   }
+   chatInitialized=true;
  }
  q('#raffleChat').innerHTML=raffleChat.map(chatMsgHtml).join('');qa('#raffleChat .memberLink').forEach(b=>b.onclick=()=>openMemberProfile(b.dataset.user));q('#raffleChat').scrollTop=q('#raffleChat').scrollHeight;
  const rg=q('#raffleGeneralChat');if(rg){rg.innerHTML=communityChat.map(chatMsgHtml).join('');qa('#raffleGeneralChat .memberLink').forEach(b=>b.onclick=()=>openMemberProfile(b.dataset.user));rg.scrollTop=rg.scrollHeight}
  qa('.chatImage').forEach(img=>img.onclick=e=>{e.preventDefault();q('#chatImageLarge').src=img.src;openModal('chatImageModal')});
 }
-q('#communityChat').addEventListener('scroll',()=>{const room=q('#communityChat');if(room.scrollHeight-room.scrollTop-room.clientHeight<50)resetChatUnread()});
-q('#chatNewBadge').onclick=()=>{const room=q('#communityChat');if(chatFirstUnreadId){const first=room.querySelector('[data-msgid="'+chatFirstUnreadId+'"]');if(first)first.scrollIntoView({behavior:'smooth',block:'start'});else room.scrollTop=room.scrollHeight}else room.scrollTop=room.scrollHeight;resetChatUnread()};
+q('#communityChat').addEventListener('scroll',()=>{const room=q('#communityChat');if(activeChatRoom==='community'&&room.scrollHeight-room.scrollTop-room.clientHeight<50)resetChatUnread()});
+q('#chatNewBadge').onclick=()=>{const room=q('#communityChat');if(chatFirstUnreadId){const first=room.querySelector('[data-msgid="'+chatFirstUnreadId+'"]');if(first)first.scrollIntoView({behavior:'smooth',block:'start'});else room.scrollTop=room.scrollHeight}else room.scrollTop=room.scrollHeight};
+q('#chatChannelToggle').onclick=()=>q('#chatChannelMenu').classList.toggle('open');
+qa('.chatChannelChoice').forEach(b=>b.onclick=()=>openChatChannel(b.dataset.chatRoom));
+q('#createChatPoll').onclick=async()=>{
+ if(!isAdmin())return toast('Solo administrador');
+ const question=q('#chatPollQuestion').value.trim(),options=qa('.chatPollOptionInput').map(i=>i.value.trim()).filter(Boolean);
+ if(!question)return toast('Escribe la pregunta');if(options.length<2)return toast('Pon al menos dos opciones');
+ const {error}=await sb.from('chat_polls').insert({question,options,created_by:session.id});
+ if(error)return toast('No se pudo publicar la encuesta');
+ q('#chatPollQuestion').value='';qa('.chatPollOptionInput').forEach(i=>i.value='');await loadChatExtras();toast('Encuesta publicada');
+};
 q('#raffleChatSend').onclick=async()=>{const m=q('#raffleChatInput').value.trim();if(!m)return;if(!raffle.id)return toast('No hay rifa activa');const {error}=await sb.from('chat_messages').insert({channel:'raffle',raffle_id:raffle.id,message:m});if(error)return toast(error.message||'No se pudo enviar');q('#raffleChatInput').value='';await loadChatsOnly()};
 async function sendGeneralChat(payload){const {error}=await sb.from('chat_messages').insert({channel:'community',raffle_id:null,...payload});if(error)return toast(error.message||'No se pudo enviar');await loadChatsOnly()}
 q('#communitySend').onclick=async()=>{const m=q('#communityInput').value.trim();if(!m)return;await sendGeneralChat({message:m});q('#communityInput').value=''};
