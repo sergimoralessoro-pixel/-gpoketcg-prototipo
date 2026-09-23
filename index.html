@@ -457,16 +457,24 @@ header{position:fixed;left:0;right:0;top:0;width:100%;z-index:30;background:#061
   <div class="upload"><b>Foto</b><input id="pollAdminPhoto" type="file" accept="image/*"></div>
 </div>
 <button class="btn blue" id="createRafflePoll" style="margin-top:10px">Publicar encuesta</button>
-<div class="card" id="adminPollParticipantsBox" style="margin-top:12px;padding:12px">
-  <h4 style="margin:0 0 8px">Añadir participante a la encuesta</h4>
-  <div class="formgrid"><input id="pollParticipantAlias" placeholder="Nombre / alias del participante"></div>
-  <button class="btn dark" id="addPollParticipant" style="margin-top:8px">Añadir participante</button>
-  <div id="adminPollParticipants" style="margin-top:10px"></div>
-</div>
 <div id="adminRafflePollList" style="margin-top:12px"></div>
 <hr style="margin:20px 0;border:0;border-top:1px solid #2b3a4a">
 <h3>Editar rifa</h3><div class="formgrid"><input id="rTitle" placeholder="Carta que se rifa"><input id="rPrice" type="number" step="0.01" placeholder="Precio por número"><input id="rSlots" type="number" min="1" placeholder="Plazas"><textarea id="rDesc" placeholder="Descripción"></textarea><div class="upload"><b>Foto de la carta rifada</b><input id="rPhoto" type="file" accept="image/*"></div></div><button class="btn" id="saveRaffle" style="margin-top:10px">Crear / actualizar rifa</button><div id="adminCurrentRaffle" style="margin-top:12px"></div></div>
-<div class="adminPane" id="adminPeople"><h3>Participantes</h3><div class="formgrid"><input id="aAlias" placeholder="Alias"><input id="aQty" type="number" min="1" value="1"><select id="aStatus"><option value="paid">Confirmado</option><option value="pending">Pendiente</option></select></div><button class="btn" id="addParticipant" style="margin-top:10px">Añadir participante</button><div id="adminParticipants"></div></div>
+<div class="adminPane" id="adminPeople">
+<h3>Participantes</h3>
+<div class="card" style="padding:12px">
+  <h4 style="margin:0 0 8px">Participantes de la rifa</h4>
+  <div class="formgrid"><input id="aAlias" placeholder="Alias"><input id="aQty" type="number" min="1" value="1"><select id="aStatus"><option value="paid">Confirmado</option><option value="pending">Pendiente</option></select></div>
+  <button class="btn" id="addParticipant" style="margin-top:10px">Añadir a la rifa</button>
+  <div id="adminParticipants" style="margin-top:10px"></div>
+</div>
+<div class="card" id="adminPollParticipantsBox" style="margin-top:12px;padding:12px">
+  <h4 style="margin:0 0 8px">Participantes de la encuesta</h4>
+  <div class="formgrid"><input id="pollParticipantAlias" placeholder="Nombre / alias del participante"></div>
+  <button class="btn dark" id="addPollParticipant" style="margin-top:8px">Añadir a la encuesta</button>
+  <div id="adminPollParticipants" style="margin-top:10px"></div>
+</div>
+</div>
 <div class="adminPane" id="adminCommunity"><h3>Noticias</h3><div class="formgrid"><input id="nTitle" placeholder="Título"><input id="nDate" placeholder="Fecha"><textarea id="nText" placeholder="Texto"></textarea></div><button class="btn" id="addNews" style="margin-top:10px">Añadir noticia</button><h3 style="margin-top:20px">Eventos</h3><div class="formgrid"><input id="eTitle" placeholder="Evento"><input id="eDate" placeholder="Fecha/hora"><textarea id="eText" placeholder="Descripción"></textarea></div><button class="btn blue" id="addEvent" style="margin-top:10px">Añadir evento</button><h3 style="margin-top:20px">Contenido publicado</h3><div id="adminCommunityList"></div></div>
 <div class="adminPane" id="adminOffers"><h3>Ofertas y mensajes privados</h3><p class="muted">Abre una oferta para contestar al usuario desde Mensajes.</p><div id="adminOffersList"></div></div>
 </div></section>
