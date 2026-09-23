@@ -179,7 +179,7 @@ header{position:fixed;left:0;right:0;top:0;width:100%;z-index:30;background:#061
 @media(max-width:760px){.pollAdminOptions{grid-template-columns:1fr}}
 #resetPasswordModal{z-index:140;background:#000e}#resetPasswordModal .box{width:min(460px,100%)}
 </style>
-<!-- cache v91: campana y perfil restaurados -->
+<!-- cache v92: chat unread solo al estar desplazado arriba -->
 </head>
 <body>
 <header><div class="top">
@@ -566,7 +566,7 @@ let communityChannel=null;
 let notifications=[];
 let notificationsChannel=null;
 let activeNotificationCategory=null;
-let communityMembers=[],friendships=[],directMessages=[],socialChannel=null,selectedMemberId=null,activeDmUserId=null,albumCards=[],albumPage=0;let friendsAccordionOpen=false,conversationsAccordionOpen=false;let chatLastRenderedId=0,chatUnreadLive=0,chatFirstUnreadId=null,chatInitialized=false;let activeChatRoom='community',chatReadLastId=0,chatPersistentUnread=0,chatPolls=[],chatPollVotes=[],chatPollResults=[],chatPollVoters=[],openPollVoterIds=new Set();
+let communityMembers=[],friendships=[],directMessages=[],socialChannel=null,selectedMemberId=null,activeDmUserId=null,albumCards=[],albumPage=0;let friendsAccordionOpen=false,conversationsAccordionOpen=false;let chatLastRenderedId=0,chatUnreadLive=0,chatFirstUnreadId=null,chatInitialized=false,chatScrollUnread=0,chatScrollFirstUnreadId=null;let activeChatRoom='community',chatReadLastId=0,chatPersistentUnread=0,chatPolls=[],chatPollVotes=[],chatPollResults=[],chatPollVoters=[],openPollVoterIds=new Set();
 let selectedProduct=null,selectedAuctionWinner=null,wheelAngle=0,spinning=false,lastSpinSeen=null,pendingWinnerText='';let adminOrderFilter='all';
 function money(n){return Number(n).toLocaleString('es-ES',{minimumFractionDigits:2,maximumFractionDigits:2})+' €'}
 async function renderLiveStats(){
@@ -1110,14 +1110,12 @@ function openChatChannel(room,fromNavigation=false){
  if(activeChatRoom==='community'){
    const roomEl=q('#communityChat');if(!roomEl)return;
    requestAnimationFrame(()=>{
-     if(chatPersistentUnread&&chatFirstUnreadId){
-       const first=roomEl.querySelector('[data-msgid="'+chatFirstUnreadId+'"]');
-       if(first)first.scrollIntoView({block:'start'});
-     }else{
-       roomEl.scrollTop=roomEl.scrollHeight;
-       const newest=communityChat.length?Math.max(...communityChat.map(x=>Number(x.id)||0)):0;
-       if(newest)markCommunityRead(newest);
-     }
+     roomEl.scrollTop=roomEl.scrollHeight;
+     chatScrollUnread=0;
+     chatScrollFirstUnreadId=null;
+     updateChatNewBadge();
+     const newest=communityChat.length?Math.max(...communityChat.map(x=>Number(x.id)||0)):0;
+     if(newest)markCommunityRead(newest);
    });
  }
 }
@@ -1155,12 +1153,28 @@ function renderChatPolls(){
 }
 async function loadChatsOnly(){
  if(!logged())return;
+ const room=q('#communityChat');
+ const oldMax=communityChat.length?Math.max(...communityChat.map(x=>Number(x.id)||0)):0;
+ const wasAtBottom=room?room.scrollHeight-room.scrollTop-room.clientHeight<70:true;
  const {data,error}=await sb.from('chat_messages').select('*').order('created_at',{ascending:true}).limit(500);
  if(error){console.error(error);return}
  raffleChat=(data||[]).filter(x=>x.channel==='raffle'&&(!raffle.id||Number(x.raffle_id)===Number(raffle.id))).map(x=>({id:x.id,uid:x.user_id,u:x.username,m:x.message,role:x.display_role||'Entrenador',attachment_url:x.attachment_url||'',attachment_type:x.attachment_type||'',attachment_name:x.attachment_name||'',sticker_key:x.sticker_key||'',time:new Date(x.created_at).getTime()}));
  communityChat=(data||[]).filter(x=>x.channel==='community').map(x=>({id:x.id,uid:x.user_id,u:x.username,m:x.message,role:x.display_role||'Entrenador',attachment_url:x.attachment_url||'',attachment_type:x.attachment_type||'',attachment_name:x.attachment_name||'',sticker_key:x.sticker_key||'',time:new Date(x.created_at).getTime()}));
+ const newIncoming=communityChat.filter(x=>(Number(x.id)||0)>oldMax&&x.uid!==session?.id);
+ if(activeChatRoom==='community'&&newIncoming.length){
+   if(wasAtBottom){
+     chatScrollUnread=0;
+     chatScrollFirstUnreadId=null;
+     const newest=Math.max(...communityChat.map(x=>Number(x.id)||0));
+     if(newest)markCommunityRead(newest);
+   }else{
+     if(!chatScrollFirstUnreadId)chatScrollFirstUnreadId=newIncoming[0].id;
+     chatScrollUnread+=newIncoming.length;
+   }
+ }
  recomputeCommunityUnread();
  renderChats();
+ updateChatNewBadge();
 }
 const TYPE_ROLES=[
  {name:'Acero',symbol:'🩶',color:'#B7B7CE'},{name:'Hada',symbol:'🧚',color:'#D685AD'},{name:'Dragón',symbol:'🐉',color:'#6F35FC'},{name:'Agua',symbol:'🌊',color:'#6390F0'},{name:'Fantasma',symbol:'👻',color:'#735797'},{name:'Siniestro',symbol:'🌑',color:'#705746'},{name:'Eléctrico',symbol:'⚡',color:'#F7D02C'},{name:'Fuego',symbol:'🔥',color:'#EE8130'},{name:'Tierra',symbol:'🌍',color:'#E2BF65'},{name:'Psíquico',symbol:'🔮',color:'#F95587'},{name:'Lucha',symbol:'🥊',color:'#C22E28'},{name:'Hielo',symbol:'🧊',color:'#96D9D6'},{name:'Planta',symbol:'🍃',color:'#7AC74C'},{name:'Volador',symbol:'🪽',color:'#A98FF3'},{name:'Veneno',symbol:'☠️',color:'#A33EA1'},{name:'Roca',symbol:'🪨',color:'#B6A136'},{name:'Bicho',symbol:'🐞',color:'#A6B91A'},{name:'Normal',symbol:'⚪',color:'#A8A77A'}
@@ -1182,7 +1196,9 @@ function chatMsgHtml(x){
 }
 function memberById(id){return communityMembers.find(m=>m.user_id===id)||null}
 function updateChatNewBadge(){
- const b=q('#chatNewBadge');if(!b)return;b.textContent=chatPersistentUnread+' ↓';b.classList.toggle('show',activeChatRoom==='community'&&chatPersistentUnread>0);
+ const b=q('#chatNewBadge');if(!b)return;
+ b.textContent=chatScrollUnread+' ↓';
+ b.classList.toggle('show',activeChatRoom==='community'&&chatScrollUnread>0);
 }
 function resetChatUnread(){
  const newest=communityChat.length?Math.max(...communityChat.map(x=>Number(x.id)||0)):0;
@@ -1197,12 +1213,16 @@ function renderChats(){
    qa('#communityChat .memberLink').forEach(b=>b.onclick=()=>openMemberProfile(b.dataset.user));
    recomputeCommunityUnread();
    if(activeChatRoom==='community'){
-     if(chatPersistentUnread&&chatFirstUnreadId){
-       const first=room.querySelector('[data-msgid="'+chatFirstUnreadId+'"]');
-       if(first&&!chatInitialized)first.scrollIntoView({block:'start'});
-       else if(wasAtBottom&&!chatPersistentUnread)room.scrollTop=room.scrollHeight;
-       else if(chatInitialized)room.scrollTop=prevTop+(room.scrollHeight-prevHeight);
-     }else room.scrollTop=room.scrollHeight;
+     if(!chatInitialized||wasAtBottom){
+       room.scrollTop=room.scrollHeight;
+       chatScrollUnread=0;
+       chatScrollFirstUnreadId=null;
+       const newest=communityChat.length?Math.max(...communityChat.map(x=>Number(x.id)||0)):0;
+       if(newest)markCommunityRead(newest);
+     }else{
+       room.scrollTop=prevTop+(room.scrollHeight-prevHeight);
+     }
+     updateChatNewBadge();
    }
    chatInitialized=true;
  }
@@ -1210,8 +1230,26 @@ function renderChats(){
  const rg=q('#raffleGeneralChat');if(rg){rg.innerHTML=communityChat.map(chatMsgHtml).join('');qa('#raffleGeneralChat .memberLink').forEach(b=>b.onclick=()=>openMemberProfile(b.dataset.user));rg.scrollTop=rg.scrollHeight}
  qa('.chatImage').forEach(img=>img.onclick=e=>{e.preventDefault();q('#chatImageLarge').src=img.src;openModal('chatImageModal')});
 }
-q('#communityChat').addEventListener('scroll',()=>{const room=q('#communityChat');if(activeChatRoom==='community'&&room.scrollHeight-room.scrollTop-room.clientHeight<50)resetChatUnread()});
-q('#chatNewBadge').onclick=()=>{const room=q('#communityChat');if(chatFirstUnreadId){const first=room.querySelector('[data-msgid="'+chatFirstUnreadId+'"]');if(first)first.scrollIntoView({behavior:'smooth',block:'start'});else room.scrollTop=room.scrollHeight}else room.scrollTop=room.scrollHeight};
+q('#communityChat').addEventListener('scroll',()=>{
+ const room=q('#communityChat');if(activeChatRoom!=='community')return;
+ const atBottom=room.scrollHeight-room.scrollTop-room.clientHeight<50;
+ if(atBottom){
+   chatScrollUnread=0;
+   chatScrollFirstUnreadId=null;
+   updateChatNewBadge();
+   resetChatUnread();
+ }
+});
+q('#chatNewBadge').onclick=()=>{
+ const room=q('#communityChat');
+ if(chatScrollFirstUnreadId){
+   const first=room.querySelector('[data-msgid="'+chatScrollFirstUnreadId+'"]');
+   if(first)first.scrollIntoView({behavior:'smooth',block:'start'});
+ }
+ chatScrollUnread=0;
+ chatScrollFirstUnreadId=null;
+ updateChatNewBadge();
+};
 q('#chatChannelToggle').onclick=()=>q('#chatChannelMenu').classList.toggle('open');
 qa('.chatChannelChoice[data-chat-room]').forEach(b=>b.onclick=()=>openChatChannel(b.dataset.chatRoom));
 q('#homeCommunityToggle').onclick=()=>q('#homeCommunityMenu').classList.toggle('open');
