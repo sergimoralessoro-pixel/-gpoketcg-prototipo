@@ -16,7 +16,7 @@ header{position:fixed;left:0;right:0;top:0;width:100%;z-index:30;background:#061
 
 .price{color:var(--yellow);font-weight:1000;font-size:21px}.list{display:grid;gap:9px}.item{padding:12px;border:1px solid #1d4360;border-radius:11px;background:#081724}.itemRow{display:flex;justify-content:space-between;gap:12px;align-items:center}.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.stat{border:1px solid #214967;background:#081725;border-radius:11px;padding:11px;text-align:center}.stat b{display:block;font-size:22px}.raffleGrid{display:grid;grid-template-columns:1fr .9fr .8fr;gap:12px}.chat{height:330px;overflow:auto;border:1px solid #1f4562;border-radius:10px;background:#06121d;padding:10px}.msg{padding:8px 0;border-bottom:1px solid #142c3f}.msg b{color:#6bbdff}.chatbar{display:flex;gap:7px;margin-top:8px}.chatbar input{flex:1;min-width:0}input,textarea,select{width:100%;background:#071725;color:#fff;border:1px solid #2a5573;border-radius:9px;padding:10px}.formgrid{display:grid;grid-template-columns:1fr 1fr;gap:9px}.formgrid textarea{grid-column:1/-1;min-height:100px}.tablewrap{overflow:auto}table{width:100%;border-collapse:collapse}th,td{text-align:left;padding:9px;border-bottom:1px solid #16384f;font-size:13px}.paid{color:var(--green);font-weight:900}.pending{color:#ffbd59;font-weight:900}#wheel{width:100%;max-width:400px;aspect-ratio:1;border-radius:50%;border:7px solid #153e5c;background:#07131f;display:block;margin:auto}.wheel{text-align:center}
 .drawerBack{display:none;position:fixed;inset:0;background:#0009;z-index:49}.drawer{position:fixed;z-index:50;left:0;top:0;bottom:0;width:min(330px,86vw);background:#07131f;border-right:1px solid #2a5878;padding:calc(env(safe-area-inset-top) + 16px) 14px 20px;transform:translateX(-105%);transition:.2s}.drawer.open{transform:none}.drawerBack.open{display:block}.drawer .nav{width:100%;text-align:left;margin:3px 0}.modal,.auth{position:fixed;inset:0;background:#000b;display:none;align-items:center;justify-content:center;padding:16px;z-index:80}.modal.open,.auth.open{display:flex}.box{width:min(580px,100%);max-height:88vh;overflow:auto;background:#0a1927;border:1px solid #2c5878;border-radius:18px;padding:20px}.auth{z-index:100;background:radial-gradient(circle at 50% 20%,#0e3b61,#02070c 55%)}.auth .box{width:min(460px,100%)}.auth h1{color:var(--yellow);text-shadow:2px 2px #0752ca}.tabs{display:flex;gap:8px;margin:12px 0}.tab{flex:1;padding:10px;border-radius:9px;border:1px solid #2b5876;background:#0c2234;color:#fff;font-weight:800}.tab.active{background:var(--blue)}.authPane{display:none}.authPane.active{display:block}.adminTabs{display:flex;gap:8px;overflow:auto;margin-bottom:12px}.adminTab{white-space:nowrap;padding:9px 11px;border-radius:9px;border:1px solid #2a5a7a;background:#0b2234;color:#fff}.adminTab.active{background:var(--blue)}.adminPane{display:none}.adminPane.active{display:block}.adminItem{padding:11px;border:1px solid #214967;border-radius:10px;background:#081725;margin:8px 0}
-.strikeMini{display:inline-flex;align-items:center;gap:4px}.strikeDot{width:9px;height:9px;border-radius:50%;display:inline-block;background:#253744;border:1px solid #4b6070;box-shadow:inset 0 0 0 1px #0004}.strikeDot.on{background:#ff334f;border-color:#ff7083;box-shadow:0 0 7px #ff334f}.adminUsersToolbar{display:flex;gap:8px;align-items:center;margin-bottom:12px}.adminUsersToolbar input{flex:1}.registeredUserCard{display:grid;gap:10px}.registeredUserTop{display:flex;justify-content:space-between;gap:10px;align-items:flex-start}.registeredUserMeta{display:flex;gap:7px;flex-wrap:wrap}.moderationControls{display:grid;grid-template-columns:minmax(150px,210px) 1fr auto;gap:8px;align-items:center}.moderationState{font-size:12px;font-weight:900}.moderationState.blocked{color:#ff667b}.moderationState.ok{color:#67e6a0}@media(max-width:760px){.moderationControls{grid-template-columns:1fr}.registeredUserTop{flex-direction:column}}.toast{display:none;position:fixed;right:14px;bottom:18px;background:#10283c;border:1px solid #356587;border-radius:10px;padding:11px 13px;z-index:120}.liveStats{display:grid;grid-template-columns:1fr;gap:12px;margin:14px 0;max-width:360px}.liveStat{display:flex;align-items:center;gap:12px}.liveDot{width:8px;height:8px;border-radius:50%;background:var(--green);box-shadow:0 0 10px var(--green)}.topStats{margin-left:auto;display:flex;align-items:center;gap:7px;flex-wrap:wrap;justify-content:flex-end}.onlineMini,.registeredMini{display:flex;align-items:center;gap:7px;padding:7px 10px;border:1px solid #214967;border-radius:999px;background:#081725;font-size:12px;font-weight:900;color:#dff7ea;white-space:nowrap}.onlineMini .liveDot{flex:0 0 auto}.onlineMini b,.registeredMini b{font-size:13px}.registeredMini{color:#d9e6f1}.trashBtn{width:38px;min-width:38px;height:38px;padding:0;border-radius:10px;border:1px solid #7d2634;background:#3a1119;color:#ff657b;font-size:18px;display:inline-flex;align-items:center;justify-content:center}.trashBtn:hover{background:#5a1825}.countdown{font-size:24px;font-weight:1000;letter-spacing:.04em;color:var(--yellow);margin:8px 0}.finished{padding:10px;border:1px solid #754052;background:#311620;border-radius:10px;color:#ffb0bd;font-weight:900}.auctionMeta{display:flex;justify-content:space-between;gap:8px;align-items:center;flex-wrap:wrap}
+.strikeMini{display:inline-flex;align-items:center;gap:4px}.strikeDot{width:9px;height:9px;border-radius:50%;display:inline-block;background:#253744;border:1px solid #4b6070;box-shadow:inset 0 0 0 1px #0004}.strikeDot.on{background:#ff334f;border-color:#ff7083;box-shadow:0 0 7px #ff334f}.adminUsersToolbar{display:flex;gap:8px;align-items:center;margin-bottom:12px}.adminUsersToolbar input{flex:1}.adminRegisteredDrop{max-height:390px;overflow-y:auto;padding-right:4px;scrollbar-gutter:stable}.adminRegisteredDrop:empty{display:none}.registeredUserCard{display:grid;gap:10px}.registeredUserTop{display:flex;justify-content:space-between;gap:10px;align-items:flex-start}.registeredUserMeta{display:flex;gap:7px;flex-wrap:wrap}.moderationControls{display:grid;grid-template-columns:minmax(150px,210px) 1fr auto;gap:8px;align-items:center}.moderationState{font-size:12px;font-weight:900}.moderationState.blocked{color:#ff667b}.moderationState.ok{color:#67e6a0}@media(max-width:760px){.moderationControls{grid-template-columns:1fr}.registeredUserTop{flex-direction:column}}.toast{display:none;position:fixed;right:14px;bottom:18px;background:#10283c;border:1px solid #356587;border-radius:10px;padding:11px 13px;z-index:120}.liveStats{display:grid;grid-template-columns:1fr;gap:12px;margin:14px 0;max-width:360px}.liveStat{display:flex;align-items:center;gap:12px}.liveDot{width:8px;height:8px;border-radius:50%;background:var(--green);box-shadow:0 0 10px var(--green)}.topStats{margin-left:auto;display:flex;align-items:center;gap:7px;flex-wrap:wrap;justify-content:flex-end}.onlineMini,.registeredMini{display:flex;align-items:center;gap:7px;padding:7px 10px;border:1px solid #214967;border-radius:999px;background:#081725;font-size:12px;font-weight:900;color:#dff7ea;white-space:nowrap}.onlineMini .liveDot{flex:0 0 auto}.onlineMini b,.registeredMini b{font-size:13px}.registeredMini{color:#d9e6f1}.trashBtn{width:38px;min-width:38px;height:38px;padding:0;border-radius:10px;border:1px solid #7d2634;background:#3a1119;color:#ff657b;font-size:18px;display:inline-flex;align-items:center;justify-content:center}.trashBtn:hover{background:#5a1825}.countdown{font-size:24px;font-weight:1000;letter-spacing:.04em;color:var(--yellow);margin:8px 0}.finished{padding:10px;border:1px solid #754052;background:#311620;border-radius:10px;color:#ffb0bd;font-weight:900}.auctionMeta{display:flex;justify-content:space-between;gap:8px;align-items:center;flex-wrap:wrap}
 @media(max-width:1000px){.hero,.two,.raffleGrid{grid-template-columns:1fr}.grid4{grid-template-columns:repeat(2,1fr)}}@media(max-width:760px){
   :root{--header-h:calc(60px + env(safe-area-inset-top))}
   body{padding-top:var(--header-h)}
@@ -181,7 +181,7 @@ header{position:fixed;left:0;right:0;top:0;width:100%;z-index:30;background:#061
 @media(max-width:760px){.pollAdminOptions{grid-template-columns:1fr}}
 #resetPasswordModal{z-index:140;background:#000e}#resetPasswordModal .box{width:min(460px,100%)}
 </style>
-<!-- cache v98: panel de registrados, strikes y baneos -->
+<!-- cache v99: registrados buscador estable, persiana y eliminar usuario -->
 </head>
 <body>
 <header><div class="top">
@@ -547,7 +547,7 @@ header{position:fixed;left:0;right:0;top:0;width:100%;z-index:30;background:#061
   <div class="title"><h3 style="margin:0">Usuarios registrados</h3><span class="tag" id="adminRegisteredCount">0</span></div>
   <p class="muted">Gestiona avisos y sanciones. Un strike leve suspende 1 día, uno grave 1 mes y el permaban expulsa permanentemente ese correo.</p>
   <div class="adminUsersToolbar"><input id="adminUserSearch" placeholder="Buscar por usuario, correo o nº de socio..."><button class="btn dark" id="refreshRegisteredUsers">Actualizar</button></div>
-  <div id="adminRegisteredList"></div>
+  <div id="adminRegisteredList" class="adminRegisteredDrop"></div>
 </div>
 <div class="adminPane" id="adminCommunity"><h3>Noticias</h3><div class="formgrid"><input id="nTitle" placeholder="Título"><input id="nDate" placeholder="Fecha"><textarea id="nText" placeholder="Texto"></textarea></div><button class="btn" id="addNews" style="margin-top:10px">Añadir noticia</button><h3 style="margin-top:20px">Eventos</h3><div class="formgrid"><input id="eTitle" placeholder="Evento"><input id="eDate" placeholder="Fecha/hora"><textarea id="eText" placeholder="Descripción"></textarea></div><button class="btn blue" id="addEvent" style="margin-top:10px">Añadir evento</button><h3 style="margin-top:20px">Contenido publicado</h3><div id="adminCommunityList"></div></div>
 <div class="adminPane" id="adminOffers"><h3>Ofertas y mensajes privados</h3><p class="muted">Abre una oferta para contestar al usuario desde Mensajes.</p><div id="adminOffersList"></div></div>
@@ -1277,6 +1277,14 @@ function roleSymbol(role){return roleMeta(role).symbol}
 function avatarTypeKey(k){return String(k||'').startsWith('type_')?String(k).slice(5):''}
 function avatarClass(k){const t=avatarTypeKey(k);return t?'typeAvatar type-'+t:''}
 function stickerSymbol(k){return ({ball:'🔴',electric:'⚡',fire:'🔥',water:'💧',leaf:'🍃',dragon:'🐉',star:'⭐',cards:'🃏',party:'🥳',wow:'🤯',cool:'😎',laugh:'🤣',love:'😍',rage:'😤',cry:'😭',win:'🏆',gem:'💎',rocket:'🚀',ghost:'👻',skull:'💀',alien:'👽',devil:'😈',poop:'💩',clap:'👏',eyes:'👀',hundred:'💯',fox:'🦊',cat:'🐱',dog:'🐶',panda:'🐼',lion:'🦁',wolf:'🐺',owl:'🦉',frog:'🐸',shark:'🦈',monkey:'🐵',tiger:'🐯',penguin:'🐧',snake:'🐍',octopus:'🐙',butterfly:'🦋',bee:'🐝',dino:'🦖',whale:'🐋',turtle:'🐢',bat:'🦇',spider:'🕷️',heart:'❤️',bolt:'⚡',target:'🎯',dice:'🎲',music:'🎵',camera:'📸',sword:'⚔️',anchor:'⚓',clover:'🍀',snow:'❄️',type_acero:'🩶',type_hada:'🧚',type_dragon:'🐉',type_agua:'🌊',type_fantasma:'👻',type_siniestro:'🌑',type_electrico:'⚡',type_fuego:'🔥',type_tierra:'🌍',type_psiquico:'🔮',type_lucha:'🥊',type_hielo:'🧊',type_planta:'🍃',type_volador:'🪽',type_veneno:'☠️',type_roca:'🪨',type_bicho:'🐞',type_normal:'⚪'})[k]||'⭐'}
+function openAdminModerationForUser(userId){
+ if(!isAdmin())return openMemberProfile(userId);
+ const m=memberById(userId);
+ go('adminPage');
+ const tab=q('.adminTab[data-admin="adminRegistered"]');
+ if(tab){qa('.adminTab').forEach(x=>x.classList.toggle('active',x===tab));qa('.adminPane').forEach(x=>x.classList.toggle('active',x.id==='adminRegistered'))}
+ loadAdminRegisteredUsers().then(()=>{const input=q('#adminUserSearch');if(input){input.value=m?.username||userId;renderAdminRegisteredUsers();input.focus()}});
+}
 function chatMsgHtml(x){
  const mem=memberById(x.uid),avatarKey=mem?.avatar_key||'none',avatar=avatarSymbol(avatarKey),role=mem?.is_admin?'Admin':(mem?.community_role||x.role||'Entrenador');
  let extra='';
@@ -1301,7 +1309,7 @@ function renderChats(){
    const prevTop=room.scrollTop,prevHeight=room.scrollHeight;
    const wasAtBottom=room.scrollHeight-room.scrollTop-room.clientHeight<70;
    room.innerHTML=communityChat.length?communityChat.map(chatMsgHtml).join(''):'<p class="muted">Todavía no hay mensajes.</p>';
-   qa('#communityChat .memberLink').forEach(b=>b.onclick=()=>openMemberProfile(b.dataset.user));
+   qa('#communityChat .memberLink').forEach(b=>b.onclick=()=>isAdmin()?openAdminModerationForUser(b.dataset.user):openMemberProfile(b.dataset.user));
    recomputeCommunityUnread();
    if(activeChatRoom==='community'){
      if(!chatInitialized||wasAtBottom){
@@ -1317,8 +1325,8 @@ function renderChats(){
    }
    chatInitialized=true;
  }
- q('#raffleChat').innerHTML=raffleChat.map(chatMsgHtml).join('');qa('#raffleChat .memberLink').forEach(b=>b.onclick=()=>openMemberProfile(b.dataset.user));q('#raffleChat').scrollTop=q('#raffleChat').scrollHeight;
- const rg=q('#raffleGeneralChat');if(rg){rg.innerHTML=communityChat.map(chatMsgHtml).join('');qa('#raffleGeneralChat .memberLink').forEach(b=>b.onclick=()=>openMemberProfile(b.dataset.user));rg.scrollTop=rg.scrollHeight}
+ q('#raffleChat').innerHTML=raffleChat.map(chatMsgHtml).join('');qa('#raffleChat .memberLink').forEach(b=>b.onclick=()=>isAdmin()?openAdminModerationForUser(b.dataset.user):openMemberProfile(b.dataset.user));q('#raffleChat').scrollTop=q('#raffleChat').scrollHeight;
+ const rg=q('#raffleGeneralChat');if(rg){rg.innerHTML=communityChat.map(chatMsgHtml).join('');qa('#raffleGeneralChat .memberLink').forEach(b=>b.onclick=()=>isAdmin()?openAdminModerationForUser(b.dataset.user):openMemberProfile(b.dataset.user));rg.scrollTop=rg.scrollHeight}
  qa('.chatImage').forEach(img=>img.onclick=e=>{e.preventDefault();q('#chatImageLarge').src=img.src;openModal('chatImageModal')});
 }
 q('#communityChat').addEventListener('scroll',()=>{
@@ -1726,13 +1734,13 @@ async function loadAdminRegisteredUsers(){
  renderAdminRegisteredUsers();
 }
 function renderAdminRegisteredUsers(){
- const box=q('#adminRegisteredList'),count=q('#adminRegisteredCount');if(!box)return;
- const term=(q('#adminUserSearch')?.value||'').trim().toLowerCase();
- const rows=adminRegisteredUsers.filter(u=>!term||String(u.username||'').toLowerCase().includes(term)||String(u.email||'').toLowerCase().includes(term)||String(u.member_number||'').includes(term));
+ const box=q('#adminRegisteredList'),count=q('#adminRegisteredCount'),term=(q('#adminUserSearch')?.value||'').trim().toLowerCase();if(!box)return;
  if(count)count.textContent=adminRegisteredUsers.length+' registrados';
+ if(!term){box.innerHTML='<p class="muted">Escribe un nombre, correo o nº de socio para buscar un usuario.</p>';return}
+ const rows=adminRegisteredUsers.filter(u=>String(u.username||'').toLowerCase().includes(term)||String(u.email||'').toLowerCase().includes(term)||String(u.member_number||'').includes(term));
  box.innerHTML=rows.length?rows.map(u=>{
    const admin=u.account_role==='admin'||ADMIN_EMAILS.includes(String(u.email||'').toLowerCase());
-   return '<div class="adminItem registeredUserCard"><div class="registeredUserTop"><div><b>'+esc(u.username||'Usuario')+'</b><br><small>'+esc(u.email||'')+' · Socio #'+esc(u.member_number||'—')+' · '+esc(u.community_role||'Entrenador')+'</small></div><div>'+strikeLightsHtml(u.strike_level)+'</div></div><div class="registeredUserMeta"><span class="tag">'+(admin?'ADMIN':'USUARIO')+'</span><span class="moderationState '+(u.blocked?'blocked':'ok')+'">'+esc(moderationStatusText(u))+'</span></div>'+(u.moderation_reason?'<div class="muted"><b>Último motivo:</b> '+esc(u.moderation_reason)+'</div>':'')+(admin?'<p class="muted" style="margin:0">Las cuentas administradoras no pueden ser sancionadas desde este panel.</p>':'<div class="moderationControls"><select class="moderationAction" data-id="'+u.user_id+'"><option value="warning">Aviso</option><option value="strike_day">Strike leve · 1 día</option><option value="strike_month">Strike grave · 1 mes</option><option value="permaban">Strike hipergrave · expulsión permanente</option><option value="clear">Quitar sanciones / strikes</option></select><input class="moderationReason" data-id="'+u.user_id+'" placeholder="Motivo de la sanción..."><button class="btn blue applyModeration" data-id="'+u.user_id+'">Aplicar</button></div>')+'</div>';
+   return '<div class="adminItem registeredUserCard"><div class="registeredUserTop"><div><b>'+esc(u.username||'Usuario')+'</b><br><small>'+esc(u.email||'')+' · Socio #'+esc(u.member_number||'—')+' · '+esc(u.community_role||'Entrenador')+'</small></div><div>'+strikeLightsHtml(u.strike_level)+'</div></div><div class="registeredUserMeta"><span class="tag">'+(admin?'ADMIN':'USUARIO')+'</span><span class="moderationState '+(u.blocked?'blocked':'ok')+'">'+esc(moderationStatusText(u))+'</span></div>'+(u.moderation_reason?'<div class="muted"><b>Último motivo:</b> '+esc(u.moderation_reason)+'</div>':'')+(admin?'<p class="muted" style="margin:0">Las cuentas administradoras no pueden modificarse desde este panel.</p>':'<div class="moderationControls"><select class="moderationAction" data-id="'+u.user_id+'"><option value="warning">Aviso</option><option value="strike_day">Strike leve · 1 día</option><option value="strike_month">Strike grave · 1 mes</option><option value="permaban">Strike hipergrave · expulsión permanente</option><option value="clear">Quitar sanciones / strikes</option></select><input class="moderationReason" data-id="'+u.user_id+'" placeholder="Motivo de la sanción..."><button class="btn blue applyModeration" data-id="'+u.user_id+'">Aplicar</button></div><div class="actions" style="margin-top:2px"><button class="trashBtn deleteRegisteredUser" data-id="'+u.user_id+'" data-name="'+esc(u.username||'Usuario')+'" title="Eliminar usuario" aria-label="Eliminar usuario">🗑️</button><small class="muted">Eliminar cuenta sin aplicar strike</small></div>')+'</div>';
  }).join(''):'<p class="muted">No hay usuarios que coincidan con la búsqueda.</p>';
  qa('.applyModeration').forEach(b=>b.onclick=async()=>{
    const id=b.dataset.id,sel=q('.moderationAction[data-id="'+id+'"]'),inp=q('.moderationReason[data-id="'+id+'"]'),action=sel?.value||'',reason=inp?.value.trim()||'';
@@ -1746,8 +1754,19 @@ function renderAdminRegisteredUsers(){
    await loadAdminRegisteredUsers();
    toast(action==='permaban'?'Usuario expulsado permanentemente':'Moderación actualizada');
  });
+ qa('.deleteRegisteredUser').forEach(b=>b.onclick=async()=>{
+   const id=b.dataset.id,name=b.dataset.name||'este usuario';
+   if(!confirm('¿Eliminar definitivamente la cuenta de '+name+'? Esta acción elimina su acceso sin aplicar ningún strike.'))return;
+   b.disabled=true;
+   const {error}=await sb.rpc('admin_delete_registered_user',{p_user_id:id});
+   b.disabled=false;
+   if(error)return toast(error.message||'No se pudo eliminar el usuario');
+   q('#adminUserSearch').value='';
+   await loadAdminRegisteredUsers();
+   toast('Usuario eliminado');
+ });
 }
-q('#adminUserSearch')?.addEventListener('input',renderAdminRegisteredUsers);
+let adminUserSearchTimer=null;q('#adminUserSearch')?.addEventListener('input',()=>{clearTimeout(adminUserSearchTimer);adminUserSearchTimer=setTimeout(renderAdminRegisteredUsers,180)});
 q('#refreshRegisteredUsers')?.addEventListener('click',loadAdminRegisteredUsers);
 async function checkOwnModeration(){
  if(!logged()||isAdmin())return true;
@@ -1762,7 +1781,7 @@ async function checkOwnModeration(){
  }
  return true;
 }
-qa('.adminTab').forEach(b=>b.onclick=()=>{qa('.adminTab').forEach(x=>x.classList.toggle('active',x===b));qa('.adminPane').forEach(x=>x.classList.toggle('active',x.id===b.dataset.admin));if(b.dataset.admin==='adminRegistered')loadAdminRegisteredUsers()});
+qa('.adminTab').forEach(b=>b.onclick=()=>{qa('.adminTab').forEach(x=>x.classList.toggle('active',x===b));qa('.adminPane').forEach(x=>x.classList.toggle('active',x.id===b.dataset.admin));if(b.dataset.admin==='adminRegistered'){q('#adminUserSearch').value='';loadAdminRegisteredUsers()}});
 function renderProfileHistory(){if(!session)return;const purchases=userOrders.filter(o=>o.source_type!=='auction'),auctionOrders=userOrders.filter(o=>o.source_type==='auction'),raffleNotes=notifications.filter(n=>notificationCategory(n)==='rifas'),sales=offers.filter(o=>o.user_id===session.id||isAdmin());const orderCard=o=>'<div class="orderCard"><div class="orderHead"><b>'+esc(o.receipt_number||('Pedido #'+o.id))+'</b><span class="orderStatus">'+statusLabel(o.status)+'</span></div><div class="orderItems">'+orderItemsHtml(o)+'</div><div class="price">'+money(o.total)+'</div></div>';const pp=q('#profilePurchasesList');if(pp)pp.innerHTML=purchases.length?purchases.map(orderCard).join(''):'<p class="muted">Todavía no tienes compras.</p>';const pa=q('#profileAuctionsList');if(pa)pa.innerHTML=auctionOrders.length?auctionOrders.map(orderCard).join(''):'<p class="muted">Todavía no tienes subastas ganadas con pedido.</p>';const pr=q('#profileRafflesList');if(pr)pr.innerHTML=raffleNotes.length?raffleNotes.map(n=>'<div class="item"><b>'+esc(n.title)+'</b><br>'+esc(n.body)+'</div>').join(''):'<p class="muted">Todavía no tienes historial de rifas.</p>';const ps=q('#profileSalesList');if(ps)ps.innerHTML=sales.length?sales.map(o=>'<div class="item">'+(o.photo?'<img src="'+esc(o.photo)+'" alt="" style="width:72px;max-height:100px;object-fit:contain;border-radius:8px;margin-right:8px;vertical-align:middle;background:#07131f">':'')+'<b>'+esc(o.name)+'</b><br><small>'+esc(o.status)+' · '+esc(o.price)+' €</small></div>').join(''):'<p class="muted">Todavía no tienes conversaciones de compraventa visibles.</p>'}
 function renderHomeHighlights(){const hp=q('#homeProducts'),ha=q('#homeAuctions'),hr=q('#homeRaffleMini');if(hp){const ps=products.filter(p=>p.active!==false).slice(0,3);hp.innerHTML=ps.length?ps.map(p=>'<div class="miniItem"><b>'+esc(p.name)+'</b><br><small>'+money(p.price)+' · '+(Number(p.stock)>0?'Disponible':'Agotado')+'</small></div>').join(''):'<p class="muted">Sin productos.</p>'}if(ha){const as=auctions.filter(a=>a.active!==false&&!a.closed&&auctionLeft(a)>0).slice(0,3);ha.innerHTML=as.length?as.map(a=>'<div class="miniItem"><b>'+esc(a.name)+'</b><br><small>'+money(a.price)+' · '+formatCountdown(auctionLeft(a))+'</small></div>').join(''):'<p class="muted">Sin subastas activas.</p>'}if(hr)hr.innerHTML=raffle.id?'<div class="miniItem"><b>'+esc(raffle.title)+'</b><br><small>'+money(raffle.price)+' · '+esc(raffle.status)+'</small></div>':'<p class="muted">Sin rifa activa.</p>'}
 qa('.profileTab').forEach(b=>b.onclick=()=>{qa('.profileTab').forEach(x=>x.classList.toggle('active',x===b));qa('.profilePane').forEach(x=>x.classList.toggle('active',x.id===b.dataset.profile))});
@@ -1781,7 +1800,7 @@ async function refreshAllLiveData(){
      loadChatsOnly(),
      renderLiveStats()
    ];
-   if(syncTick%5===0){jobs.push(loadOrders());jobs.push(loadCommunityData());jobs.push(loadNotifications());jobs.push(loadSocial());jobs.push(loadAlbum());jobs.push(checkOwnModeration());if(isAdmin())jobs.push(loadAdminRegisteredUsers())}
+   if(syncTick%5===0){jobs.push(loadOrders());jobs.push(loadCommunityData());jobs.push(loadNotifications());jobs.push(loadSocial());jobs.push(loadAlbum());jobs.push(checkOwnModeration())}
    await Promise.allSettled(jobs);
  }finally{syncBusy=false}
 }
