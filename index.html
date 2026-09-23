@@ -70,34 +70,21 @@ header{position:fixed;left:0;right:0;top:0;width:100%;z-index:30;background:#061
 .gameboyFrame{margin:12px auto 10px;max-width:760px;padding:14px 14px 10px;border:4px solid #20261d;border-radius:22px;background:linear-gradient(#b7b9aa,#969989);box-shadow:inset 0 0 0 3px #d5d6c9,0 14px 30px #0008}
 .gameboyTop,.gameboyBottom{display:flex;align-items:center;justify-content:space-between;color:#323a2f;font:900 11px/1.2 monospace;letter-spacing:1px;text-transform:uppercase}
 .gameboyBottom{justify-content:center;gap:12px;margin-top:8px}.gbDot{width:8px;height:8px;border-radius:50%;background:#5f2030;box-shadow:0 0 0 2px #6e7266}
-.captureMap{position:relative;height:390px;margin-top:8px;overflow:hidden;border:8px solid #343b31;border-radius:9px;background:#a8b66b;box-shadow:inset 0 0 0 4px #667446;image-rendering:pixelated}
-.captureMap:before{content:"";position:absolute;inset:0;background:linear-gradient(90deg,transparent 0 24px,#8f9f58 25px 27px,transparent 28px 52px),linear-gradient(transparent 0 24px,#8f9f58 25px 27px,transparent 28px 52px);background-size:52px 52px;opacity:.22}
-.gbTerrain{position:absolute;border:4px solid #59663d;background:#7e914d;box-shadow:inset 0 0 0 5px #92a45b}
-.terrainA{left:3%;top:5%;width:28%;height:25%}.terrainB{right:5%;bottom:7%;width:25%;height:27%}
-.gbPond{position:absolute;right:7%;top:7%;width:24%;height:22%;background:repeating-linear-gradient(0deg,#536b58 0 7px,#6d8160 8px 14px);border:5px solid #48593f;box-shadow:inset 0 0 0 4px #7f925c}
-.gbPath{position:absolute;background:#c1b978;border:3px solid #918b59;z-index:1}
-.pathH{left:3%;right:3%;top:45%;height:17%}.pathV{left:43%;top:4%;bottom:4%;width:13%}
-.gbHouse{position:absolute;left:8%;bottom:8%;width:18%;height:18%;background:#6f784c;border:4px solid #4a5237;z-index:3}
-.gbHouse:before{content:"";position:absolute;left:-5%;right:-5%;top:-34%;height:38%;background:#4c563b;clip-path:polygon(50% 0,100% 100%,0 100%)}
-.gbHouse span{position:absolute;width:22%;height:42%;left:39%;bottom:0;background:#353c2d}
-.gbTrees{position:absolute;height:34px;z-index:4;background:repeating-linear-gradient(90deg,#435238 0 18px,transparent 18px 23px)}
-.treeRow1{left:2%;right:2%;top:2%}.treeRow2{left:2%;right:2%;bottom:2%}
-.participantCreature{position:absolute;width:58px;min-height:62px;display:grid;justify-items:center;z-index:8;transition:filter .2s,opacity .2s}
-.pixelMonster{width:38px;height:34px;position:relative;background:var(--monster-color,#536b58);border:4px solid #293126;box-shadow:8px 0 0 var(--monster-color,#536b58),-8px 0 0 var(--monster-color,#536b58),0 8px 0 #293126;image-rendering:pixelated}
-.pixelMonster:before{content:"";position:absolute;width:8px;height:8px;background:#1e251c;left:5px;top:9px;box-shadow:20px 0 0 #1e251c}
-.pixelMonster:after{content:"";position:absolute;width:8px;height:8px;background:var(--monster-color,#536b58);left:3px;top:-12px;box-shadow:24px 0 0 var(--monster-color,#536b58)}
-.creatureLabel{margin-top:9px;max-width:105px;padding:3px 6px;border:2px solid #35412e;background:#d5dc99;color:#263021;font:900 10px/1.1 monospace;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;box-shadow:2px 2px 0 #556246}
-.specialBall{display:none;position:absolute;width:30px;height:30px;border-radius:50%;left:50%;top:-42px;z-index:20;background:linear-gradient(#141414 0 43%,#d6bd18 44% 55%,#141414 56%);border:3px solid #111;box-shadow:0 0 0 2px #e0ca2f}
+.captureMap{position:relative;width:100%;aspect-ratio:927/616;margin-top:8px;overflow:hidden;border:8px solid #343b31;border-radius:9px;background:#6aa95c url('assets/raffle-map.webp') center/cover no-repeat;box-shadow:inset 0 0 0 3px #667446}
+.participantCreatures{position:absolute;inset:0;z-index:8}
+.participantCreature{position:absolute;width:46px;display:grid;justify-items:center;z-index:8;transform:translate(-50%,-50%);transition:filter .2s,opacity .2s}
+.participantAvatar{width:30px;height:30px;display:grid;place-items:center;font-size:23px;line-height:1;border-radius:50%;background:#fff9;border:2px solid #253425;box-shadow:0 2px 5px #0008}
+.creatureLabel{margin-top:2px;max-width:68px;padding:2px 4px;border-radius:4px;background:#edf4c9e8;color:#22301e;font:900 8px/1.05 monospace;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;box-shadow:1px 1px 0 #40553a}
+.specialBall{display:none;position:absolute;width:30px;height:30px;border-radius:50%;left:0;top:0;z-index:20;background:linear-gradient(#141414 0 43%,#d6bd18 44% 55%,#141414 56%);border:3px solid #111;box-shadow:0 0 0 2px #e0ca2f,0 3px 7px #0008;will-change:transform}
 .specialBall:after{content:"";position:absolute;width:8px;height:8px;border-radius:50%;background:#d6bd18;border:2px solid #111;left:8px;top:8px}
 .captureImpact{display:none;position:absolute;width:18px;height:18px;border-radius:50%;z-index:19;pointer-events:none}
-.captureImpact.flash{display:block;animation:gbImpact .75s ease-out forwards}
-.captureMap.drawing .participantCreature{filter:contrast(1.1)}
-.captureMap.finished .participantCreature{opacity:.55}
-.captureMap.finished .participantCreature.winnerTarget{opacity:1;filter:drop-shadow(0 0 5px #d9cb2d) brightness(1.15)}
-.captureMap.finished .participantCreature.winnerTarget .creatureLabel{background:#ece57d;border-color:#262c22;color:#12170f}
-@keyframes gbImpact{0%{box-shadow:0 0 0 0 #efe86d,0 0 0 0 #d6bd18;opacity:1}100%{box-shadow:0 0 0 34px #efe86d00,0 0 0 58px #d6bd1800;opacity:0}}
-@media(max-width:760px){.gameboyFrame{padding:10px 10px 8px;border-radius:16px}.captureMap{height:310px;border-width:6px}.participantCreature{transform:scale(.82);transform-origin:center}.creatureLabel{max-width:82px;font-size:9px}}
-@media(prefers-reduced-motion:reduce){.specialBall{transition:none}.captureImpact.flash{animation:none}}
+.captureImpact.flash{display:block;animation:gbImpact .9s ease-out forwards}
+.captureMap.finished .participantCreature{opacity:.58}
+.captureMap.finished .participantCreature.winnerTarget{opacity:1;filter:drop-shadow(0 0 7px #ffef3b) brightness(1.18)}
+.captureMap.finished .participantCreature.winnerTarget .participantAvatar{background:#fff7ad;border-color:#d1aa00;transform:scale(1.18)}
+@keyframes gbImpact{0%{box-shadow:0 0 0 0 #fff,0 0 0 0 #ffd92e;opacity:1}100%{box-shadow:0 0 0 40px #fff0,0 0 0 70px #ffd92e00;opacity:0}}
+@media(max-width:760px){.gameboyFrame{padding:8px 8px 7px;border-radius:14px}.captureMap{border-width:5px}.participantCreature{width:38px}.participantAvatar{width:25px;height:25px;font-size:19px}.creatureLabel{font-size:7px;max-width:54px}.specialBall{width:26px;height:26px}}
+@media(prefers-reduced-motion:reduce){.captureImpact.flash{animation:none}}
 .raffleChatCard{margin-top:12px}.raffleHow{margin-top:12px}
 .homeCommunityGrid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:14px}
 .homeCommunityGrid .item{margin-bottom:7px}
@@ -286,14 +273,6 @@ header{position:fixed;left:0;right:0;top:0;width:100%;z-index:30;background:#061
   <div class="gameboyFrame">
     <div class="gameboyTop"><span>GPokeTCG</span><span>MONSTER MAP</span></div>
     <div class="captureMap" id="captureMap">
-      <div class="gbTerrain terrainA"></div>
-      <div class="gbTerrain terrainB"></div>
-      <div class="gbPond"></div>
-      <div class="gbPath pathH"></div>
-      <div class="gbPath pathV"></div>
-      <div class="gbHouse"><span></span></div>
-      <div class="gbTrees treeRow1"></div>
-      <div class="gbTrees treeRow2"></div>
       <div class="participantCreatures" id="participantCreatures"></div>
       <div class="specialBall" id="specialBall" aria-hidden="true"></div>
       <div class="captureImpact" id="captureImpact"></div>
@@ -663,7 +642,9 @@ async function loadRaffle(){
  raffle={id:data.id,title:data.title,price:Number(data.price_per_slot),slots:data.total_slots,desc:data.description||'',photo:data.photo_url||'',status:data.status,winner:data.winner_name||'',winnerTicket:data.winner_ticket||null,spinStartedAt:data.spin_started_at||null};
  const {data:entries,error:entriesError}=await sb.from('raffle_entries').select('*').eq('raffle_id',data.id).order('created_at',{ascending:true});
  if(entriesError){console.error(entriesError);return}
- participants=(entries||[]).map(e=>({id:e.id,user_id:e.user_id,alias:e.alias,qty:e.quantity,status:e.status==='paid'?'Pagado':'Pendiente'}));
+ let members=communityMembers||[];
+ if(!members.length){const mr=await sb.rpc('community_members_v2');if(!mr.error)members=mr.data||[]}
+ participants=(entries||[]).map(e=>{const member=members.find(m=>m.user_id===e.user_id)||members.find(m=>String(m.username||'').toLowerCase()===String(e.alias||'').toLowerCase());return {id:e.id,user_id:e.user_id,alias:e.alias,qty:e.quantity,status:e.status==='paid'?'Pagado':'Pendiente',avatarKey:member?.avatar_key||'none'}});
  renderRaffle();renderHomeHighlights();
 }
 function subscribeRaffle(){
@@ -953,24 +934,15 @@ function renderAdminAuctions(){
 q('#addAuction').onclick=async()=>{try{if(!isAdmin())return toast('Solo administrador');const name=q('#auName').value.trim(),price=Number(q('#auStart').value),increment=Number(q('#auIncrement').value),endRaw=q('#auEnd').value,endMs=new Date(endRaw).getTime();if(!name||price<=0||increment<=0||!endRaw||!Number.isFinite(endMs)||endMs<=Date.now())return toast('Completa producto, precio, incremento y una fecha futura de finalización');const photo=await fileData(q('#auPhoto'));const {error}=await sb.from('auctions').insert({name,photo_url:photo||null,current_price:price,min_increment:increment,leader_name:null,ends_at:new Date(endMs).toISOString(),closed:false});if(error)return toast('No se pudo crear la subasta');await loadAuctions();q('#auName').value='';q('#auStart').value='';q('#auIncrement').value='';q('#auEnd').value='';q('#auPhoto').value='';toast('Subasta creada correctamente')}catch(e){console.error(e);toast('No se pudo crear la subasta')}};
 setInterval(refreshAuctionClocks,1000);
 function paidEntries(){const e=[];participants.filter(p=>p.status==='Pagado').forEach(p=>{for(let i=0;i<p.qty;i++)e.push(p.alias)});return e}
-function raffleCreatureColor(i){
- const colors=['#566b45','#6b6d47','#4e6651','#748052','#5b7350','#6e7848','#4f5e47','#78815b','#5b6843','#67744e'];
- return colors[i%colors.length];
-}
 function drawWheel(){
  const box=q('#participantCreatures');if(!box)return;
  const confirmed=participants.filter(p=>p.status==='Pagado');
- if(!confirmed.length){
-   box.innerHTML='<div style="position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);padding:8px 12px;border:2px solid #35412e;background:#d5dc99;color:#263021;font:900 11px monospace">SIN PARTICIPANTES</div>';
-   q('#captureSceneStatus').textContent='ESPERANDO';
-   return;
- }
+ const tickets=[];let ticketNo=0;
+ confirmed.forEach(p=>{for(let n=0;n<p.qty;n++){ticketNo++;tickets.push({ticket:ticketNo,alias:p.alias,avatarKey:p.avatarKey||'none'})}});
+ if(!tickets.length){box.innerHTML='<div style="position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);padding:8px 12px;border:2px solid #35412e;background:#eef5c8;color:#263021;font:900 11px monospace">SIN PARTICIPANTES</div>';q('#captureSceneStatus').textContent='ESPERANDO';return}
  q('#captureSceneStatus').textContent=raffle.status==='ready_to_draw'?'LISTO PARA CAPTURAR':raffle.status==='closed'?'CAPTURA FINALIZADA':'EXPLORANDO';
- const spots=[[18,32],[36,18],[60,25],[75,39],[31,67],[55,71],[79,68],[16,70],[65,49],[39,45],[84,18],[9,49]];
- box.innerHTML=confirmed.map((p,i)=>{
-   const s=spots[i%spots.length];
-   return '<div class="participantCreature" data-alias="'+esc(p.alias)+'" style="left:'+s[0]+'%;top:'+s[1]+'%;--monster-color:'+raffleCreatureColor(i)+'"><div class="pixelMonster"></div><div class="creatureLabel">'+esc(p.alias)+(p.qty>1?' · x'+p.qty:'')+'</div></div>';
- }).join('');
+ const spots=[[17,20],[27,31],[38,17],[49,31],[61,17],[73,31],[84,19],[12,45],[26,53],[39,43],[51,55],[64,43],[78,54],[89,45],[17,72],[31,66],[44,78],[57,67],[70,78],[84,69],[23,86],[37,88],[52,86],[67,89],[81,85],[8,61],[92,61],[55,40],[33,38],[69,35]];
+ box.innerHTML=tickets.map((t,i)=>{const base=spots[i%spots.length],lap=Math.floor(i/spots.length),dx=(lap%3-1)*2.1,dy=((lap%4)-1.5)*1.7;return '<div class="participantCreature" data-ticket="'+t.ticket+'" data-alias="'+esc(t.alias)+'" style="left:'+(base[0]+dx)+'%;top:'+(base[1]+dy)+'%"><div class="participantAvatar">'+avatarSymbol(t.avatarKey)+'</div><div class="creatureLabel">'+esc(t.alias)+' · #'+t.ticket+'</div></div>'}).join('');
 }
 function resetCaptureScene(){
  const map=q('#captureMap'),ball=q('#specialBall'),impact=q('#captureImpact');
@@ -989,7 +961,7 @@ function renderRaffle(){
  qa('.delPart').forEach(b=>b.onclick=async()=>{if(!isAdmin())return;const {error}=await sb.from('raffle_entries').delete().eq('id',Number(b.dataset.id));if(error)return toast('No se pudo eliminar');await loadRaffle()});
  q('#rTitle').value=raffle.title||'';q('#rPrice').value=raffle.price||'';q('#rSlots').value=raffle.slots||'';q('#rDesc').value=raffle.desc||'';
  const rb=q('#raffleImageBox');rb.innerHTML=raffle.photo?'<img src="'+raffle.photo+'" alt="">':'🃏';
- if(!spinning){q('#winnerText').textContent=raffle.winner?'🏆 Ganador: '+raffle.winner+(raffle.winnerTicket?' · Nº '+raffle.winnerTicket:''):'';if(raffle.winner){q('#captureMap')?.classList.add('finished');const target=qa('#participantCreatures .participantCreature').find(el=>el.dataset.alias===raffle.winner);target?.classList.add('winnerTarget')}else resetCaptureScene()}
+ if(!spinning){q('#winnerText').textContent=raffle.winner?'🏆 Ganador: '+raffle.winner+(raffle.winnerTicket?' · Nº '+raffle.winnerTicket:''):'';if(raffle.winner){q('#captureMap')?.classList.add('finished');const target=qa('#participantCreatures .participantCreature').find(el=>Number(el.dataset.ticket)===Number(raffle.winnerTicket));target?.classList.add('winnerTarget')}else resetCaptureScene()}
  q('#buyRaffleBtn').disabled=!raffle.id||raffle.status!=='active';q('#buyRaffleBtn').textContent=raffle.status==='active'?'Elegir números':raffle.status==='payment_processing'?'Rifa completa · confirmando participaciones':raffle.status==='ready_to_draw'?'Participaciones confirmadas · esperando sorteo':'Rifa cerrada';
  const adminR=q('#adminCurrentRaffle');
  if(adminR){
@@ -1008,43 +980,20 @@ function animateLiveWheel(){
  spinning=true;
  const map=q('#captureMap'),ball=q('#specialBall'),impact=q('#captureImpact');
  resetCaptureScene();
- q('#winnerText').textContent='⚫🟡 La bola está rebotando por el mapa...';
+ q('#winnerText').textContent='⚫🟡 La bola está rebotando por todo el mapa...';
  q('#captureSceneStatus').textContent='CAPTURANDO';
- map?.classList.add('drawing');
  const targets=qa('#participantCreatures .participantCreature');
- const target=targets.find(el=>el.dataset.alias===raffle.winner)||targets[0];
+ const target=targets.find(el=>Number(el.dataset.ticket)===Number(raffle.winnerTicket))||targets[0];
  if(!target||!ball){spinning=false;return}
- const mapRect=map.getBoundingClientRect(),targetRect=target.getBoundingClientRect();
- const endX=targetRect.left-mapRect.left+targetRect.width/2-ball.offsetWidth/2;
- const endY=targetRect.top-mapRect.top+targetRect.height*.35-ball.offsetHeight/2;
- ball.style.display='block';
- ball.style.left='50%';ball.style.top='-42px';
- const finalDx=endX-mapRect.width/2+ball.offsetWidth/2;
- const bounceA=Math.max(-mapRect.width*.32,Math.min(mapRect.width*.32,finalDx*.15-mapRect.width*.24));
- const bounceB=Math.max(-mapRect.width*.34,Math.min(mapRect.width*.34,finalDx*.45+mapRect.width*.22));
- const bounceC=Math.max(-mapRect.width*.30,Math.min(mapRect.width*.30,finalDx*.72-mapRect.width*.12));
- const anim=ball.animate([
-   {transform:'translateX(-50%) translateY(0) rotate(0deg)',offset:0},
-   {transform:'translateX(calc(-50% + '+bounceA+'px)) translateY('+(mapRect.height*.50)+'px) rotate(360deg)',offset:.24},
-   {transform:'translateX(calc(-50% + '+bounceB+'px)) translateY('+(mapRect.height*.20)+'px) rotate(680deg)',offset:.43},
-   {transform:'translateX(calc(-50% + '+bounceC+'px)) translateY('+(mapRect.height*.63)+'px) rotate(980deg)',offset:.63},
-   {transform:'translateX(calc(-50% + '+(finalDx*.88)+'px)) translateY('+(mapRect.height*.34)+'px) rotate(1240deg)',offset:.80},
-   {transform:'translateX(calc(-50% + '+finalDx+'px)) translateY('+endY+'px) rotate(1540deg)',offset:1}
- ],{duration:3200,easing:'cubic-bezier(.22,.72,.2,1)',fill:'forwards'});
- anim.onfinish=()=>{
-   const br=ball.getBoundingClientRect(),mr=map.getBoundingClientRect();
-   impact.style.left=(br.left-mr.left+br.width/2-9)+'px';
-   impact.style.top=(br.top-mr.top+br.height/2-9)+'px';
-   impact.style.display='block';void impact.offsetWidth;impact.classList.add('flash');
-   target.classList.add('winnerTarget');
-   map.classList.remove('drawing');map.classList.add('finished');
-   q('#captureSceneStatus').textContent='¡CAPTURADO!';
-   setTimeout(()=>{
-     ball.style.display='none';
-     q('#winnerText').textContent=raffle.winner?'🏆 Ganador: '+raffle.winner+(raffle.winnerTicket?' · Nº '+raffle.winnerTicket:''):'';
-     spinning=false;
-   },700);
- };
+ const mapRect=map.getBoundingClientRect(),targetRect=target.getBoundingClientRect(),bw=ball.offsetWidth||30,bh=ball.offsetHeight||30;
+ const tx=targetRect.left-mapRect.left+targetRect.width/2-bw/2,ty=targetRect.top-mapRect.top+targetRect.height*.32-bh/2;
+ const clamp=(v,min,max)=>Math.max(min,Math.min(max,v));
+ const pts=[[.50,-.08],[.06,.12],[.90,.08],[.08,.78],[.90,.72],[.48,.10],[.05,.48],[.91,.44],[.30,.88],[.73,.86],[.16,.25],[.84,.24]];
+ const frames=pts.map((p,i)=>({transform:'translate('+clamp(mapRect.width*p[0],4,mapRect.width-bw-4)+'px,'+clamp(mapRect.height*p[1],-40,mapRect.height-bh-4)+'px) rotate('+(i*420)+'deg)',offset:i/(pts.length)}));
+ frames.push({transform:'translate('+clamp(tx,4,mapRect.width-bw-4)+'px,'+clamp(ty,4,mapRect.height-bh-4)+'px) rotate(5040deg)',offset:1});
+ ball.style.display='block';ball.style.left='0';ball.style.top='0';
+ const anim=ball.animate(frames,{duration:10000,easing:'linear',fill:'forwards'});
+ anim.onfinish=()=>{const br=ball.getBoundingClientRect(),mr=map.getBoundingClientRect();impact.style.left=(br.left-mr.left+br.width/2-9)+'px';impact.style.top=(br.top-mr.top+br.height/2-9)+'px';impact.style.display='block';void impact.offsetWidth;impact.classList.add('flash');target.classList.add('winnerTarget');map.classList.add('finished');q('#captureSceneStatus').textContent='¡CAPTURADO!';setTimeout(()=>{ball.style.display='none';q('#winnerText').textContent=raffle.winner?'🏆 Ganador: '+raffle.winner+(raffle.winnerTicket?' · Nº '+raffle.winnerTicket:''):'';spinning=false},900)};
 }
 q('#spinBtn').onclick=async()=>{
  if(!isAdmin())return toast('Solo el administrador puede lanzar la bola');
