@@ -127,7 +127,8 @@ header{position:fixed;left:0;right:0;top:0;width:100%;z-index:30;background:#061
 .marketMoreToggle{margin-top:8px}
 .marketAdvanced{display:none;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-top:8px}
 .marketAdvanced.open{display:grid}
-.instagramFeatureCard{position:relative;overflow:hidden;min-height:170px;background:linear-gradient(135deg,#7024c4 0%,#b52a8b 42%,#df1d78 68%,#f48b2e 100%);border-color:#8f3aa7;text-decoration:none;color:#fff}
+.instagramFeatureCard{position:relative;overflow:hidden;min-height:170px;background:linear-gradient(135deg,#7024c4 0%,#b52a8b 42%,#df1d78 68%,#f48b2e 100%);border-color:#8f3aa7;text-decoration:none;color:#fff;animation:none!important}
+.instagramFeatureCard:before,.instagramFeatureCard:after,.instagramFeatureCard .trainerThrowScene,.instagramFeatureCard .trainerFigure,.instagramFeatureCard .throwOrb,.instagramFeatureCard .throwTrail{display:none!important;content:none!important;animation:none!important}
 .instagramFeatureCard h3,.instagramFeatureCard p,.instagramFeatureCard small{position:relative;z-index:2}
 .captureCart{gap:5px}
 .captureOrbMini{display:inline-block;width:21px;height:21px;border-radius:50%;position:relative;background:linear-gradient(#e84848 0 46%,#151515 47% 56%,#f3f3f3 57%);box-shadow:0 0 7px #0007}
@@ -163,7 +164,7 @@ header{position:fixed;left:0;right:0;top:0;width:100%;z-index:30;background:#061
 @media(max-width:760px){.pollAdminOptions{grid-template-columns:1fr}}
 #resetPasswordModal{z-index:140;background:#000e}#resetPasswordModal .box{width:min(460px,100%)}
 </style>
-<!-- cache v49: filtro Gradeada / No gradeada -->
+<!-- cache v86: instagram estatico sin animacion -->
 </head>
 <body>
 <header><div class="top">
