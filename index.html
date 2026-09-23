@@ -65,7 +65,44 @@ header{position:fixed;left:0;right:0;top:0;width:100%;z-index:30;background:#061
 .raffleTop{display:grid;grid-template-columns:1fr 1fr;gap:12px}
 .raffleMiniCard{padding:13px}.raffleMiniCard .productArt{height:160px;margin:9px 0}.raffleMiniCard h2{font-size:19px;margin:7px 0}.raffleMiniCard .stats{grid-template-columns:repeat(3,1fr)}
 .raffleDetails{display:none;margin-top:10px}.raffleDetails.open{display:block}.raffleToggle{width:100%;margin-top:9px}
-.raffleWheelCard{text-align:center;margin-top:12px}.raffleWheelCard canvas{width:min(520px,100%);height:auto}
+.raffleWheelCard{text-align:center;margin-top:12px}
+.captureDrawCard{overflow:hidden}
+.captureMap{position:relative;height:370px;margin:12px 0;border:1px solid #315e7b;border-radius:18px;overflow:hidden;background:linear-gradient(#7cccf4 0 35%,#7bc96f 36% 100%);box-shadow:inset 0 -40px 70px #153d24aa}
+.captureSky{position:absolute;inset:0 0 64% 0;background:radial-gradient(circle at 20% 25%,#fff 0 5%,transparent 6%),radial-gradient(circle at 75% 30%,#fff 0 4%,transparent 5%);opacity:.7}
+.capturePath{position:absolute;left:-8%;right:-8%;bottom:-18px;height:120px;background:#d9b06a;transform:rotate(-4deg);border-top:7px solid #c49a57}
+.captureBush{position:absolute;width:92px;height:46px;border-radius:50% 50% 42% 42%;background:#2f8d3d;box-shadow:18px -10px 0 #3aa34b,-17px -8px 0 #3a9b48}
+.bush1{left:5%;bottom:88px}.bush2{right:5%;bottom:105px;transform:scale(.8)}.bush3{left:52%;bottom:80px;transform:scale(.65)}
+.captureTrainer{position:absolute;left:13%;bottom:53px;width:66px;height:120px;z-index:8;animation:trainerWalk 3.4s ease-in-out infinite}
+.trainerCap{position:absolute;width:41px;height:17px;border-radius:18px 18px 7px 7px;background:#d93636;left:10px;top:6px;z-index:3}.capPeak{position:absolute;width:27px;height:8px;border-radius:8px;background:#a82222;left:33px;top:16px;z-index:4;transform:rotate(8deg)}
+.trainerFace{position:absolute;width:34px;height:36px;border-radius:48%;background:#f2c79e;left:13px;top:20px;border:2px solid #15202b}
+.trainerTorso{position:absolute;width:42px;height:48px;border-radius:11px 11px 8px 8px;background:linear-gradient(90deg,#153957 0 48%,#f4f4f4 49% 100%);left:9px;top:52px;border:2px solid #15202b}
+.trainerLeg{position:absolute;width:13px;height:35px;background:#202d38;top:95px;border-radius:7px}.legL{left:15px;transform:rotate(8deg)}.legR{left:34px;transform:rotate(-8deg)}
+.trainerThrowArm{position:absolute;width:38px;height:10px;background:#f2c79e;border:2px solid #15202b;border-radius:9px;left:42px;top:60px;transform:rotate(-18deg);transform-origin:left center;transition:transform .25s ease}
+.captureTrainer.ready{animation:none}.captureTrainer.ready .trainerThrowArm{transform:rotate(-55deg)}
+.participantCreature{position:absolute;width:58px;min-height:60px;display:grid;justify-items:center;z-index:6;animation:creatureBob 2.2s ease-in-out infinite}
+.creatureBody{width:44px;height:40px;border-radius:48% 52% 46% 54%;background:var(--monster-color,#6ab7ff);border:2px solid #102331;box-shadow:inset 0 -7px 0 #0002,0 4px 8px #0004;position:relative}
+.creatureBody:before,.creatureBody:after{content:"";position:absolute;width:12px;height:17px;background:inherit;border:2px solid #102331;top:-9px;border-radius:10px 10px 3px 3px}.creatureBody:before{left:4px;transform:rotate(-23deg)}.creatureBody:after{right:4px;transform:rotate(23deg)}
+.creatureEyes{position:absolute;left:10px;right:10px;top:15px;height:6px;background:radial-gradient(circle at 15% 50%,#111 0 3px,transparent 4px),radial-gradient(circle at 85% 50%,#111 0 3px,transparent 4px)}
+.creatureLabel{margin-top:4px;max-width:92px;padding:3px 6px;border-radius:999px;background:#07131fd9;color:#fff;font-size:10px;font-weight:900;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.specialBall{display:none;position:absolute;width:34px;height:34px;border-radius:50%;left:22%;bottom:125px;z-index:15;background:linear-gradient(#171717 0 45%,#e1c51c 46% 54%,#171717 55% 100%);border:2px solid #050505;box-shadow:0 0 12px #ffe52b99}
+.specialBall:after{content:"";position:absolute;width:9px;height:9px;border-radius:50%;background:#ffe52b;border:2px solid #111;left:10px;top:10px}
+.specialBall.throwing{display:block;animation:specialBallThrow 1.25s cubic-bezier(.15,.65,.3,1) forwards}
+.captureImpact{display:none;position:absolute;right:17%;bottom:74px;width:20px;height:20px;border-radius:50%;z-index:14}
+.captureImpact.flash{display:block;animation:captureFlash .9s ease-out forwards}
+.winnerCreature{display:none;position:absolute;right:11%;bottom:60px;z-index:20;min-width:150px;justify-items:center}
+.winnerCreature.reveal{display:grid;animation:winnerReveal .75s cubic-bezier(.18,.8,.3,1.25) both}
+.winnerMonsterFace{width:82px;height:72px;border-radius:50% 50% 44% 44%;display:grid;place-items:center;font-size:34px;font-weight:1000;background:linear-gradient(145deg,#ffd92e,#f5a623);border:3px solid #101820;box-shadow:0 0 25px #ffd92e88, inset 0 -9px 0 #0001;color:#111}
+.winnerMonsterName{margin-top:7px;padding:7px 12px;border-radius:999px;background:#07131fe8;border:1px solid #ffd92e;color:#ffd92e;font-weight:1000;font-size:14px}
+.captureLaunchBtn{margin-top:4px}
+.captureMap.drawing .participantCreature{filter:blur(.3px);animation-duration:.55s}
+.captureMap.finished .participantCreature{opacity:.32}
+@keyframes trainerWalk{0%,100%{transform:translateX(0) translateY(0)}50%{transform:translateX(34px) translateY(-3px)}}
+@keyframes creatureBob{0%,100%{transform:translateY(0)}50%{transform:translateY(-7px)}}
+@keyframes specialBallThrow{0%{left:24%;bottom:132px;transform:rotate(0) scale(.85)}55%{left:62%;bottom:245px;transform:rotate(520deg) scale(1)}100%{left:78%;bottom:82px;transform:rotate(900deg) scale(.92)}}
+@keyframes captureFlash{0%{box-shadow:0 0 0 0 #fff,0 0 0 0 #ffd92e;opacity:1}100%{box-shadow:0 0 0 70px #fff0,0 0 0 115px #ffd92e00;opacity:0}}
+@keyframes winnerReveal{0%{opacity:0;transform:scale(.25) translateY(30px)}70%{opacity:1;transform:scale(1.14) translateY(-5px)}100%{transform:scale(1) translateY(0)}}
+@media(max-width:760px){.captureMap{height:320px}.captureTrainer{transform:scale(.88);transform-origin:bottom left}.participantCreature{transform:scale(.88)}.winnerMonsterFace{width:70px;height:62px}.winnerCreature{right:5%;min-width:130px}}
+@media(prefers-reduced-motion:reduce){.captureTrainer,.participantCreature{animation:none!important}.specialBall.throwing{animation:specialBallThrow .01s linear forwards}.winnerCreature.reveal{animation:none}}
 .raffleChatCard{margin-top:12px}.raffleHow{margin-top:12px}
 .homeCommunityGrid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:14px}
 .homeCommunityGrid .item{margin-bottom:7px}
@@ -249,7 +286,24 @@ header{position:fixed;left:0;right:0;top:0;width:100%;z-index:30;background:#061
   </div>
 </div>
 
-<div class="card wheel raffleWheelCard"><h3>🎡 Ruleta</h3><canvas id="wheel" width="600" height="600"></canvas><button class="btn blue" id="spinBtn">GIRAR · SOLO ADMIN</button><div class="muted" id="spinNote">El administrador iniciará el sorteo.</div><div class="price" id="winnerText"></div></div>
+<div class="card raffleWheelCard captureDrawCard">
+  <div class="title"><h3 style="margin:0">🗺️ Captura del ganador</h3><span class="tag" id="captureSceneStatus">EXPLORANDO</span></div>
+  <div class="captureMap" id="captureMap">
+    <div class="captureSky"></div>
+    <div class="capturePath"></div>
+    <div class="captureBush bush1"></div><div class="captureBush bush2"></div><div class="captureBush bush3"></div>
+    <div class="captureTrainer" id="captureTrainer" aria-hidden="true">
+      <div class="capPeak"></div><div class="trainerCap"></div><div class="trainerFace"></div><div class="trainerTorso"></div><div class="trainerLeg legL"></div><div class="trainerLeg legR"></div><div class="trainerThrowArm"></div>
+    </div>
+    <div class="participantCreatures" id="participantCreatures"></div>
+    <div class="specialBall" id="specialBall" aria-hidden="true"><span></span></div>
+    <div class="captureImpact" id="captureImpact"></div>
+    <div class="winnerCreature" id="winnerCreature"><div class="winnerMonsterFace">★</div><div class="winnerMonsterName" id="winnerMonsterName"></div></div>
+  </div>
+  <button class="btn blue captureLaunchBtn" id="spinBtn">⚫🟡 LANZAR BOLA · SOLO ADMIN</button>
+  <div class="muted" id="spinNote">El entrenador recorrerá el mapa con los participantes hasta que el administrador lance la bola.</div>
+  <div class="price" id="winnerText"></div>
+</div>
 
 <div class="card raffleChatCard"><h3>💬 Chat de la rifa</h3><div class="chat" id="raffleChat"></div><div class="chatbar"><input id="raffleChatInput" placeholder="Mensaje"><button class="btn blue" id="raffleChatSend">Enviar</button></div></div>
 
@@ -878,7 +932,33 @@ function renderAdminAuctions(){
 q('#addAuction').onclick=async()=>{try{if(!isAdmin())return toast('Solo administrador');const name=q('#auName').value.trim(),price=Number(q('#auStart').value),increment=Number(q('#auIncrement').value),endRaw=q('#auEnd').value,endMs=new Date(endRaw).getTime();if(!name||price<=0||increment<=0||!endRaw||!Number.isFinite(endMs)||endMs<=Date.now())return toast('Completa producto, precio, incremento y una fecha futura de finalización');const photo=await fileData(q('#auPhoto'));const {error}=await sb.from('auctions').insert({name,photo_url:photo||null,current_price:price,min_increment:increment,leader_name:null,ends_at:new Date(endMs).toISOString(),closed:false});if(error)return toast('No se pudo crear la subasta');await loadAuctions();q('#auName').value='';q('#auStart').value='';q('#auIncrement').value='';q('#auEnd').value='';q('#auPhoto').value='';toast('Subasta creada correctamente')}catch(e){console.error(e);toast('No se pudo crear la subasta')}};
 setInterval(refreshAuctionClocks,1000);
 function paidEntries(){const e=[];participants.filter(p=>p.status==='Pagado').forEach(p=>{for(let i=0;i<p.qty;i++)e.push(p.alias)});return e}
-function drawWheel(){const c=q('#wheel'),ctx=c.getContext('2d'),e=paidEntries();ctx.clearRect(0,0,600,600);if(!e.length){ctx.fillStyle='#ffd92e';ctx.font='bold 28px system-ui';ctx.textAlign='center';ctx.fillText('Sin participantes',300,305);return}const n=e.length;ctx.save();ctx.translate(300,300);ctx.rotate(wheelAngle);e.forEach((name,i)=>{const a0=i*2*Math.PI/n,a1=(i+1)*2*Math.PI/n;ctx.beginPath();ctx.moveTo(0,0);ctx.arc(0,0,280,a0,a1);ctx.closePath();ctx.fillStyle='hsl('+((i*53)%360)+' 68% 48%)';ctx.fill();ctx.strokeStyle='#07131f';ctx.stroke();if(n<=30){ctx.save();ctx.rotate((a0+a1)/2);ctx.textAlign='right';ctx.fillStyle='#fff';ctx.font='bold 13px system-ui';ctx.fillText(name.slice(0,13),260,4);ctx.restore()}});ctx.restore();ctx.fillStyle='#07131f';ctx.beginPath();ctx.arc(300,300,70,0,Math.PI*2);ctx.fill();ctx.fillStyle='#ffd92e';ctx.font='900 22px system-ui';ctx.textAlign='center';ctx.fillText('GPokeTCG',300,307);ctx.save();ctx.fillStyle='#ffd92e';ctx.strokeStyle='#07131f';ctx.lineWidth=6;ctx.beginPath();ctx.moveTo(276,8);ctx.lineTo(324,8);ctx.lineTo(300,58);ctx.closePath();ctx.fill();ctx.stroke();ctx.restore()}
+function raffleCreatureColor(i){
+ const colors=['#66c2ff','#ff7f7f','#8ddf82','#c892ff','#ffd166','#6fd7c8','#ff9f66','#9cb8ff','#f47cc3','#b7dc6b'];
+ return colors[i%colors.length];
+}
+function drawWheel(){
+ const box=q('#participantCreatures');if(!box)return;
+ const confirmed=participants.filter(p=>p.status==='Pagado');
+ const unique=confirmed.map((p,i)=>({name:p.alias,qty:p.qty,index:i}));
+ if(!unique.length){
+   box.innerHTML='<div class="muted" style="position:absolute;inset:45% 10% auto;text-align:center;font-weight:900">Sin participantes confirmados</div>';
+   q('#captureSceneStatus').textContent='ESPERANDO';
+   return;
+ }
+ q('#captureSceneStatus').textContent=raffle.status==='ready_to_draw'?'LISTO PARA CAPTURAR':raffle.status==='closed'?'CAPTURA FINALIZADA':'EXPLORANDO';
+ const spots=[
+  [34,53],[49,38],[66,52],[78,34],[57,69],[31,74],[84,66],[43,67],[71,73],[55,24],[87,49],[38,27]
+ ];
+ box.innerHTML=unique.map((p,i)=>{
+   const s=spots[i%spots.length],delay=(i%6)*.18;
+   return '<div class="participantCreature" style="left:'+s[0]+'%;top:'+s[1]+'%;animation-delay:-'+delay+'s;--monster-color:'+raffleCreatureColor(i)+'"><div class="creatureBody"><span class="creatureEyes"></span></div><div class="creatureLabel">'+esc(p.name)+(p.qty>1?' · x'+p.qty:'')+'</div></div>';
+ }).join('');
+}
+function resetCaptureScene(){
+ const map=q('#captureMap'),trainer=q('#captureTrainer'),ball=q('#specialBall'),impact=q('#captureImpact'),winner=q('#winnerCreature');
+ map?.classList.remove('drawing','finished');trainer?.classList.remove('ready');ball?.classList.remove('throwing');impact?.classList.remove('flash');winner?.classList.remove('reveal');
+ if(ball)ball.style.display='';if(winner)winner.style.display='';
+}
 function renderRaffle(){
  q('#raffleTitle').textContent=raffle.title||'Sin rifa activa';q('#raffleDesc').textContent=raffle.desc||'';q('#rafflePrice').textContent=money(raffle.price||0);const rs=q('#raffleSlots');if(rs)rs.textContent=raffle.slots||0;q('#homeRaffleTitle').textContent=raffle.title||'Sin rifa activa';q('#homeRaffleMeta').textContent=(raffle.slots||0)+' números · '+money(raffle.price||0)+' por número';
  const reserved=participants.reduce((s,p)=>s+p.qty,0),paid=participants.filter(p=>p.status==='Pagado').reduce((s,p)=>s+p.qty,0);q('#soldCount').textContent=reserved+' / '+(raffle.slots||0);q('#paidCount').textContent=paid+' / '+(raffle.slots||0);
@@ -889,7 +969,7 @@ function renderRaffle(){
  qa('.delPart').forEach(b=>b.onclick=async()=>{if(!isAdmin())return;const {error}=await sb.from('raffle_entries').delete().eq('id',Number(b.dataset.id));if(error)return toast('No se pudo eliminar');await loadRaffle()});
  q('#rTitle').value=raffle.title||'';q('#rPrice').value=raffle.price||'';q('#rSlots').value=raffle.slots||'';q('#rDesc').value=raffle.desc||'';
  const rb=q('#raffleImageBox');rb.innerHTML=raffle.photo?'<img src="'+raffle.photo+'" alt="">':'🃏';
- if(!spinning)q('#winnerText').textContent=raffle.winner?'🏆 Ganador: '+raffle.winner+(raffle.winnerTicket?' · Nº '+raffle.winnerTicket:''):'';
+ if(!spinning){q('#winnerText').textContent=raffle.winner?'🏆 Ganador: '+raffle.winner+(raffle.winnerTicket?' · Nº '+raffle.winnerTicket:''):'';if(raffle.winner){const wn=q('#winnerMonsterName');if(wn)wn.textContent=raffle.winner+(raffle.winnerTicket?' · Nº '+raffle.winnerTicket:'');q('#captureMap')?.classList.add('finished');const wc=q('#winnerCreature');if(wc)wc.classList.add('reveal')}else resetCaptureScene()}
  q('#buyRaffleBtn').disabled=!raffle.id||raffle.status!=='active';q('#buyRaffleBtn').textContent=raffle.status==='active'?'Elegir números':raffle.status==='payment_processing'?'Rifa completa · confirmando participaciones':raffle.status==='ready_to_draw'?'Participaciones confirmadas · esperando sorteo':'Rifa cerrada';
  const adminR=q('#adminCurrentRaffle');
  if(adminR){
@@ -906,32 +986,36 @@ q('#confirmRaffle').onclick=async()=>{if(!raffle.id)return toast('No hay rifa ac
 function animateLiveWheel(){
  if(spinning)return;
  spinning=true;
- q('#winnerText').textContent='🎡 Sorteo en directo...';
- const entries=paidEntries();
- const n=entries.length||1;
- let winnerIndex=-1;
- if(raffle.winnerTicket)winnerIndex=Math.max(0,Math.min(n-1,Number(raffle.winnerTicket)-1));
- const targetAngle=winnerIndex>=0 ? (Math.PI*1.5)-((winnerIndex+.5)*2*Math.PI/n) : wheelAngle;
- const startAngle=wheelAngle;
- const extraTurns=8*2*Math.PI;
- const finalAngle=targetAngle+extraTurns;
- const start=performance.now(),duration=6200;
- function frame(now){
-   const t=Math.min(1,(now-start)/duration);
-   const eased=1-Math.pow(1-t,4);
-   wheelAngle=startAngle+(finalAngle-startAngle)*eased;
-   drawWheel();
-   if(t<1){requestAnimationFrame(frame)}
-   else{
-     wheelAngle=targetAngle;
-     drawWheel();
-     spinning=false;
-     q('#winnerText').textContent=raffle.winner?'🏆 Ganador: '+raffle.winner+(raffle.winnerTicket?' · Nº '+raffle.winnerTicket:''):'';
-   }
- }
- requestAnimationFrame(frame);
+ const map=q('#captureMap'),trainer=q('#captureTrainer'),ball=q('#specialBall'),impact=q('#captureImpact'),winner=q('#winnerCreature'),winnerName=q('#winnerMonsterName');
+ resetCaptureScene();
+ q('#winnerText').textContent='⚫🟡 Lanzamiento en curso...';
+ q('#captureSceneStatus').textContent='LANZANDO';
+ map?.classList.add('drawing');trainer?.classList.add('ready');
+ if(ball){ball.style.display='block';void ball.offsetWidth;ball.classList.add('throwing')}
+ setTimeout(()=>{impact?.classList.add('flash')},1180);
+ setTimeout(()=>{
+   map?.classList.remove('drawing');map?.classList.add('finished');
+   if(ball)ball.style.display='none';
+   const winnerText=raffle.winner||'Ganador';
+   if(winnerName)winnerName.textContent=winnerText+(raffle.winnerTicket?' · Nº '+raffle.winnerTicket:'');
+   if(winner){winner.style.display='grid';void winner.offsetWidth;winner.classList.add('reveal')}
+   q('#captureSceneStatus').textContent='¡CAPTURADO!';
+   q('#winnerText').textContent=raffle.winner?'🏆 Ganador: '+raffle.winner+(raffle.winnerTicket?' · Nº '+raffle.winnerTicket:''):'';
+   spinning=false;
+ },1900);
 }
-q('#spinBtn').onclick=async()=>{if(!isAdmin())return toast('Solo el administrador puede girar');if(!raffle.id||spinning)return;const e=paidEntries();if(!e.length)return toast('No hay participantes confirmados');q('#winnerText').textContent='🎡 Sorteo en directo...';const {data,error}=await sb.rpc('draw_raffle_winner',{p_raffle_id:raffle.id});if(error)return toast(error.message);await loadRaffle();if(data&&data[0])toast('Sorteo iniciado')};
+q('#spinBtn').onclick=async()=>{
+ if(!isAdmin())return toast('Solo el administrador puede lanzar la bola');
+ if(!raffle.id||spinning)return;
+ const e=paidEntries();if(!e.length)return toast('No hay participantes confirmados');
+ q('#winnerText').textContent='Preparando captura...';
+ const btn=q('#spinBtn');btn.disabled=true;
+ const {data,error}=await sb.rpc('draw_raffle_winner',{p_raffle_id:raffle.id});
+ if(error){btn.disabled=false;return toast(error.message)}
+ await loadRaffle();
+ btn.disabled=false;
+ if(data&&data[0])toast('Bola lanzada');
+};
 q('#saveRaffle').onclick=async()=>{try{if(!isAdmin())return toast('Solo administrador');const title=q('#rTitle').value.trim(),price=Number(q('#rPrice').value),slots=Number(q('#rSlots').value);if(!title||price<=0||slots<=0)return toast('Completa carta, precio por número y plazas');const photo=await fileData(q('#rPhoto'));let error;if(raffle.id){const payload={title,price_per_slot:price,total_slots:Math.max(1,slots),description:q('#rDesc').value.trim()};if(photo)payload.photo_url=photo;({error}=await sb.from('raffles').update(payload).eq('id',raffle.id))}else{({error}=await sb.from('raffles').insert({title,price_per_slot:price,total_slots:Math.max(1,slots),description:q('#rDesc').value.trim(),photo_url:photo||null,status:'active'}))}if(error)return toast('No se pudo guardar la rifa');q('#rPhoto').value='';await loadRaffle();toast(raffle.id?'Rifa actualizada correctamente':'Rifa creada correctamente')}catch(e){console.error(e);toast('No se pudo guardar la rifa')}};
 q('#addParticipant').onclick=async()=>{if(!isAdmin())return toast('Solo administrador');if(!raffle.id)return toast('No hay rifa');const alias=q('#aAlias').value.trim();if(!alias)return toast('Pon un alias');const qty=Math.max(1,Number(q('#aQty').value)||1),status=q('#aStatus').value==='paid'?'paid':'pending';const {error}=await sb.from('raffle_entries').insert({raffle_id:raffle.id,user_id:null,alias,quantity:qty,status});if(error)return toast('No se pudo añadir participante');q('#aAlias').value='';await loadRaffle()};
 async function loadChatExtras(){
