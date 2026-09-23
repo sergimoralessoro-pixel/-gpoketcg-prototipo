@@ -180,7 +180,7 @@ header{position:fixed;left:0;right:0;top:0;width:100%;z-index:30;background:#061
 @media(max-width:760px){.pollAdminOptions{grid-template-columns:1fr}}
 #resetPasswordModal{z-index:140;background:#000e}#resetPasswordModal .box{width:min(460px,100%)}
 </style>
-<!-- cache v95: icono legal flotante visible en perfil -->
+<!-- cache v96: normativa y funcionamiento completos -->
 </head>
 <body>
 <header><div class="top">
@@ -405,14 +405,88 @@ header{position:fixed;left:0;right:0;top:0;width:100%;z-index:30;background:#061
   </div>
 </section>
 
-<section class="page" id="legal"><div class="title"><h2>Información legal y condiciones</h2><span class="tag">Antes de publicar</span></div>
-<div class="card"><p class="muted">Esta sección deja preparada la información básica de la tienda. Antes de abrir GPokeTCG al público habrá que completar los datos legales del titular del negocio (nombre o razón social, NIF/CIF y domicilio) y revisar el texto definitivo según la actividad.</p></div>
+<section class="page" id="legal"><div class="title"><h2>Normativa y funcionamiento</h2><span class="tag">GPokeTCG</span></div>
+
+<div class="card legalIntro">
+  <h3 style="margin-top:0">ℹ️ Información importante</h3>
+  <p>En esta sección se explica cómo funciona GPokeTCG, las condiciones de uso de la tienda, subastas y rifas, el tratamiento de datos, las cookies y los derechos de los usuarios.</p>
+  <p class="muted">Contacto general: gpoketcg@gmail.com</p>
+</div>
+
 <div class="legalGrid" style="margin-top:12px">
-<div class="card"><h3>Privacidad</h3><p>GPokeTCG utiliza los datos de cuenta, contacto y entrega para gestionar usuarios, pedidos, subastas, soporte y envíos. Los datos de pago no se almacenarán en esta web: serán tratados por la pasarela de pago que se conecte.</p><p class="muted">Contacto: gpoketcg@gmail.com</p></div>
-<div class="card"><h3>Cookies</h3><p>La web utiliza almacenamiento local y servicios técnicos necesarios para mantener la sesión y el funcionamiento de la cuenta. Antes de producción se añadirá el aviso de cookies correspondiente si incorporamos analítica, publicidad u otras cookies no esenciales.</p></div>
-<div class="card"><h3>Compras, envíos y devoluciones</h3><p>El precio y el estado de cada producto se muestran antes de comprar. El comprador deberá facilitar una dirección válida. El panel de usuario mostrará el estado del pedido: Pendiente, Pagado, Preparando, Enviado, Entregado o Cancelado.</p></div>
-<div class="card"><h3>Subastas</h3><p>La puja más alta al finalizar el contador queda como ganadora. La subasta se bloquea al finalizar y el ganador debe completar sus datos de envío y abonar el importe final según las instrucciones de pago indicadas por GPokeTCG.</p><p class="muted">Las rifas no se cobran mediante la web. La participación y el pago se gestionan de forma externa.</p></div>
-</div></section>
+  <div class="card"><h3>🏢 Titular de la web</h3>
+    <p><b>Nombre comercial:</b> GPokeTCG</p>
+    <p><b>Titular / razón social:</b> por completar antes de la apertura comercial.</p>
+    <p><b>NIF/CIF:</b> por completar.</p>
+    <p><b>Domicilio:</b> por completar.</p>
+    <p><b>Contacto:</b> gpoketcg@gmail.com</p>
+  </div>
+
+  <div class="card"><h3>🧭 Cómo funciona GPokeTCG</h3>
+    <p>Los usuarios pueden crear una cuenta, consultar cartas, comprar productos disponibles, participar en subastas, utilizar la comunidad, recibir notificaciones y consultar el historial de su actividad desde el perfil.</p>
+    <p>Los precios, disponibilidad y características de cada carta se muestran en su ficha. Cuando una unidad se agota, deja de estar disponible para nuevas compras.</p>
+  </div>
+
+  <div class="card"><h3>🛒 Compras</h3>
+    <p>Antes de confirmar una compra se muestran los productos seleccionados, su precio y los datos necesarios para la entrega. El usuario debe facilitar información correcta y actualizada.</p>
+    <p>Una vez creado el pedido, podrá consultarse desde el perfil con estados como Pendiente, Pagado, Preparando, Enviado, Entregado o Cancelado.</p>
+    <p>El sistema de pago se incorporará mediante Revolut cuando la cuenta comercial esté disponible. Hasta ese momento no se realizará ningún cobro automático desde la web.</p>
+  </div>
+
+  <div class="card"><h3>📦 Envíos y seguimiento</h3>
+    <p>Los envíos son gestionados manualmente por GPokeTCG. Una vez enviado el pedido, el administrador actualizará su estado y comunicará al comprador la información de seguimiento disponible.</p>
+    <p>El comprador es responsable de indicar correctamente nombre, dirección, código postal, ciudad, provincia y datos de contacto.</p>
+  </div>
+
+  <div class="card"><h3>↩️ Devoluciones y desistimiento</h3>
+    <p>Cuando resulte aplicable la normativa de consumo a una compra a distancia, el consumidor dispone con carácter general de 14 días naturales para ejercer su derecho de desistimiento desde la recepción del producto, salvo las excepciones legalmente previstas.</p>
+    <p>Para solicitar una devolución deberá contactar con GPokeTCG en gpoketcg@gmail.com indicando el pedido y el motivo de la solicitud. Las condiciones concretas de devolución se aplicarán conforme a la normativa vigente y al estado del producto recibido.</p>
+  </div>
+
+  <div class="card"><h3>🔨 Subastas</h3>
+    <p>Cada subasta muestra un precio actual, un incremento mínimo y una fecha y hora de finalización. Para que una puja sea válida debe superar el importe mínimo exigido por el sistema.</p>
+    <p>Al finalizar el contador, la subasta queda bloqueada y el usuario con la puja válida más alta figura como ganador. El ganador deberá completar sus datos de envío y seguir las instrucciones de pago indicadas por GPokeTCG.</p>
+    <p>La subasta permanecerá visible con su ganador hasta que el administrador la retire.</p>
+  </div>
+
+  <div class="card"><h3>🎟️ Rifas</h3>
+    <p>Las rifas no se cobran a través de esta web. La participación y el pago se gestionan de forma externa.</p>
+    <p>Cuando exista una rifa activa, GPokeTCG podrá mostrar en la web sus plazas, participantes confirmados, estado y resultado. Las condiciones específicas de cada rifa deberán comunicarse de forma clara antes de participar.</p>
+  </div>
+
+  <div class="card"><h3>👤 Cuenta y comunidad</h3>
+    <p>Cada usuario es responsable de mantener seguras sus credenciales y de utilizar la comunidad de forma respetuosa. GPokeTCG podrá moderar contenido, mensajes o cuentas que incumplan las normas de convivencia o intenten perjudicar el funcionamiento del servicio.</p>
+    <p>Los mensajes privados, solicitudes de amistad, actividad de comunidad y notificaciones se muestran únicamente a los usuarios autorizados según las reglas de acceso de la plataforma.</p>
+  </div>
+
+  <div class="card"><h3>🔐 Privacidad</h3>
+    <p>GPokeTCG utiliza los datos necesarios para crear y mantener la cuenta, gestionar pedidos, entregas, subastas, comunidad, soporte y seguridad de la plataforma.</p>
+    <p>Entre estos datos pueden encontrarse nombre de usuario, correo electrónico, datos de entrega, historial de pedidos, pujas, mensajes y datos técnicos necesarios para el funcionamiento del servicio.</p>
+    <p>Los datos no se utilizarán para finalidades incompatibles con la prestación del servicio. Los datos de pago no se almacenarán directamente en GPokeTCG cuando se conecte Revolut u otro proveedor de pago.</p>
+    <p>Para consultas sobre privacidad o ejercicio de derechos: gpoketcg@gmail.com.</p>
+  </div>
+
+  <div class="card"><h3>🍪 Cookies y almacenamiento local</h3>
+    <p>Actualmente la web utiliza almacenamiento local y servicios técnicos necesarios para mantener la sesión, preferencias y funcionamiento básico de la cuenta.</p>
+    <p>Si en el futuro se incorporan cookies de analítica, publicidad u otras cookies no necesarias, se solicitará el consentimiento correspondiente y se ofrecerán opciones de aceptar y rechazar con el mismo nivel de visibilidad.</p>
+  </div>
+
+  <div class="card"><h3>📑 Contratación electrónica</h3>
+    <p>Antes de completar una operación, el usuario podrá revisar la información introducida y corregir errores. La contratación se realizará en español.</p>
+    <p>Los pedidos y operaciones realizadas quedarán reflejados en el perfil del usuario cuando corresponda. GPokeTCG podrá conservar la información necesaria para gestionar la relación contractual, atender incidencias y cumplir obligaciones legales.</p>
+  </div>
+
+  <div class="card"><h3>⚠️ Uso indebido</h3>
+    <p>No está permitido intentar manipular precios, stock, subastas, cuentas, mensajes, permisos, sistemas de pago o cualquier función de GPokeTCG. Tampoco está permitido utilizar la plataforma para fraude, suplantación, spam, amenazas o actividades ilícitas.</p>
+    <p>GPokeTCG podrá restringir o bloquear el acceso cuando sea necesario para proteger a los usuarios o la seguridad de la plataforma.</p>
+  </div>
+
+  <div class="card"><h3>📩 Contacto y reclamaciones</h3>
+    <p>Para consultas sobre pedidos, entregas, devoluciones, cuenta, privacidad o cualquier incidencia puedes escribir a <b>gpoketcg@gmail.com</b>.</p>
+    <p>Cuando dispongamos del dominio definitivo, esta sección se actualizará con los datos identificativos completos y los canales oficiales de contacto.</p>
+  </div>
+</div>
+</section>
 
 <section class="page" id="adminPage"><div class="title"><h2>Panel Admin</h2><span class="badge">SOLO ADMIN</span></div><div class="card">
 <div class="adminTabs"><button class="adminTab active" data-admin="adminMarket">Mercado</button><button class="adminTab" data-admin="adminOrders">Pedidos</button><button class="adminTab" data-admin="adminAuctions">Subastas</button><button class="adminTab" data-admin="adminRaffle">Rifa</button><button class="adminTab" data-admin="adminPeople">Participantes</button><button class="adminTab" data-admin="adminCommunity">Noticias/Eventos</button><button class="adminTab" data-admin="adminOffers">Ofertas</button></div>
