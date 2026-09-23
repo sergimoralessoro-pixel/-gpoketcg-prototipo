@@ -98,6 +98,12 @@ header{position:fixed;left:0;right:0;top:0;width:100%;z-index:30;background:#061
 .pollOptionEditorRow{display:flex;gap:7px;align-items:center}
 .pollOptionEditorRow .chatPollOptionInput{flex:1}
 .pollOptionDelete{width:38px;height:38px;min-width:38px;border-radius:9px;border:1px solid #7d2634;background:#3a1119;color:#ff7388;font-size:17px;cursor:pointer}
+.cardMetaGrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}
+.cardMetaGrid label{display:grid;gap:5px;font-size:12px;font-weight:850;color:#c8d6e2}
+.cardMetaGrid label>span{padding-left:2px}
+.cardMetaLine{display:flex;flex-wrap:wrap;gap:6px;margin-top:7px}
+.cardMetaTag{display:inline-flex;padding:4px 7px;border-radius:999px;border:1px solid #28516d;background:#0b2234;color:#d9e8f4;font-size:11px;font-weight:800}
+@media(max-width:760px){.cardMetaGrid{grid-template-columns:1fr}}
 .pollFeed{display:grid;gap:12px;padding:12px}
 .chatPollCard{padding:14px;border:1px solid #214967;border-radius:13px;background:#081724}
 .chatPollCard h3{margin:0 0 10px}
@@ -257,7 +263,23 @@ header{position:fixed;left:0;right:0;top:0;width:100%;z-index:30;background:#061
 </div>
 </section>
 
-<section class="page" id="vender"><div class="title"><h2>Vender tus cartas</h2><span class="tag">Privado al admin</span></div><div class="card"><p class="muted">Tu propuesta privada llegará al administrador de GPokeTCG.</p><div class="formgrid"><input id="sellName" placeholder="Nombre de la carta"><input id="sellPrice" type="number" placeholder="Precio solicitado (€)"><select id="sellState"><option>Near Mint</option><option>Excellent</option><option>Played</option><option>PSA / Graded</option></select><textarea id="sellMessage" placeholder="Detalles..."></textarea><div class="upload"><b>Foto de la carta</b><input id="sellPhoto" type="file" accept="image/*"><small class="muted">JPG, PNG o foto desde el móvil · máximo 5 MB</small></div></div><button class="btn" id="sendOffer" style="margin-top:10px">Enviar propuesta privada</button></div></section>
+<section class="page" id="vender"><div class="title"><h2>Vender tus cartas</h2><span class="tag">Privado al admin</span></div><div class="card"><p class="muted">Completa solo los datos que conozcas. Ningún campo de la ficha es obligatorio.</p>
+<div class="cardMetaGrid">
+  <label><span>Pokémon / carta</span><input id="sellName" placeholder="Ej. Charizard"></label>
+  <label><span>Número de carta</span><input id="sellCardNumber" placeholder="Ej. 4/102, 199/165..."></label>
+  <label><span>Estado</span><select id="sellGradingStatus"><option value="">Seleccionar...</option><option value="Gradeada">Gradeada</option><option value="No gradeada">No gradeada</option></select></label>
+  <label class="sellGradedField" style="display:none"><span>Empresa de gradación</span><select id="sellGradingCompany"><option value="">Seleccionar...</option><option>PSA</option><option>CGC</option><option value="BGS / Beckett">BGS / Beckett</option><option>ACE</option><option>Otra</option></select></label>
+  <label class="sellGradedField" style="display:none"><span>Nota / grado</span><select id="sellGrade"><option value="">Seleccionar...</option><option>10</option><option>9.5</option><option>9</option><option>8.5</option><option>8</option><option>7.5</option><option>7</option><option>6.5</option><option>6 o menos</option><option>Otra</option></select></label>
+  <label class="sellRawField" style="display:none"><span>Conservación</span><select id="sellRawCondition"><option value="">Seleccionar...</option><option>Poor</option><option>Played</option><option>Light Played</option><option>Good</option><option>Excellent</option><option>Near Mint</option><option>Mint</option><option>Otra</option></select></label>
+  <label><span>Rareza</span><select id="sellRarity"><option value="">Seleccionar...</option><option>Common</option><option>Uncommon</option><option>Rare</option><option>Double Rare</option><option>Illustration Rare</option><option>Special Illustration Rare</option><option>Hyper Rare</option><option>Otra</option></select></label>
+  <label><span>Idioma</span><input id="sellLanguage" placeholder="Ej. Español, inglés, japonés..."></label>
+  <label><span>Precio solicitado</span><input id="sellPrice" type="number" step="0.01" placeholder="€"></label>
+  <label><span>Disponibilidad</span><select id="sellAvailability"><option value="">Seleccionar...</option><option>Disponible</option><option>Reservada</option><option>Agotada</option><option>Otra</option></select></label>
+  <label><span>Certificación</span><input id="sellCertification" placeholder="Nº de certificación / referencia"></label>
+</div>
+<textarea id="sellMessage" placeholder="Detalles adicionales (opcional)" style="margin-top:10px;min-height:90px"></textarea>
+<div class="upload" style="margin-top:10px"><b>Foto de la carta</b><input id="sellPhoto" type="file" accept="image/*"><small class="muted">JPG, PNG o foto desde el móvil · máximo 5 MB</small></div>
+<button class="btn" id="sendOffer" style="margin-top:10px">Enviar propuesta privada</button></div></section>
 
 <section class="page" id="ranking"><div class="title"><h2>Ranking</h2><span class="tag">Próximamente</span></div><div class="card"><p class="muted">Todavía no hay datos suficientes para mostrar un ranking.</p></div></section>
 
@@ -302,7 +324,24 @@ header{position:fixed;left:0;right:0;top:0;width:100%;z-index:30;background:#061
 
 <section class="page" id="adminPage"><div class="title"><h2>Panel Admin</h2><span class="badge">SOLO ADMIN</span></div><div class="card">
 <div class="adminTabs"><button class="adminTab active" data-admin="adminMarket">Mercado</button><button class="adminTab" data-admin="adminOrders">Pedidos</button><button class="adminTab" data-admin="adminAuctions">Subastas</button><button class="adminTab" data-admin="adminRaffle">Rifa</button><button class="adminTab" data-admin="adminPeople">Participantes</button><button class="adminTab" data-admin="adminCommunity">Noticias/Eventos</button><button class="adminTab" data-admin="adminOffers">Ofertas</button></div>
-<div class="adminPane active" id="adminMarket"><h3>Mercado</h3><p class="muted">Puedes crear productos y editar nombre, precio, estado, stock y fotografía.</p><div class="formgrid"><input id="pName" placeholder="Nombre"><input id="pPrice" type="number" step="0.01" placeholder="Precio"><input id="pState" placeholder="Estado (Near Mint, PSA 10...)"><input id="pStock" type="number" placeholder="Stock" value="1"><textarea id="pDesc" placeholder="Descripción / edición / idioma / certificación / detalles"></textarea><div class="upload"><b>Foto del producto</b><input id="pPhoto" type="file" accept="image/*"></div></div><button class="btn" id="addProduct" style="margin-top:10px">Añadir producto</button><div id="adminProducts"></div></div>
+<div class="adminPane active" id="adminMarket"><h3>Mercado</h3><p class="muted">Completa solo lo que conozcas de la carta. Los campos de ficha son opcionales.</p>
+<div class="cardMetaGrid">
+  <label><span>Pokémon / carta</span><input id="pName" placeholder="Ej. Charizard"></label>
+  <label><span>Número de carta</span><input id="pCardNumber" placeholder="Ej. 4/102, 199/165..."></label>
+  <label><span>Estado</span><select id="pGradingStatus"><option value="">Seleccionar...</option><option value="Gradeada">Gradeada</option><option value="No gradeada">No gradeada</option></select></label>
+  <label class="pGradedField" style="display:none"><span>Empresa de gradación</span><select id="pGradingCompany"><option value="">Seleccionar...</option><option>PSA</option><option>CGC</option><option value="BGS / Beckett">BGS / Beckett</option><option>ACE</option><option>Otra</option></select></label>
+  <label class="pGradedField" style="display:none"><span>Nota / grado</span><select id="pGrade"><option value="">Seleccionar...</option><option>10</option><option>9.5</option><option>9</option><option>8.5</option><option>8</option><option>7.5</option><option>7</option><option>6.5</option><option>6 o menos</option><option>Otra</option></select></label>
+  <label class="pRawField" style="display:none"><span>Conservación</span><select id="pRawCondition"><option value="">Seleccionar...</option><option>Poor</option><option>Played</option><option>Light Played</option><option>Good</option><option>Excellent</option><option>Near Mint</option><option>Mint</option><option>Otra</option></select></label>
+  <label><span>Rareza</span><select id="pRarity"><option value="">Seleccionar...</option><option>Common</option><option>Uncommon</option><option>Rare</option><option>Double Rare</option><option>Illustration Rare</option><option>Special Illustration Rare</option><option>Hyper Rare</option><option>Otra</option></select></label>
+  <label><span>Idioma</span><input id="pLanguage" placeholder="Ej. Español, inglés, japonés..."></label>
+  <label><span>Precio</span><input id="pPrice" type="number" step="0.01" placeholder="€"></label>
+  <label><span>Disponibilidad</span><select id="pAvailability"><option value="">Seleccionar...</option><option>Disponible</option><option>Reservada</option><option>Agotada</option><option>Otra</option></select></label>
+  <label><span>Certificación</span><input id="pCertification" placeholder="Nº de certificación / referencia"></label>
+  <label><span>Stock</span><input id="pStock" type="number" min="0" placeholder="Cantidad" value="1"></label>
+</div>
+<textarea id="pDesc" placeholder="Descripción / detalles adicionales (opcional)" style="margin-top:10px;min-height:90px"></textarea>
+<div class="upload" style="margin-top:10px"><b>Foto del producto</b><input id="pPhoto" type="file" accept="image/*"></div>
+<button class="btn" id="addProduct" style="margin-top:10px">Añadir producto</button><div id="adminProducts"></div></div>
 <div class="adminPane" id="adminOrders"><h3>Pedidos</h3><p class="muted">Gestiona compras, datos de entrega y estado del envío.</p><div class="orderFilterBar" style="margin-bottom:10px"><button class="orderFilter active" data-order-filter="all">Todos</button><button class="orderFilter" data-order-filter="pending">Pendientes</button><button class="orderFilter" data-order-filter="paid">Pagados</button><button class="orderFilter" data-order-filter="preparing">Preparando</button><button class="orderFilter" data-order-filter="shipped">Enviados</button><button class="orderFilter" data-order-filter="delivered">Finalizados</button></div><div id="adminOrdersList" class="adminOrderGrid"></div></div>
   <div class="adminPane" id="adminAuctions"><h3>Subastas</h3><p class="muted">El precio actual es la base. El incremento mínimo lo decides tú; el usuario puede pujar cualquier cantidad superior que lo respete. Al llegar la fecha y hora de fin, la subasta se bloquea automáticamente y permanece visible hasta que la retires.</p><div class="formgrid"><input id="auName" placeholder="Carta / producto"><input id="auStart" type="number" step="0.01" placeholder="Precio inicial"><input id="auIncrement" type="number" step="0.01" placeholder="Incremento mínimo (ej. 5)"><input id="auEnd" type="datetime-local" aria-label="Fecha y hora de finalización"><div class="upload"><b>Foto de la subasta</b><input id="auPhoto" type="file" accept="image/*"></div></div><button class="btn" id="addAuction" style="margin-top:10px">Crear subasta</button><div id="adminAuctionsList"></div></div>
 <div class="adminPane" id="adminRaffle">
@@ -453,7 +492,7 @@ async function setupPresence(){
 async function loadProducts(){
  const {data,error}=await sb.from('products').select('*').order('created_at',{ascending:false});
  if(error){console.error(error);toast('No se pudieron cargar los productos');return}
- products=(data||[]).map(p=>({id:p.id,name:p.name,price:Number(p.price),state:p.state,stock:p.stock,desc:p.description||'',photo:p.photo_url||'',active:p.active}));
+ products=(data||[]).map(p=>({id:p.id,name:p.name,price:Number(p.price),state:p.state,stock:p.stock,desc:p.description||'',photo:p.photo_url||'',active:p.active,gradingStatus:p.grading_status||'',gradingCompany:p.grading_company||'',grade:p.grade||'',cardNumber:p.card_number||'',pokemon:p.pokemon||p.name||'',rarity:p.rarity||'',language:p.language||'',availability:p.availability||'',certification:p.certification||''}));
  renderProducts();renderHomeHighlights();
 }
 function subscribeProducts(){
@@ -571,7 +610,7 @@ async function loadCommunityData(){
  news=(newsRes.data||[]).map(x=>({id:x.id,title:x.title,date:x.label,text:x.body}));
  events=(eventRes.data||[]).map(x=>({id:x.id,title:x.title,date:x.event_label,text:x.body}));
  const hiddenOfferIds=new Set((hideRes.data||[]).map(x=>Number(x.offer_id)));
- offers=(offerRes.data||[]).filter(o=>!hiddenOfferIds.has(Number(o.id))).map(o=>({id:o.id,user_id:o.user_id,name:o.card_name,price:o.requested_price??'—',state:o.card_state,contact:o.contact,message:o.message,photo:o.photo_url||'',sender:o.sender_name,senderEmail:o.sender_email,status:o.status,created:new Date(o.created_at).getTime()}));
+ offers=(offerRes.data||[]).filter(o=>!hiddenOfferIds.has(Number(o.id))).map(o=>({id:o.id,user_id:o.user_id,name:o.card_name,price:o.requested_price??'—',state:o.card_state,contact:o.contact,message:o.message,photo:o.photo_url||'',sender:o.sender_name,senderEmail:o.sender_email,status:o.status,created:new Date(o.created_at).getTime(),gradingStatus:o.grading_status||'',gradingCompany:o.grading_company||'',grade:o.grade||'',cardNumber:o.card_number||'',pokemon:o.pokemon||o.card_name||'',rarity:o.rarity||'',language:o.language||'',availability:o.availability||'',certification:o.certification||''}));
  privateMessages=(msgRes.data||[]).filter(m=>!hiddenOfferIds.has(Number(m.offer_id))).map(m=>({id:m.id,offer_id:m.offer_id,from_user_id:m.sender_user_id,fromName:m.sender_name,text:m.message,attachment_url:m.attachment_url||'',attachment_name:m.attachment_name||'',attachment_type:m.attachment_type||'',time:new Date(m.created_at).getTime()}));
  messageReads=new Set((readRes.data||[]).map(r=>Number(r.message_id)));
  await loadChatExtras();renderChats();renderCommunity();renderOffers();renderMessages();
@@ -632,9 +671,27 @@ function showRecoveryUI(){q('#authGate').classList.remove('open');openModal('res
 function renderAuth(){q('#authGate').classList.toggle('open',!logged()&&!recoveryMode());q('#adminBtn').style.display=isAdmin()?'inline-block':'none';q('#drawerAdmin').style.display=isAdmin()?'block':'none';q('#spinBtn').style.display=isAdmin()?'inline-block':'none';q('#spinNote').style.display=isAdmin()?'none':'block';q('#roleText').textContent=!logged()?'Invitado':(isAdmin()?'Administrador':session.name)}
 function avatarSymbol(k){return ({none:'👤',ball:'🔴',electric:'⚡',fire:'🔥',water:'💧',leaf:'🍃',dragon:'🐉',trainer:'🧢',star:'⭐',fox:'🦊',cat:'🐱',dog:'🐶',panda:'🐼',lion:'🦁',wolf:'🐺',owl:'🦉',frog:'🐸',shark:'🦈',bear:'🐻',ghost:'👻',robot:'🤖',crown:'👑',rocket:'🚀',planet:'🪐',moon:'🌙',sun:'☀️',gem:'💎',shield:'🛡️',controller:'🎮',skull:'💀',alien:'👽',unicorn:'🦄',monkey:'🐵',tiger:'🐯',koala:'🐨',penguin:'🐧',eagle:'🦅',snake:'🐍',octopus:'🐙',butterfly:'🦋',bee:'🐝',dino:'🦖',whale:'🐋',turtle:'🐢',bat:'🦇',spider:'🕷️',ninja:'🥷',wizard:'🧙',heart:'❤️',bolt:'⚡',target:'🎯',dice:'🎲',music:'🎵',camera:'📸',sword:'⚔️',anchor:'⚓',clover:'🍀',snow:'❄️',flameface:'🤬'})[k]||'👤'}
 function renderProfile(){q('#profileName').textContent=session?session.name:'Invitado';q('#profileEmail').textContent=session?session.email:'';const member=q('#profileMember');if(member)member.textContent=session?.memberNumber?'Socio #'+session.memberNumber:'Socio —';const rank=isAdmin()?'Admin':(session?.communityRole||'Entrenador');q('#profileRole').textContent=rank;q('#profileRoleBig').textContent=rank;const me=communityMembers.find(m=>m.user_id===session?.id),fc=Number(me?.friend_count||0);const ft=q('#profileFriendsText');if(ft)ft.textContent='👥 '+fc+' '+(fc===1?'amigo':'amigos');const av=q('#profileAvatar');if(av)av.textContent=avatarSymbol(me?.avatar_key||'none');renderProfileHistory();renderSocial();renderAlbum()}
+function cardStateLabel(gradingStatus,company,grade,rawCondition){
+ if(gradingStatus==='Gradeada')return [company,grade].filter(Boolean).join(' ')||'Gradeada';
+ if(gradingStatus==='No gradeada')return rawCondition||'No gradeada';
+ return rawCondition||'';
+}
+function cardMetaHtml(x){
+ const bits=[];
+ if(x.cardNumber)bits.push('Nº '+x.cardNumber);
+ if(x.rarity)bits.push(x.rarity);
+ if(x.language)bits.push(x.language);
+ if(x.certification)bits.push('Cert. '+x.certification);
+ return bits.length?'<div class="cardMetaLine">'+bits.map(v=>'<span class="cardMetaTag">'+esc(v)+'</span>').join('')+'</div>':'';
+}
+function toggleCardConditionFields(prefix){
+ const status=q('#'+prefix+'GradingStatus')?.value||'';
+ qa('.'+prefix+'GradedField').forEach(el=>el.style.display=status==='Gradeada'?'grid':'none');
+ qa('.'+prefix+'RawField').forEach(el=>el.style.display=status==='No gradeada'?'grid':'none');
+}
 function productCardHtml(p){
  const sold=Number(p.stock)<=0,low=Number(p.stock)===1;
- return '<div class="card compactProductCard productCard '+(sold?'soldOut':'')+'">'+(sold?'<div class="soldOutStamp">AGOTADO</div>':'')+'<div class="productArt">'+(p.photo?'<img src="'+p.photo+'" alt="">':'🃏')+'</div><h3>'+esc(p.name)+'</h3><div class="price">'+money(p.price)+'</div><p><span class="stockPill '+(sold?'zero':low?'low':'')+'">'+(sold?'Agotado':Number(p.stock)===1?'Queda 1':'Stock '+p.stock)+'</span></p><p class="muted descClamp">'+esc(p.state)+(p.desc?' · '+esc(p.desc):'')+'</p><button class="btn dark viewProduct" data-id="'+p.id+'">'+(sold?'Ver · AGOTADO':'Ver carta')+'</button></div>'
+ return '<div class="card compactProductCard productCard '+(sold?'soldOut':'')+'">'+(sold?'<div class="soldOutStamp">AGOTADO</div>':'')+'<div class="productArt">'+(p.photo?'<img src="'+p.photo+'" alt="">':'🃏')+'</div><h3>'+esc(p.name)+'</h3><div class="price">'+money(p.price)+'</div><p><span class="stockPill '+(sold?'zero':low?'low':'')+'">'+(sold?'Agotado':Number(p.stock)===1?'Queda 1':'Stock '+p.stock)+'</span></p><p class="muted descClamp">'+esc(p.state)+(p.desc?' · '+esc(p.desc):'')+'</p>'+cardMetaHtml(p)+'<button class="btn dark viewProduct" data-id="'+p.id+'">'+(sold?'Ver · AGOTADO':'Ver carta')+'</button></div>'
 }
 function bindProductCards(){
  qa('.viewProduct').forEach(b=>b.onclick=()=>{selectedProduct=products.find(p=>p.id===Number(b.dataset.id));q('#detailName').textContent=selectedProduct.name;q('#detailPrice').textContent=money(selectedProduct.price);q('#detailState').textContent=selectedProduct.state;q('#detailStock').textContent=selectedProduct.stock>0?(selectedProduct.stock===1?'Queda 1':'Quedan '+selectedProduct.stock):'AGOTADO';q('#detailDesc').textContent=selectedProduct.desc||'Sin descripción adicional.';const art=q('#productModal .productArt');art.innerHTML=selectedProduct.photo?'<img src="'+selectedProduct.photo+'" alt="">':'🃏';q('#addToCart').disabled=selectedProduct.stock<=0;q('#addToCart').textContent=selectedProduct.stock<=0?'AGOTADO':'Añadir al carrito';openModal('productModal')})
@@ -642,7 +699,7 @@ function bindProductCards(){
 function renderProducts(){
  const stateSel=q('#marketState');if(stateSel){const current=stateSel.value||'all';const states=[...new Set(products.filter(p=>p.active!==false).map(p=>p.state).filter(Boolean))].sort();stateSel.innerHTML='<option value="all">Todos los estados</option>'+states.map(s=>'<option value="'+esc(s)+'">'+esc(s)+'</option>').join('');if(states.includes(current))stateSel.value=current}
  const search=(q('#marketSearch')?.value||'').trim().toLowerCase(),availability=q('#marketAvailability')?.value||'all',state=q('#marketState')?.value||'all',grade=q('#marketGrade')?.value||'all',maxPrice=Number(q('#marketMaxPrice')?.value||0);
- const gradePass=p=>{const t=((p.name||'')+' '+(p.state||'')+' '+(p.desc||'')).toLowerCase();const m=t.match(/psa\s*([0-9]{1,2})/i),n=m?Number(m[1]):null;if(grade==='all')return true;if(grade==='graded')return /\bpsa\b|graded|bgs|cgc/.test(t);if(grade==='ungraded')return !(/\bpsa\b|graded|bgs|cgc/.test(t));if(grade==='psa10')return n===10;if(grade==='psa9')return n===9;if(grade==='psa8')return n===8;if(grade==='psa7')return n===7;if(grade==='psa6')return n!==null&&n<=6;return true};
+ const gradePass=p=>{const t=((p.name||'')+' '+(p.state||'')+' '+(p.desc||'')+' '+(p.gradingCompany||'')+' '+(p.grade||'')).toLowerCase();const structured=p.gradingStatus;const m=(p.gradingCompany==='PSA'&&p.grade)?Number(String(p.grade).replace(/[^0-9.]/g,'')):(t.match(/psa\s*([0-9]+(?:\.5)?)/i)?.[1]?Number(t.match(/psa\s*([0-9]+(?:\.5)?)/i)[1]):null);if(grade==='all')return true;if(grade==='graded')return structured?structured==='Gradeada':/\bpsa\b|graded|bgs|cgc|beckett|ace/.test(t);if(grade==='ungraded')return structured?structured==='No gradeada':!(/\bpsa\b|graded|bgs|cgc|beckett|ace/.test(t));if(grade==='psa10')return p.gradingCompany==='PSA'&&n===10;if(grade==='psa9')return p.gradingCompany==='PSA'&&n===9;if(grade==='psa8')return p.gradingCompany==='PSA'&&n===8;if(grade==='psa7')return p.gradingCompany==='PSA'&&n===7;if(grade==='psa6')return p.gradingCompany==='PSA'&&n!==null&&n<=6;return true};
  const visible=products.filter(p=>p.active!==false).filter(p=>!search||p.name.toLowerCase().includes(search)||(p.state||'').toLowerCase().includes(search)||(p.desc||'').toLowerCase().includes(search)).filter(p=>availability==='all'||(availability==='available'?Number(p.stock)>0:Number(p.stock)<=0)).filter(p=>state==='all'||p.state===state).filter(gradePass).filter(p=>!maxPrice||Number(p.price)<=maxPrice);
  const featured=visible.slice(0,3),regular=visible.slice(3);
  const fg=q('#featuredGrid');if(fg)fg.innerHTML=featured.length?featured.map(productCardHtml).join(''):'<p class="muted">Aún no hay novedades.</p>';
@@ -653,7 +710,19 @@ function renderProducts(){
  qa('.editProd').forEach(b=>b.onclick=async()=>{if(!isAdmin())return;const p=products.find(x=>x.id===Number(b.dataset.id));const name=prompt('Nombre del producto',p.name);if(name===null)return;const price=prompt('Precio (€)',p.price);if(price===null)return;const state=prompt('Estado',p.state);if(state===null)return;const stock=prompt('Stock',p.stock);if(stock===null)return;const desc=prompt('Descripción / detalles',p.desc||'');if(desc===null)return;const {error}=await sb.from('products').update({name:name.trim()||p.name,price:Number(price)||p.price,state:state.trim()||p.state,stock:Math.max(0,Number(stock)||0),description:desc,active:true}).eq('id',p.id);if(error)return toast('No se pudo editar el producto');await loadProducts();toast('Producto editado')});
  qa('.delProd').forEach(b=>b.onclick=async()=>{if(!isAdmin())return;const {error}=await sb.from('products').update({active:false}).eq('id',Number(b.dataset.id));if(error)return toast('No se pudo eliminar');await loadProducts();toast('Producto retirado')})
 }
-['#marketSearch','#marketAvailability','#marketState','#marketGrade','#marketMaxPrice'].forEach(sel=>{const el=q(sel);if(el){el.addEventListener('input',renderProducts);el.addEventListener('change',renderProducts)}});q('#addProduct').onclick=async()=>{if(!isAdmin())return toast('Solo administrador');const name=q('#pName').value.trim(),price=Number(q('#pPrice').value);if(!name||!price)return toast('Completa nombre y precio');const photo=await fileData(q('#pPhoto'));const {error}=await sb.from('products').insert({name,price,state:q('#pState').value.trim()||'Near Mint',stock:Number(q('#pStock').value)||1,description:q('#pDesc').value.trim(),photo_url:photo||null,active:true});if(error)return toast('No se pudo añadir el producto');q('#pName').value='';q('#pPrice').value='';q('#pDesc').value='';q('#pPhoto').value='';await loadProducts();toast('Producto añadido')};
+['#marketSearch','#marketAvailability','#marketState','#marketGrade','#marketMaxPrice'].forEach(sel=>{const el=q(sel);if(el){el.addEventListener('input',renderProducts);el.addEventListener('change',renderProducts)}});q('#pGradingStatus').addEventListener('change',()=>toggleCardConditionFields('p'));
+q('#sellGradingStatus').addEventListener('change',()=>toggleCardConditionFields('sell'));
+q('#addProduct').onclick=async()=>{
+ if(!isAdmin())return toast('Solo administrador');
+ const pokemon=q('#pName').value.trim(),priceRaw=q('#pPrice').value.trim(),gradingStatus=q('#pGradingStatus').value,gradingCompany=q('#pGradingCompany').value,gradeValue=q('#pGrade').value,rawCondition=q('#pRawCondition').value;
+ const state=cardStateLabel(gradingStatus,gradingCompany,gradeValue,rawCondition)||'Sin especificar';
+ const photo=await fileData(q('#pPhoto'));
+ const payload={name:pokemon||'Carta sin especificar',pokemon:pokemon||null,price:priceRaw?Number(priceRaw):0,state,stock:Math.max(0,Number(q('#pStock').value)||0),description:q('#pDesc').value.trim(),photo_url:photo||null,active:true,grading_status:gradingStatus||null,grading_company:gradingStatus==='Gradeada'?(gradingCompany||null):null,grade:gradingStatus==='Gradeada'?(gradeValue||null):null,card_number:q('#pCardNumber').value.trim()||null,rarity:q('#pRarity').value||null,language:q('#pLanguage').value.trim()||null,availability:q('#pAvailability').value||null,certification:q('#pCertification').value.trim()||null};
+ const {error}=await sb.from('products').insert(payload);if(error)return toast('No se pudo añadir el producto');
+ ['pName','pCardNumber','pPrice','pLanguage','pCertification','pDesc','pPhoto'].forEach(id=>q('#'+id).value='');
+ ['pGradingStatus','pGradingCompany','pGrade','pRawCondition','pRarity','pAvailability'].forEach(id=>q('#'+id).value='');
+ q('#pStock').value='1';toggleCardConditionFields('p');await loadProducts();toast('Producto añadido')
+};
 function renderCart(){q('#cartCount').textContent=cart.reduce((s,x)=>s+x.qty,0);q('#cartRows').innerHTML=cart.length?cart.map((x,i)=>'<div class="item itemRow"><span>'+x.name+' × '+x.qty+'</span><span>'+money(x.price*x.qty)+' <button class="btn dark removeCart" data-i="'+i+'">Quitar</button></span></div>').join(''):'<p class="muted">Carrito vacío.</p>';q('#cartTotal').textContent='Total: '+money(cart.reduce((s,x)=>s+x.price*x.qty,0));qa('.removeCart').forEach(b=>b.onclick=()=>{cart.splice(Number(b.dataset.i),1);save('gp_cart',cart);renderCart()})}
 q('#cartBtn').onclick=()=>{renderCart();if(session){q('#checkoutName').value=q('#checkoutName').value||session.name||'';q('#checkoutEmail').value=q('#checkoutEmail').value||session.email||''}openModal('cartModal')};q('#addToCart').onclick=()=>{if(!selectedProduct)return;if(selectedProduct.stock<=0)return toast('Producto sin stock');const x=cart.find(c=>c.id===selectedProduct.id);if(x){if(x.qty>=selectedProduct.stock)return toast('No queda más stock');x.qty++}else cart.push({id:selectedProduct.id,name:selectedProduct.name,price:selectedProduct.price,qty:1});save('gp_cart',cart);renderCart();closeModal('productModal');toast('Añadido al carrito')};
 q('#checkoutBtn').onclick=async()=>{
@@ -1145,16 +1214,18 @@ async function uploadOfferPhoto(){
  return data?.publicUrl||'';
 }
 q('#sendOffer').onclick=async()=>{
- const name=q('#sellName').value.trim();if(!name)return toast('Pon el nombre de la carta');
+ const name=q('#sellName').value.trim(),gradingStatus=q('#sellGradingStatus').value,gradingCompany=q('#sellGradingCompany').value,gradeValue=q('#sellGrade').value,rawCondition=q('#sellRawCondition').value;
  const btn=q('#sendOffer');btn.disabled=true;btn.textContent='Enviando...';
  const photo=await uploadOfferPhoto();if(photo===null){btn.disabled=false;btn.textContent='Enviar propuesta privada';return}
  const priceRaw=q('#sellPrice').value;
- const payload={user_id:session.id,sender_name:session.name,sender_email:session.email,card_name:name,requested_price:priceRaw?Number(priceRaw):null,card_state:q('#sellState').value,contact:'gpoketcg@gmail.com',message:q('#sellMessage').value||'',photo_url:photo||null,status:'Nueva'};
+ const state=cardStateLabel(gradingStatus,gradingCompany,gradeValue,rawCondition)||'Sin especificar';
+ const payload={user_id:session.id,sender_name:session.name,sender_email:session.email,card_name:name||'Carta sin especificar',pokemon:name||null,requested_price:priceRaw?Number(priceRaw):null,card_state:state,contact:'gpoketcg@gmail.com',message:q('#sellMessage').value||'',photo_url:photo||null,status:'Nueva',grading_status:gradingStatus||null,grading_company:gradingStatus==='Gradeada'?(gradingCompany||null):null,grade:gradingStatus==='Gradeada'?(gradeValue||null):null,card_number:q('#sellCardNumber').value.trim()||null,rarity:q('#sellRarity').value||null,language:q('#sellLanguage').value.trim()||null,availability:q('#sellAvailability').value||null,certification:q('#sellCertification').value.trim()||null};
  const {data,error}=await sb.from('offers').insert(payload).select('id').single();
  btn.disabled=false;btn.textContent='Enviar propuesta privada';
  if(error)return toast('No se pudo enviar la oferta');
- q('#sellName').value='';q('#sellPrice').value='';q('#sellMessage').value='';q('#sellPhoto').value='';
- await loadCommunityData();activeConversation='offer:'+data.id;toast('Oferta enviada al administrador')
+ ['sellName','sellCardNumber','sellPrice','sellLanguage','sellCertification','sellMessage','sellPhoto'].forEach(id=>q('#'+id).value='');
+ ['sellGradingStatus','sellGradingCompany','sellGrade','sellRawCondition','sellRarity','sellAvailability'].forEach(id=>q('#'+id).value='');
+ toggleCardConditionFields('sell');await loadCommunityData();activeConversation='offer:'+data.id;toast('Oferta enviada al administrador')
 };
 
 async function loadNotifications(){
