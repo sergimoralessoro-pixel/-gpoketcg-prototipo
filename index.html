@@ -67,42 +67,37 @@ header{position:fixed;left:0;right:0;top:0;width:100%;z-index:30;background:#061
 .raffleDetails{display:none;margin-top:10px}.raffleDetails.open{display:block}.raffleToggle{width:100%;margin-top:9px}
 .raffleWheelCard{text-align:center;margin-top:12px}
 .captureDrawCard{overflow:hidden}
-.captureMap{position:relative;height:370px;margin:12px 0;border:1px solid #315e7b;border-radius:18px;overflow:hidden;background:linear-gradient(#7cccf4 0 35%,#7bc96f 36% 100%);box-shadow:inset 0 -40px 70px #153d24aa}
-.captureSky{position:absolute;inset:0 0 64% 0;background:radial-gradient(circle at 20% 25%,#fff 0 5%,transparent 6%),radial-gradient(circle at 75% 30%,#fff 0 4%,transparent 5%);opacity:.7}
-.capturePath{position:absolute;left:-8%;right:-8%;bottom:-18px;height:120px;background:#d9b06a;transform:rotate(-4deg);border-top:7px solid #c49a57}
-.captureBush{position:absolute;width:92px;height:46px;border-radius:50% 50% 42% 42%;background:#2f8d3d;box-shadow:18px -10px 0 #3aa34b,-17px -8px 0 #3a9b48}
-.bush1{left:5%;bottom:88px}.bush2{right:5%;bottom:105px;transform:scale(.8)}.bush3{left:52%;bottom:80px;transform:scale(.65)}
-.captureTrainer{position:absolute;left:13%;bottom:53px;width:66px;height:120px;z-index:8;animation:trainerWalk 3.4s ease-in-out infinite}
-.trainerCap{position:absolute;width:41px;height:17px;border-radius:18px 18px 7px 7px;background:#d93636;left:10px;top:6px;z-index:3}.capPeak{position:absolute;width:27px;height:8px;border-radius:8px;background:#a82222;left:33px;top:16px;z-index:4;transform:rotate(8deg)}
-.trainerFace{position:absolute;width:34px;height:36px;border-radius:48%;background:#f2c79e;left:13px;top:20px;border:2px solid #15202b}
-.trainerTorso{position:absolute;width:42px;height:48px;border-radius:11px 11px 8px 8px;background:linear-gradient(90deg,#153957 0 48%,#f4f4f4 49% 100%);left:9px;top:52px;border:2px solid #15202b}
-.trainerLeg{position:absolute;width:13px;height:35px;background:#202d38;top:95px;border-radius:7px}.legL{left:15px;transform:rotate(8deg)}.legR{left:34px;transform:rotate(-8deg)}
-.trainerThrowArm{position:absolute;width:38px;height:10px;background:#f2c79e;border:2px solid #15202b;border-radius:9px;left:42px;top:60px;transform:rotate(-18deg);transform-origin:left center;transition:transform .25s ease}
-.captureTrainer.ready{animation:none}.captureTrainer.ready .trainerThrowArm{transform:rotate(-55deg)}
-.participantCreature{position:absolute;width:58px;min-height:60px;display:grid;justify-items:center;z-index:6;animation:creatureBob 2.2s ease-in-out infinite}
-.creatureBody{width:44px;height:40px;border-radius:48% 52% 46% 54%;background:var(--monster-color,#6ab7ff);border:2px solid #102331;box-shadow:inset 0 -7px 0 #0002,0 4px 8px #0004;position:relative}
-.creatureBody:before,.creatureBody:after{content:"";position:absolute;width:12px;height:17px;background:inherit;border:2px solid #102331;top:-9px;border-radius:10px 10px 3px 3px}.creatureBody:before{left:4px;transform:rotate(-23deg)}.creatureBody:after{right:4px;transform:rotate(23deg)}
-.creatureEyes{position:absolute;left:10px;right:10px;top:15px;height:6px;background:radial-gradient(circle at 15% 50%,#111 0 3px,transparent 4px),radial-gradient(circle at 85% 50%,#111 0 3px,transparent 4px)}
-.creatureLabel{margin-top:4px;max-width:92px;padding:3px 6px;border-radius:999px;background:#07131fd9;color:#fff;font-size:10px;font-weight:900;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.specialBall{display:none;position:absolute;width:34px;height:34px;border-radius:50%;left:22%;bottom:125px;z-index:15;background:linear-gradient(#171717 0 45%,#e1c51c 46% 54%,#171717 55% 100%);border:2px solid #050505;box-shadow:0 0 12px #ffe52b99}
-.specialBall:after{content:"";position:absolute;width:9px;height:9px;border-radius:50%;background:#ffe52b;border:2px solid #111;left:10px;top:10px}
-.specialBall.throwing{display:block;animation:specialBallThrow 1.25s cubic-bezier(.15,.65,.3,1) forwards}
-.captureImpact{display:none;position:absolute;right:17%;bottom:74px;width:20px;height:20px;border-radius:50%;z-index:14}
-.captureImpact.flash{display:block;animation:captureFlash .9s ease-out forwards}
-.winnerCreature{display:none;position:absolute;right:11%;bottom:60px;z-index:20;min-width:150px;justify-items:center}
-.winnerCreature.reveal{display:grid;animation:winnerReveal .75s cubic-bezier(.18,.8,.3,1.25) both}
-.winnerMonsterFace{width:82px;height:72px;border-radius:50% 50% 44% 44%;display:grid;place-items:center;font-size:34px;font-weight:1000;background:linear-gradient(145deg,#ffd92e,#f5a623);border:3px solid #101820;box-shadow:0 0 25px #ffd92e88, inset 0 -9px 0 #0001;color:#111}
-.winnerMonsterName{margin-top:7px;padding:7px 12px;border-radius:999px;background:#07131fe8;border:1px solid #ffd92e;color:#ffd92e;font-weight:1000;font-size:14px}
-.captureLaunchBtn{margin-top:4px}
-.captureMap.drawing .participantCreature{filter:blur(.3px);animation-duration:.55s}
-.captureMap.finished .participantCreature{opacity:.32}
-@keyframes trainerWalk{0%,100%{transform:translateX(0) translateY(0)}50%{transform:translateX(34px) translateY(-3px)}}
-@keyframes creatureBob{0%,100%{transform:translateY(0)}50%{transform:translateY(-7px)}}
-@keyframes specialBallThrow{0%{left:24%;bottom:132px;transform:rotate(0) scale(.85)}55%{left:62%;bottom:245px;transform:rotate(520deg) scale(1)}100%{left:78%;bottom:82px;transform:rotate(900deg) scale(.92)}}
-@keyframes captureFlash{0%{box-shadow:0 0 0 0 #fff,0 0 0 0 #ffd92e;opacity:1}100%{box-shadow:0 0 0 70px #fff0,0 0 0 115px #ffd92e00;opacity:0}}
-@keyframes winnerReveal{0%{opacity:0;transform:scale(.25) translateY(30px)}70%{opacity:1;transform:scale(1.14) translateY(-5px)}100%{transform:scale(1) translateY(0)}}
-@media(max-width:760px){.captureMap{height:320px}.captureTrainer{transform:scale(.88);transform-origin:bottom left}.participantCreature{transform:scale(.88)}.winnerMonsterFace{width:70px;height:62px}.winnerCreature{right:5%;min-width:130px}}
-@media(prefers-reduced-motion:reduce){.captureTrainer,.participantCreature{animation:none!important}.specialBall.throwing{animation:specialBallThrow .01s linear forwards}.winnerCreature.reveal{animation:none}}
+.gameboyFrame{margin:12px auto 10px;max-width:760px;padding:14px 14px 10px;border:4px solid #20261d;border-radius:22px;background:linear-gradient(#b7b9aa,#969989);box-shadow:inset 0 0 0 3px #d5d6c9,0 14px 30px #0008}
+.gameboyTop,.gameboyBottom{display:flex;align-items:center;justify-content:space-between;color:#323a2f;font:900 11px/1.2 monospace;letter-spacing:1px;text-transform:uppercase}
+.gameboyBottom{justify-content:center;gap:12px;margin-top:8px}.gbDot{width:8px;height:8px;border-radius:50%;background:#5f2030;box-shadow:0 0 0 2px #6e7266}
+.captureMap{position:relative;height:390px;margin-top:8px;overflow:hidden;border:8px solid #343b31;border-radius:9px;background:#a8b66b;box-shadow:inset 0 0 0 4px #667446;image-rendering:pixelated}
+.captureMap:before{content:"";position:absolute;inset:0;background:linear-gradient(90deg,transparent 0 24px,#8f9f58 25px 27px,transparent 28px 52px),linear-gradient(transparent 0 24px,#8f9f58 25px 27px,transparent 28px 52px);background-size:52px 52px;opacity:.22}
+.gbTerrain{position:absolute;border:4px solid #59663d;background:#7e914d;box-shadow:inset 0 0 0 5px #92a45b}
+.terrainA{left:3%;top:5%;width:28%;height:25%}.terrainB{right:5%;bottom:7%;width:25%;height:27%}
+.gbPond{position:absolute;right:7%;top:7%;width:24%;height:22%;background:repeating-linear-gradient(0deg,#536b58 0 7px,#6d8160 8px 14px);border:5px solid #48593f;box-shadow:inset 0 0 0 4px #7f925c}
+.gbPath{position:absolute;background:#c1b978;border:3px solid #918b59;z-index:1}
+.pathH{left:3%;right:3%;top:45%;height:17%}.pathV{left:43%;top:4%;bottom:4%;width:13%}
+.gbHouse{position:absolute;left:8%;bottom:8%;width:18%;height:18%;background:#6f784c;border:4px solid #4a5237;z-index:3}
+.gbHouse:before{content:"";position:absolute;left:-5%;right:-5%;top:-34%;height:38%;background:#4c563b;clip-path:polygon(50% 0,100% 100%,0 100%)}
+.gbHouse span{position:absolute;width:22%;height:42%;left:39%;bottom:0;background:#353c2d}
+.gbTrees{position:absolute;height:34px;z-index:4;background:repeating-linear-gradient(90deg,#435238 0 18px,transparent 18px 23px)}
+.treeRow1{left:2%;right:2%;top:2%}.treeRow2{left:2%;right:2%;bottom:2%}
+.participantCreature{position:absolute;width:58px;min-height:62px;display:grid;justify-items:center;z-index:8;transition:filter .2s,opacity .2s}
+.pixelMonster{width:38px;height:34px;position:relative;background:var(--monster-color,#536b58);border:4px solid #293126;box-shadow:8px 0 0 var(--monster-color,#536b58),-8px 0 0 var(--monster-color,#536b58),0 8px 0 #293126;image-rendering:pixelated}
+.pixelMonster:before{content:"";position:absolute;width:8px;height:8px;background:#1e251c;left:5px;top:9px;box-shadow:20px 0 0 #1e251c}
+.pixelMonster:after{content:"";position:absolute;width:8px;height:8px;background:var(--monster-color,#536b58);left:3px;top:-12px;box-shadow:24px 0 0 var(--monster-color,#536b58)}
+.creatureLabel{margin-top:9px;max-width:105px;padding:3px 6px;border:2px solid #35412e;background:#d5dc99;color:#263021;font:900 10px/1.1 monospace;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;box-shadow:2px 2px 0 #556246}
+.specialBall{display:none;position:absolute;width:30px;height:30px;border-radius:50%;left:50%;top:-42px;z-index:20;background:linear-gradient(#141414 0 43%,#d6bd18 44% 55%,#141414 56%);border:3px solid #111;box-shadow:0 0 0 2px #e0ca2f}
+.specialBall:after{content:"";position:absolute;width:8px;height:8px;border-radius:50%;background:#d6bd18;border:2px solid #111;left:8px;top:8px}
+.captureImpact{display:none;position:absolute;width:18px;height:18px;border-radius:50%;z-index:19;pointer-events:none}
+.captureImpact.flash{display:block;animation:gbImpact .75s ease-out forwards}
+.captureMap.drawing .participantCreature{filter:contrast(1.1)}
+.captureMap.finished .participantCreature{opacity:.55}
+.captureMap.finished .participantCreature.winnerTarget{opacity:1;filter:drop-shadow(0 0 5px #d9cb2d) brightness(1.15)}
+.captureMap.finished .participantCreature.winnerTarget .creatureLabel{background:#ece57d;border-color:#262c22;color:#12170f}
+@keyframes gbImpact{0%{box-shadow:0 0 0 0 #efe86d,0 0 0 0 #d6bd18;opacity:1}100%{box-shadow:0 0 0 34px #efe86d00,0 0 0 58px #d6bd1800;opacity:0}}
+@media(max-width:760px){.gameboyFrame{padding:10px 10px 8px;border-radius:16px}.captureMap{height:310px;border-width:6px}.participantCreature{transform:scale(.82);transform-origin:center}.creatureLabel{max-width:82px;font-size:9px}}
+@media(prefers-reduced-motion:reduce){.specialBall{transition:none}.captureImpact.flash{animation:none}}
 .raffleChatCard{margin-top:12px}.raffleHow{margin-top:12px}
 .homeCommunityGrid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:14px}
 .homeCommunityGrid .item{margin-bottom:7px}
@@ -287,21 +282,26 @@ header{position:fixed;left:0;right:0;top:0;width:100%;z-index:30;background:#061
 </div>
 
 <div class="card raffleWheelCard captureDrawCard">
-  <div class="title"><h3 style="margin:0">🗺️ Captura del ganador</h3><span class="tag" id="captureSceneStatus">EXPLORANDO</span></div>
-  <div class="captureMap" id="captureMap">
-    <div class="captureSky"></div>
-    <div class="capturePath"></div>
-    <div class="captureBush bush1"></div><div class="captureBush bush2"></div><div class="captureBush bush3"></div>
-    <div class="captureTrainer" id="captureTrainer" aria-hidden="true">
-      <div class="capPeak"></div><div class="trainerCap"></div><div class="trainerFace"></div><div class="trainerTorso"></div><div class="trainerLeg legL"></div><div class="trainerLeg legR"></div><div class="trainerThrowArm"></div>
+  <div class="title"><h3 style="margin:0">🎮 Mapa de captura</h3><span class="tag" id="captureSceneStatus">EXPLORANDO</span></div>
+  <div class="gameboyFrame">
+    <div class="gameboyTop"><span>GPokeTCG</span><span>MONSTER MAP</span></div>
+    <div class="captureMap" id="captureMap">
+      <div class="gbTerrain terrainA"></div>
+      <div class="gbTerrain terrainB"></div>
+      <div class="gbPond"></div>
+      <div class="gbPath pathH"></div>
+      <div class="gbPath pathV"></div>
+      <div class="gbHouse"><span></span></div>
+      <div class="gbTrees treeRow1"></div>
+      <div class="gbTrees treeRow2"></div>
+      <div class="participantCreatures" id="participantCreatures"></div>
+      <div class="specialBall" id="specialBall" aria-hidden="true"></div>
+      <div class="captureImpact" id="captureImpact"></div>
     </div>
-    <div class="participantCreatures" id="participantCreatures"></div>
-    <div class="specialBall" id="specialBall" aria-hidden="true"><span></span></div>
-    <div class="captureImpact" id="captureImpact"></div>
-    <div class="winnerCreature" id="winnerCreature"><div class="winnerMonsterFace">★</div><div class="winnerMonsterName" id="winnerMonsterName"></div></div>
+    <div class="gameboyBottom"><span>SELECT</span><span class="gbDot"></span><span>START</span></div>
   </div>
   <button class="btn blue captureLaunchBtn" id="spinBtn">⚫🟡 LANZAR BOLA · SOLO ADMIN</button>
-  <div class="muted" id="spinNote">El entrenador recorrerá el mapa con los participantes hasta que el administrador lance la bola.</div>
+  <div class="muted" id="spinNote">Cada participante confirmado aparece como una criatura en el mapa. Al lanzar la bola caerá sobre el ganador.</div>
   <div class="price" id="winnerText"></div>
 </div>
 
@@ -933,31 +933,30 @@ q('#addAuction').onclick=async()=>{try{if(!isAdmin())return toast('Solo administ
 setInterval(refreshAuctionClocks,1000);
 function paidEntries(){const e=[];participants.filter(p=>p.status==='Pagado').forEach(p=>{for(let i=0;i<p.qty;i++)e.push(p.alias)});return e}
 function raffleCreatureColor(i){
- const colors=['#66c2ff','#ff7f7f','#8ddf82','#c892ff','#ffd166','#6fd7c8','#ff9f66','#9cb8ff','#f47cc3','#b7dc6b'];
+ const colors=['#566b45','#6b6d47','#4e6651','#748052','#5b7350','#6e7848','#4f5e47','#78815b','#5b6843','#67744e'];
  return colors[i%colors.length];
 }
 function drawWheel(){
  const box=q('#participantCreatures');if(!box)return;
  const confirmed=participants.filter(p=>p.status==='Pagado');
- const unique=confirmed.map((p,i)=>({name:p.alias,qty:p.qty,index:i}));
- if(!unique.length){
-   box.innerHTML='<div class="muted" style="position:absolute;inset:45% 10% auto;text-align:center;font-weight:900">Sin participantes confirmados</div>';
+ if(!confirmed.length){
+   box.innerHTML='<div style="position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);padding:8px 12px;border:2px solid #35412e;background:#d5dc99;color:#263021;font:900 11px monospace">SIN PARTICIPANTES</div>';
    q('#captureSceneStatus').textContent='ESPERANDO';
    return;
  }
  q('#captureSceneStatus').textContent=raffle.status==='ready_to_draw'?'LISTO PARA CAPTURAR':raffle.status==='closed'?'CAPTURA FINALIZADA':'EXPLORANDO';
- const spots=[
-  [34,53],[49,38],[66,52],[78,34],[57,69],[31,74],[84,66],[43,67],[71,73],[55,24],[87,49],[38,27]
- ];
- box.innerHTML=unique.map((p,i)=>{
-   const s=spots[i%spots.length],delay=(i%6)*.18;
-   return '<div class="participantCreature" style="left:'+s[0]+'%;top:'+s[1]+'%;animation-delay:-'+delay+'s;--monster-color:'+raffleCreatureColor(i)+'"><div class="creatureBody"><span class="creatureEyes"></span></div><div class="creatureLabel">'+esc(p.name)+(p.qty>1?' · x'+p.qty:'')+'</div></div>';
+ const spots=[[18,32],[36,18],[60,25],[75,39],[31,67],[55,71],[79,68],[16,70],[65,49],[39,45],[84,18],[9,49]];
+ box.innerHTML=confirmed.map((p,i)=>{
+   const s=spots[i%spots.length];
+   return '<div class="participantCreature" data-alias="'+esc(p.alias)+'" style="left:'+s[0]+'%;top:'+s[1]+'%;--monster-color:'+raffleCreatureColor(i)+'"><div class="pixelMonster"></div><div class="creatureLabel">'+esc(p.alias)+(p.qty>1?' · x'+p.qty:'')+'</div></div>';
  }).join('');
 }
 function resetCaptureScene(){
- const map=q('#captureMap'),trainer=q('#captureTrainer'),ball=q('#specialBall'),impact=q('#captureImpact'),winner=q('#winnerCreature');
- map?.classList.remove('drawing','finished');trainer?.classList.remove('ready');ball?.classList.remove('throwing');impact?.classList.remove('flash');winner?.classList.remove('reveal');
- if(ball)ball.style.display='';if(winner)winner.style.display='';
+ const map=q('#captureMap'),ball=q('#specialBall'),impact=q('#captureImpact');
+ map?.classList.remove('drawing','finished');
+ qa('#participantCreatures .participantCreature').forEach(el=>el.classList.remove('winnerTarget'));
+ if(ball){ball.style.display='none';ball.getAnimations?.().forEach(a=>a.cancel());ball.style.left='50%';ball.style.top='-42px';ball.style.transform='translateX(-50%) rotate(0deg)'}
+ if(impact){impact.classList.remove('flash');impact.style.display='none'}
 }
 function renderRaffle(){
  q('#raffleTitle').textContent=raffle.title||'Sin rifa activa';q('#raffleDesc').textContent=raffle.desc||'';q('#rafflePrice').textContent=money(raffle.price||0);const rs=q('#raffleSlots');if(rs)rs.textContent=raffle.slots||0;q('#homeRaffleTitle').textContent=raffle.title||'Sin rifa activa';q('#homeRaffleMeta').textContent=(raffle.slots||0)+' números · '+money(raffle.price||0)+' por número';
@@ -969,7 +968,7 @@ function renderRaffle(){
  qa('.delPart').forEach(b=>b.onclick=async()=>{if(!isAdmin())return;const {error}=await sb.from('raffle_entries').delete().eq('id',Number(b.dataset.id));if(error)return toast('No se pudo eliminar');await loadRaffle()});
  q('#rTitle').value=raffle.title||'';q('#rPrice').value=raffle.price||'';q('#rSlots').value=raffle.slots||'';q('#rDesc').value=raffle.desc||'';
  const rb=q('#raffleImageBox');rb.innerHTML=raffle.photo?'<img src="'+raffle.photo+'" alt="">':'🃏';
- if(!spinning){q('#winnerText').textContent=raffle.winner?'🏆 Ganador: '+raffle.winner+(raffle.winnerTicket?' · Nº '+raffle.winnerTicket:''):'';if(raffle.winner){const wn=q('#winnerMonsterName');if(wn)wn.textContent=raffle.winner+(raffle.winnerTicket?' · Nº '+raffle.winnerTicket:'');q('#captureMap')?.classList.add('finished');const wc=q('#winnerCreature');if(wc)wc.classList.add('reveal')}else resetCaptureScene()}
+ if(!spinning){q('#winnerText').textContent=raffle.winner?'🏆 Ganador: '+raffle.winner+(raffle.winnerTicket?' · Nº '+raffle.winnerTicket:''):'';if(raffle.winner){q('#captureMap')?.classList.add('finished');const target=qa('#participantCreatures .participantCreature').find(el=>el.dataset.alias===raffle.winner);target?.classList.add('winnerTarget')}else resetCaptureScene()}
  q('#buyRaffleBtn').disabled=!raffle.id||raffle.status!=='active';q('#buyRaffleBtn').textContent=raffle.status==='active'?'Elegir números':raffle.status==='payment_processing'?'Rifa completa · confirmando participaciones':raffle.status==='ready_to_draw'?'Participaciones confirmadas · esperando sorteo':'Rifa cerrada';
  const adminR=q('#adminCurrentRaffle');
  if(adminR){
@@ -986,23 +985,38 @@ q('#confirmRaffle').onclick=async()=>{if(!raffle.id)return toast('No hay rifa ac
 function animateLiveWheel(){
  if(spinning)return;
  spinning=true;
- const map=q('#captureMap'),trainer=q('#captureTrainer'),ball=q('#specialBall'),impact=q('#captureImpact'),winner=q('#winnerCreature'),winnerName=q('#winnerMonsterName');
+ const map=q('#captureMap'),ball=q('#specialBall'),impact=q('#captureImpact');
  resetCaptureScene();
- q('#winnerText').textContent='⚫🟡 Lanzamiento en curso...';
- q('#captureSceneStatus').textContent='LANZANDO';
- map?.classList.add('drawing');trainer?.classList.add('ready');
- if(ball){ball.style.display='block';void ball.offsetWidth;ball.classList.add('throwing')}
- setTimeout(()=>{impact?.classList.add('flash')},1180);
- setTimeout(()=>{
-   map?.classList.remove('drawing');map?.classList.add('finished');
-   if(ball)ball.style.display='none';
-   const winnerText=raffle.winner||'Ganador';
-   if(winnerName)winnerName.textContent=winnerText+(raffle.winnerTicket?' · Nº '+raffle.winnerTicket:'');
-   if(winner){winner.style.display='grid';void winner.offsetWidth;winner.classList.add('reveal')}
+ q('#winnerText').textContent='⚫🟡 La bola está cayendo...';
+ q('#captureSceneStatus').textContent='CAPTURANDO';
+ map?.classList.add('drawing');
+ const targets=qa('#participantCreatures .participantCreature');
+ const target=targets.find(el=>el.dataset.alias===raffle.winner)||targets[0];
+ if(!target||!ball){spinning=false;return}
+ const mapRect=map.getBoundingClientRect(),targetRect=target.getBoundingClientRect();
+ const endX=targetRect.left-mapRect.left+targetRect.width/2-ball.offsetWidth/2;
+ const endY=targetRect.top-mapRect.top+targetRect.height*.35-ball.offsetHeight/2;
+ ball.style.display='block';
+ ball.style.left='50%';ball.style.top='-42px';
+ const anim=ball.animate([
+   {transform:'translateX(-50%) translateY(0) rotate(0deg)',offset:0},
+   {transform:'translateX(-50%) translateY('+(endY*.58)+'px) rotate(420deg)',offset:.6},
+   {transform:'translateX(calc(-50% + '+(endX-mapRect.width/2+ball.offsetWidth/2)+'px)) translateY('+endY+'px) rotate(800deg)',offset:1}
+ ],{duration:1500,easing:'cubic-bezier(.18,.72,.28,1)',fill:'forwards'});
+ anim.onfinish=()=>{
+   const br=ball.getBoundingClientRect(),mr=map.getBoundingClientRect();
+   impact.style.left=(br.left-mr.left+br.width/2-9)+'px';
+   impact.style.top=(br.top-mr.top+br.height/2-9)+'px';
+   impact.style.display='block';void impact.offsetWidth;impact.classList.add('flash');
+   target.classList.add('winnerTarget');
+   map.classList.remove('drawing');map.classList.add('finished');
    q('#captureSceneStatus').textContent='¡CAPTURADO!';
-   q('#winnerText').textContent=raffle.winner?'🏆 Ganador: '+raffle.winner+(raffle.winnerTicket?' · Nº '+raffle.winnerTicket:''):'';
-   spinning=false;
- },1900);
+   setTimeout(()=>{
+     ball.style.display='none';
+     q('#winnerText').textContent=raffle.winner?'🏆 Ganador: '+raffle.winner+(raffle.winnerTicket?' · Nº '+raffle.winnerTicket:''):'';
+     spinning=false;
+   },700);
+ };
 }
 q('#spinBtn').onclick=async()=>{
  if(!isAdmin())return toast('Solo el administrador puede lanzar la bola');
