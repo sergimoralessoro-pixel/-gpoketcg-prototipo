@@ -101,6 +101,12 @@ header{position:fixed;left:0;right:0;top:0;width:100%;z-index:30;background:#061
 .chatPollVotes{font-size:12px;color:#aebdca;font-weight:800}
 .chatPollActions{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
 .chatPollMeta{font-size:12px;color:#aebdca;margin-top:9px}
+.chatPollDescription{margin:0 0 10px;color:#b9c8d5;white-space:pre-wrap}
+.chatPollVotersToggle{width:100%;margin-top:10px}
+.chatPollVoters{display:none;margin-top:8px;border-top:1px solid #17384e;padding-top:8px}
+.chatPollVoters.open{display:grid;gap:6px}
+.chatPollVoter{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:8px 9px;border:1px solid #1d4360;border-radius:9px;background:#071725}
+.homeCommunityCard .chatChannelMenu{position:relative}
 @media(max-width:760px){.pollAdminOptions{grid-template-columns:1fr}}
 #resetPasswordModal{z-index:140;background:#000e}#resetPasswordModal .box{width:min(460px,100%)}
 </style>
@@ -110,7 +116,7 @@ header{position:fixed;left:0;right:0;top:0;width:100%;z-index:30;background:#061
 <header><div class="top">
 <button class="icon menu" id="menuBtn">☰</button><div class="brand">GPokeTCG</div>
 <nav class="desktop">
-<button class="nav active" data-page="inicio">Inicio</button><button class="nav" data-page="tienda">Tienda</button><button class="nav" data-page="subastas">Subastas</button><button class="nav" data-page="rifas">Rifas</button><button class="nav" data-page="chat">Chat</button><button class="nav" data-page="comunidad">Comunidad</button><button class="nav" data-page="vender">Vender</button><button class="nav" data-page="ranking">Ranking</button>
+<button class="nav active" data-page="inicio">Inicio</button><button class="nav" data-page="tienda">Tienda</button><button class="nav" data-page="subastas">Subastas</button><button class="nav" data-page="rifas">Rifas</button><button class="nav" data-page="chat">Comunidad</button><button class="nav" data-page="vender">Vender</button><button class="nav" data-page="ranking">Ranking</button>
 </nav>
 <div class="topStats"><div class="registeredMini" title="Usuarios registrados"><span>👥</span><b id="registeredCount">0</b><span>registrados</span></div><div class="onlineMini" title="Usuarios conectados ahora"><span class="liveDot"></span><b id="onlineCount">0</b><span>online</span></div></div><span class="role" id="roleText">Invitado</span><button class="icon" id="inboxBtn">🔔 <span class="unread" id="unreadCount">0</span></button><button class="icon" id="cartBtn">🛒 <span id="cartCount">0</span></button><button class="icon" id="profileBtn">👤</button><button class="icon" id="logoutBtn">Salir</button><button class="admin" id="adminBtn">Admin</button>
 </div></header>
@@ -118,7 +124,7 @@ header{position:fixed;left:0;right:0;top:0;width:100%;z-index:30;background:#061
 <div class="drawerBack" id="drawerBack"></div>
 <aside class="drawer" id="drawer">
 <div class="brand" style="margin-bottom:12px">GPokeTCG</div>
-<button class="nav" data-page="inicio">🏠 Inicio</button><button class="nav" data-page="tienda">🛒 Tienda</button><button class="nav" data-page="subastas">🔨 Subastas</button><button class="nav" data-page="rifas">🎟️ Rifas</button><button class="nav" data-page="chat">💬 Chat</button><button class="nav" data-page="comunidad">📢 Comunidad</button><button class="nav" data-page="vender">🏷️ Vender cartas</button><button class="nav" data-page="ranking">🏆 Ranking</button><button class="nav" data-page="perfil">👤 Mi perfil</button><button class="nav" data-page="mensajes">🔔 Mensajes / notificaciones</button><button class="nav" data-page="legal">📄 Información legal</button><button class="nav" id="drawerAdmin">⚙️ Panel Admin</button><a class="nav" style="display:block;background:linear-gradient(135deg,#7024c4,#df1d78,#f48b2e);color:white" href="https://www.instagram.com/gpoketcg?stkn=cWw4d3ZjdmNnZnNt" target="_blank">📸 Instagram @gpoketcg</a><button class="nav" id="drawerLogout">🚪 Cerrar sesión</button>
+<button class="nav" data-page="inicio">🏠 Inicio</button><button class="nav" data-page="tienda">🛒 Tienda</button><button class="nav" data-page="subastas">🔨 Subastas</button><button class="nav" data-page="rifas">🎟️ Rifas</button><button class="nav" data-page="chat">🌍 Comunidad</button><button class="nav" data-page="vender">🏷️ Vender cartas</button><button class="nav" data-page="ranking">🏆 Ranking</button><button class="nav" data-page="perfil">👤 Mi perfil</button><button class="nav" data-page="mensajes">🔔 Mensajes / notificaciones</button><button class="nav" data-page="legal">📄 Información legal</button><button class="nav" id="drawerAdmin">⚙️ Panel Admin</button><a class="nav" style="display:block;background:linear-gradient(135deg,#7024c4,#df1d78,#f48b2e);color:white" href="https://www.instagram.com/gpoketcg?stkn=cWw4d3ZjdmNnZnNt" target="_blank">📸 Instagram @gpoketcg</a><button class="nav" id="drawerLogout">🚪 Cerrar sesión</button>
 </aside>
 
 <main class="wrap">
@@ -128,8 +134,8 @@ header{position:fixed;left:0;right:0;top:0;width:100%;z-index:30;background:#061
 <div class="card"><span class="badge">PRÓXIMA RIFA · DEMO</span><h2 id="homeRaffleTitle"></h2><p id="homeRaffleMeta" class="muted"></p><button class="btn" data-go="rifas">Ver rifa</button></div>
 </div>
 <div class="homeCommunityGrid">
-  <div class="card"><div class="title"><h3 style="margin:0">📢 Últimas noticias</h3><button class="btn dark" data-go="comunidad">Ver todas</button></div><div id="homeNews"></div></div>
-  <div class="card"><div class="title"><h3 style="margin:0">📅 Próximos eventos</h3><button class="btn dark" data-go="comunidad">Ver todos</button></div><div id="homeEvents"></div></div>
+  <div class="card"><div class="title"><h3 style="margin:0">📢 Últimas noticias</h3><button class="btn dark" data-open-community-room="news">Ver todas</button></div><div id="homeNews"></div></div>
+  <div class="card"><div class="title"><h3 style="margin:0">📅 Próximos eventos</h3><button class="btn dark" data-open-community-room="events">Ver todos</button></div><div id="homeEvents"></div></div>
 </div>
 
 <div class="homeStrip">
@@ -138,7 +144,14 @@ header{position:fixed;left:0;right:0;top:0;width:100%;z-index:30;background:#061
 <div class="card"><div class="title"><h3 style="margin:0">Rifa actual</h3><button class="btn dark" data-go="rifas">Ver rifa</button></div><div id="homeRaffleMini" class="miniList"></div></div>
 </div>
 <div class="grid3" style="margin-top:14px">
-<div class="card"><h3>Comunidad</h3><p class="muted">Noticias, eventos y un chat en directo con mensajes privados y amigos.</p><div class="actions"><button class="btn blue" data-go="chat">Abrir chat</button><button class="btn dark" data-go="comunidad">Noticias</button></div></div>
+<div class="card homeCommunityCard"><h3>🌍 Comunidad</h3><p class="muted">Elige qué quieres abrir.</p>
+<button class="chatChannelToggle" id="homeCommunityToggle"><span id="homeCommunityCurrent">💬 Chat general</span><span>⌄</span></button>
+<div class="chatChannelMenu" id="homeCommunityMenu">
+  <button class="chatChannelChoice" data-home-room="community"><span>💬 Chat general</span><span class="channelUnread" id="homeGeneralUnreadBadge">0</span></button>
+  <button class="chatChannelChoice" data-home-room="polls"><span>📊 Encuestas</span></button>
+  <button class="chatChannelChoice" data-home-room="news"><span>📢 Noticias</span></button>
+  <button class="chatChannelChoice" data-home-room="events"><span>📅 Eventos</span></button>
+</div></div>
 <div class="card"><h3>Vende tus cartas</h3><p class="muted">Envía una oferta privada al administrador.</p><button class="btn dark" data-go="vender">Ofrecer carta</button></div>
 <a class="card" href="https://www.instagram.com/gpoketcg?stkn=cWw4d3ZjdmNnZnNt" target="_blank"><h3>Instagram</h3><p>@gpoketcg</p></a>
 </div>
@@ -182,18 +195,15 @@ header{position:fixed;left:0;right:0;top:0;width:100%;z-index:30;background:#061
 <div class="card raffleHow"><h3>Cómo funciona</h3><div class="list"><div class="item">1. Primero se completa la encuesta de interés</div><div class="item">2. Al llenarse, se abre automáticamente la rifa</div><div class="item">3. Cuando la rifa está abierta, cada usuario elige sus números</div><div class="item">4. El administrador confirma las participaciones</div><div class="item">5. Cuando todas las plazas están completas y confirmadas, se habilita el sorteo</div></div></div>
 </section>
 
-<section class="page" id="comunidad"><div class="title"><h2>Comunidad</h2><span class="tag">Noticias · Eventos</span></div><div class="two">
-<div class="card"><h3>📢 Noticias</h3><div class="list" id="newsFeed"></div></div>
-<div class="card"><h3>📅 Eventos</h3><div class="list" id="eventsFeed"></div></div>
-</div></section>
-
 <section class="page" id="chat">
-<div class="title"><h2>Chat</h2><span class="tag">COMUNIDAD</span></div>
+<div class="title"><h2>Comunidad</h2><span class="tag">EN DIRECTO</span></div>
 <div class="chatChannelPicker">
   <button class="chatChannelToggle" id="chatChannelToggle"><span id="chatChannelCurrent">💬 Chat general</span><span>⌄</span></button>
   <div class="chatChannelMenu" id="chatChannelMenu">
     <button class="chatChannelChoice active" data-chat-room="community"><span>💬 Chat general</span><span class="channelUnread" id="generalUnreadBadge">0</span></button>
     <button class="chatChannelChoice" data-chat-room="polls"><span>📊 Encuestas</span></button>
+    <button class="chatChannelChoice" data-chat-room="news"><span>📢 Noticias</span></button>
+    <button class="chatChannelChoice" data-chat-room="events"><span>📅 Eventos</span></button>
   </div>
 </div>
 <div class="chatRoomPanel active" id="chatRoomCommunity">
@@ -214,19 +224,27 @@ header{position:fixed;left:0;right:0;top:0;width:100%;z-index:30;background:#061
 </div>
 <div class="chatRoomPanel" id="chatRoomPolls">
   <div class="pollRoomShell">
-    <div class="pollRoomHead"><h3>📊 Encuestas GPokeTCG</h3><small class="muted">Los administradores publican las encuestas y la comunidad solo puede votar.</small></div>
+    <div class="pollRoomHead"><h3>📊 Encuestas GPokeTCG</h3><small class="muted">Los administradores publican. La comunidad puede votar y ver quién ha votado y qué opción eligió.</small></div>
     <div class="pollAdminBox" id="chatPollAdminBox" style="display:none">
       <input id="chatPollQuestion" maxlength="240" placeholder="Pregunta de la encuesta">
-      <div class="pollAdminOptions">
+      <textarea id="chatPollDescription" maxlength="800" placeholder="Texto o explicación de la encuesta (opcional)" style="margin-top:8px;min-height:82px"></textarea>
+      <div class="pollAdminOptions" id="chatPollAdminOptions">
         <input class="chatPollOptionInput" placeholder="Opción 1">
         <input class="chatPollOptionInput" placeholder="Opción 2">
-        <input class="chatPollOptionInput" placeholder="Opción 3 (opcional)">
-        <input class="chatPollOptionInput" placeholder="Opción 4 (opcional)">
       </div>
-      <button class="btn blue" id="createChatPoll" style="margin-top:9px">Publicar encuesta</button>
+      <div class="actions" style="margin-top:9px">
+        <button class="btn dark" id="addChatPollOption">＋ Añadir opción</button>
+        <button class="btn blue" id="createChatPoll">Publicar encuesta</button>
+      </div>
     </div>
     <div class="pollFeed" id="chatPollFeed"></div>
   </div>
+</div>
+<div class="chatRoomPanel" id="chatRoomNews">
+  <div class="card"><h3>📢 Noticias</h3><div class="list" id="newsFeed"></div></div>
+</div>
+<div class="chatRoomPanel" id="chatRoomEvents">
+  <div class="card"><h3>📅 Eventos</h3><div class="list" id="eventsFeed"></div></div>
 </div>
 </section>
 
@@ -396,7 +414,7 @@ let communityChannel=null;
 let notifications=[];
 let notificationsChannel=null;
 let activeNotificationCategory=null;
-let communityMembers=[],friendships=[],directMessages=[],socialChannel=null,selectedMemberId=null,activeDmUserId=null,albumCards=[],albumPage=0;let friendsAccordionOpen=false,conversationsAccordionOpen=false;let chatLastRenderedId=0,chatUnreadLive=0,chatFirstUnreadId=null,chatInitialized=false;let activeChatRoom='community',chatReadLastId=0,chatPersistentUnread=0,chatPolls=[],chatPollVotes=[],chatPollResults=[];
+let communityMembers=[],friendships=[],directMessages=[],socialChannel=null,selectedMemberId=null,activeDmUserId=null,albumCards=[],albumPage=0;let friendsAccordionOpen=false,conversationsAccordionOpen=false;let chatLastRenderedId=0,chatUnreadLive=0,chatFirstUnreadId=null,chatInitialized=false;let activeChatRoom='community',chatReadLastId=0,chatPersistentUnread=0,chatPolls=[],chatPollVotes=[],chatPollResults=[],chatPollVoters=[],openPollVoterIds=new Set();
 let selectedProduct=null,selectedAuctionWinner=null,wheelAngle=0,spinning=false,lastSpinSeen=null,pendingWinnerText='';let adminOrderFilter='all';
 function money(n){return Number(n).toLocaleString('es-ES',{minimumFractionDigits:2,maximumFractionDigits:2})+' €'}
 async function renderLiveStats(){
@@ -557,9 +575,7 @@ function subscribeCommunity(){
    .on('postgres_changes',{event:'*',schema:'public',table:'events'},()=>loadCommunityData())
    .on('postgres_changes',{event:'*',schema:'public',table:'offers'},()=>loadCommunityData())
    .on('postgres_changes',{event:'*',schema:'public',table:'offer_messages'},()=>loadCommunityData())
-   .on('postgres_changes',{event:'*',schema:'public',table:'chat_polls'},()=>loadChatExtras())
-   .on('postgres_changes',{event:'*',schema:'public',table:'chat_poll_votes'},()=>loadChatExtras())
-   .on('postgres_changes',{event:'*',schema:'public',table:'chat_room_reads'},payload=>{if(payload.new?.user_id===session?.id||payload.old?.user_id===session?.id)loadChatExtras()})
+   .on('postgres_changes',{event:'*',schema:'public',table:'chat_polls'},()=>{if(activeChatRoom==='polls')loadChatExtras()})
    .subscribe();
 }
 function compressDataUrl(src,maxW=900,maxH=900,quality=.78){return new Promise(resolve=>{if(!src)return resolve('');const img=new Image();img.onload=()=>{let w=img.naturalWidth,h=img.naturalHeight,scale=Math.min(1,maxW/w,maxH/h);w=Math.max(1,Math.round(w*scale));h=Math.max(1,Math.round(h*scale));const cv=document.createElement('canvas');cv.width=w;cv.height=h;cv.getContext('2d').drawImage(img,0,0,w,h);resolve(cv.toDataURL('image/jpeg',quality))};img.onerror=()=>resolve(src);img.src=src})}
@@ -773,16 +789,18 @@ q('#saveRaffle').onclick=async()=>{try{if(!isAdmin())return toast('Solo administ
 q('#addParticipant').onclick=async()=>{if(!isAdmin())return toast('Solo administrador');if(!raffle.id)return toast('No hay rifa');const alias=q('#aAlias').value.trim();if(!alias)return toast('Pon un alias');const qty=Math.max(1,Number(q('#aQty').value)||1),status=q('#aStatus').value==='paid'?'paid':'pending';const {error}=await sb.from('raffle_entries').insert({raffle_id:raffle.id,user_id:null,alias,quantity:qty,status});if(error)return toast('No se pudo añadir participante');q('#aAlias').value='';await loadRaffle()};
 async function loadChatExtras(){
  if(!logged())return;
- const [readRes,pollRes,voteRes,resultRes]=await Promise.all([
+ const [readRes,pollRes,voteRes,resultRes,votersRes]=await Promise.all([
    sb.from('chat_room_reads').select('last_read_message_id').eq('channel','community').maybeSingle(),
    sb.from('chat_polls').select('*').order('created_at',{ascending:false}),
    sb.from('chat_poll_votes').select('poll_id,option_index').eq('user_id',session.id),
-   sb.rpc('chat_poll_results')
+   sb.rpc('chat_poll_results'),
+   sb.rpc('chat_poll_voters')
  ]);
  if(!readRes.error)chatReadLastId=Number(readRes.data?.last_read_message_id||0);
  if(!pollRes.error)chatPolls=pollRes.data||[];
  if(!voteRes.error)chatPollVotes=voteRes.data||[];
  if(!resultRes.error)chatPollResults=resultRes.data||[];
+ if(!votersRes.error)chatPollVoters=votersRes.data||[];
  recomputeCommunityUnread();
  renderChatPolls();
 }
@@ -796,15 +814,21 @@ function recomputeCommunityUnread(){
  chatPersistentUnread=unread.length;
  chatFirstUnreadId=unread.length?unread[0].id:null;
  const b=q('#generalUnreadBadge');if(b){b.textContent=chatPersistentUnread;b.classList.toggle('show',chatPersistentUnread>0)}
+ const hb=q('#homeGeneralUnreadBadge');if(hb){hb.textContent=chatPersistentUnread;hb.classList.toggle('show',chatPersistentUnread>0)}
  updateChatNewBadge();
 }
 function openChatChannel(room,fromNavigation=false){
- activeChatRoom=room==='polls'?'polls':'community';
+ const valid=['community','polls','news','events'];
+ activeChatRoom=valid.includes(room)?room:'community';
  q('#chatRoomCommunity')?.classList.toggle('active',activeChatRoom==='community');
  q('#chatRoomPolls')?.classList.toggle('active',activeChatRoom==='polls');
- qa('.chatChannelChoice').forEach(b=>b.classList.toggle('active',b.dataset.chatRoom===activeChatRoom));
- const current=q('#chatChannelCurrent');if(current)current.textContent=activeChatRoom==='community'?'💬 Chat general':'📊 Encuestas';
+ q('#chatRoomNews')?.classList.toggle('active',activeChatRoom==='news');
+ q('#chatRoomEvents')?.classList.toggle('active',activeChatRoom==='events');
+ qa('.chatChannelChoice[data-chat-room]').forEach(b=>b.classList.toggle('active',b.dataset.chatRoom===activeChatRoom));
+ const labels={community:'💬 Chat general',polls:'📊 Encuestas',news:'📢 Noticias',events:'📅 Eventos'};
+ const current=q('#chatChannelCurrent');if(current)current.textContent=labels[activeChatRoom];
  q('#chatChannelMenu')?.classList.remove('open');
+ if(activeChatRoom==='polls')loadChatExtras();
  if(activeChatRoom==='community'){
    const roomEl=q('#communityChat');if(!roomEl)return;
    requestAnimationFrame(()=>{
@@ -831,15 +855,23 @@ function renderChatPolls(){
      const count=Number(chatPollResults.find(r=>Number(r.poll_id)===Number(p.id)&&Number(r.option_index)===i)?.votes||0);
      return '<label class="chatPollOption"><input type="radio" name="chatPoll'+p.id+'" value="'+i+'" '+(mine&&Number(mine.option_index)===i?'checked':'')+' '+(!p.active?'disabled':'')+'><span class="chatPollOptionText">'+esc(o)+'</span><span class="chatPollVotes">'+count+' voto'+(count===1?'':'s')+'</span></label>';
    }).join('');
+   const voters=chatPollVoters.filter(v=>Number(v.poll_id)===Number(p.id));
+   const votersHtml=voters.length?voters.map(v=>{
+     const label=opts[Number(v.option_index)]||('Opción '+(Number(v.option_index)+1));
+     return '<div class="chatPollVoter"><b>'+esc(v.username||'Usuario')+'</b><span class="muted">'+esc(label)+'</span></div>';
+   }).join(''):'<p class="muted">Todavía no ha votado nadie.</p>';
    const userAction=p.active?'<button class="btn blue voteChatPoll" data-id="'+p.id+'">'+(mine?'Cambiar voto':'Votar')+'</button>':'<span class="tag">CERRADA</span>';
    const adminAction=isAdmin()?'<button class="btn dark closeChatPoll" data-id="'+p.id+'">'+(p.active?'Cerrar':'Reabrir')+'</button><button class="btn dark deleteChatPoll" data-id="'+p.id+'">Eliminar</button>':'';
-   return '<div class="chatPollCard"><h3>'+esc(p.question)+'</h3>'+options+'<div class="chatPollActions">'+userAction+adminAction+'</div><div class="chatPollMeta">'+total+' voto'+(total===1?'':'s')+' en total'+(mine?' · Tu voto está registrado':'')+'</div></div>';
+   const open=openPollVoterIds.has(Number(p.id));
+   return '<div class="chatPollCard"><h3>'+esc(p.question)+'</h3>'+(p.description?'<p class="chatPollDescription">'+esc(p.description)+'</p>':'')+options+'<div class="chatPollActions">'+userAction+adminAction+'</div><div class="chatPollMeta">'+total+' voto'+(total===1?'':'s')+' en total'+(mine?' · Tu voto está registrado':'')+'</div><button class="btn dark chatPollVotersToggle" data-id="'+p.id+'">👥 '+(open?'Ocultar votos':'Ver quién ha votado')+'</button><div class="chatPollVoters '+(open?'open':'')+'" id="chatPollVoters'+p.id+'">'+votersHtml+'</div></div>';
  }).join('');
  qa('.voteChatPoll').forEach(b=>b.onclick=async()=>{
    const pollId=Number(b.dataset.id),checked=q('input[name="chatPoll'+pollId+'"]:checked');if(!checked)return toast('Elige una opción');
+   b.disabled=true;
    const {error}=await sb.from('chat_poll_votes').upsert({poll_id:pollId,user_id:session.id,option_index:Number(checked.value)},{onConflict:'poll_id,user_id'});
-   if(error)return toast('No se pudo registrar el voto');await loadChatExtras();toast('Voto registrado');
+   b.disabled=false;if(error)return toast('No se pudo registrar el voto');await loadChatExtras();toast('Voto registrado');
  });
+ qa('.chatPollVotersToggle').forEach(b=>b.onclick=()=>{const id=Number(b.dataset.id);if(openPollVoterIds.has(id))openPollVoterIds.delete(id);else openPollVoterIds.add(id);renderChatPolls()});
  qa('.closeChatPoll').forEach(b=>b.onclick=async()=>{if(!isAdmin())return;const p=chatPolls.find(x=>Number(x.id)===Number(b.dataset.id));if(!p)return;const {error}=await sb.from('chat_polls').update({active:!p.active}).eq('id',p.id);if(error)return toast('No se pudo actualizar');await loadChatExtras()});
  qa('.deleteChatPoll').forEach(b=>b.onclick=async()=>{if(!isAdmin())return;if(!confirm('¿Eliminar esta encuesta?'))return;const {error}=await sb.from('chat_polls').delete().eq('id',Number(b.dataset.id));if(error)return toast('No se pudo eliminar');await loadChatExtras()});
 }
@@ -849,7 +881,7 @@ async function loadChatsOnly(){
  if(error){console.error(error);return}
  raffleChat=(data||[]).filter(x=>x.channel==='raffle'&&(!raffle.id||Number(x.raffle_id)===Number(raffle.id))).map(x=>({id:x.id,uid:x.user_id,u:x.username,m:x.message,role:x.display_role||'Entrenador',attachment_url:x.attachment_url||'',attachment_type:x.attachment_type||'',attachment_name:x.attachment_name||'',sticker_key:x.sticker_key||'',time:new Date(x.created_at).getTime()}));
  communityChat=(data||[]).filter(x=>x.channel==='community').map(x=>({id:x.id,uid:x.user_id,u:x.username,m:x.message,role:x.display_role||'Entrenador',attachment_url:x.attachment_url||'',attachment_type:x.attachment_type||'',attachment_name:x.attachment_name||'',sticker_key:x.sticker_key||'',time:new Date(x.created_at).getTime()}));
- await loadChatExtras();
+ recomputeCommunityUnread();
  renderChats();
 }
 function roleClass(role){return 'role-'+String(role||'Entrenador').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().replace(/[^a-z]/g,'')}
@@ -895,14 +927,25 @@ function renderChats(){
 q('#communityChat').addEventListener('scroll',()=>{const room=q('#communityChat');if(activeChatRoom==='community'&&room.scrollHeight-room.scrollTop-room.clientHeight<50)resetChatUnread()});
 q('#chatNewBadge').onclick=()=>{const room=q('#communityChat');if(chatFirstUnreadId){const first=room.querySelector('[data-msgid="'+chatFirstUnreadId+'"]');if(first)first.scrollIntoView({behavior:'smooth',block:'start'});else room.scrollTop=room.scrollHeight}else room.scrollTop=room.scrollHeight};
 q('#chatChannelToggle').onclick=()=>q('#chatChannelMenu').classList.toggle('open');
-qa('.chatChannelChoice').forEach(b=>b.onclick=()=>openChatChannel(b.dataset.chatRoom));
+qa('.chatChannelChoice[data-chat-room]').forEach(b=>b.onclick=()=>openChatChannel(b.dataset.chatRoom));
+q('#homeCommunityToggle').onclick=()=>q('#homeCommunityMenu').classList.toggle('open');
+qa('[data-home-room]').forEach(b=>b.onclick=()=>{q('#homeCommunityMenu').classList.remove('open');activeChatRoom=b.dataset.homeRoom;go('chat');setTimeout(()=>openChatChannel(activeChatRoom),80)});
+qa('[data-open-community-room]').forEach(b=>b.onclick=()=>{activeChatRoom=b.dataset.openCommunityRoom;go('chat');setTimeout(()=>openChatChannel(activeChatRoom),80)});
+q('#addChatPollOption').onclick=()=>{
+ if(!isAdmin())return;
+ const box=q('#chatPollAdminOptions'),count=qa('#chatPollAdminOptions .chatPollOptionInput').length;
+ if(count>=10)return toast('Máximo 10 opciones');
+ const input=document.createElement('input');input.className='chatPollOptionInput';input.placeholder='Opción '+(count+1)+' (opcional)';box.appendChild(input);input.focus();
+};
 q('#createChatPoll').onclick=async()=>{
  if(!isAdmin())return toast('Solo administrador');
- const question=q('#chatPollQuestion').value.trim(),options=qa('.chatPollOptionInput').map(i=>i.value.trim()).filter(Boolean);
+ const question=q('#chatPollQuestion').value.trim(),description=q('#chatPollDescription').value.trim(),options=qa('.chatPollOptionInput').map(i=>i.value.trim()).filter(Boolean);
  if(!question)return toast('Escribe la pregunta');if(options.length<2)return toast('Pon al menos dos opciones');
- const {error}=await sb.from('chat_polls').insert({question,options,created_by:session.id});
+ const {error}=await sb.from('chat_polls').insert({question,description,options,created_by:session.id});
  if(error)return toast('No se pudo publicar la encuesta');
- q('#chatPollQuestion').value='';qa('.chatPollOptionInput').forEach(i=>i.value='');await loadChatExtras();toast('Encuesta publicada');
+ q('#chatPollQuestion').value='';q('#chatPollDescription').value='';
+ const box=q('#chatPollAdminOptions');box.innerHTML='<input class="chatPollOptionInput" placeholder="Opción 1"><input class="chatPollOptionInput" placeholder="Opción 2">';
+ await loadChatExtras();toast('Encuesta publicada');
 };
 q('#raffleChatSend').onclick=async()=>{const m=q('#raffleChatInput').value.trim();if(!m)return;if(!raffle.id)return toast('No hay rifa activa');const {error}=await sb.from('chat_messages').insert({channel:'raffle',raffle_id:raffle.id,message:m});if(error)return toast(error.message||'No se pudo enviar');q('#raffleChatInput').value='';await loadChatsOnly()};
 async function sendGeneralChat(payload){const {error}=await sb.from('chat_messages').insert({channel:'community',raffle_id:null,...payload});if(error)return toast(error.message||'No se pudo enviar');await loadChatsOnly()}
