@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>GPokeTCG · Prototipo</title>
+<title>GPokeTCG</title>
 <style>
 :root{--bg:#06111d;--panel:#0b1b2b;--line:#204c6d;--txt:#f7fbff;--muted:#9fb6ca;--yellow:#ffd92e;--blue:#1987ff;--green:#2fd084;--red:#ff4b66}
 *{box-sizing:border-box}body{margin:0;padding-top:var(--header-h,64px);background:linear-gradient(#06111d,#02070c 70%);color:var(--txt);font:15px system-ui,-apple-system,Segoe UI,Roboto,sans-serif}button,input,textarea,select{font:inherit}button{cursor:pointer}
@@ -179,7 +179,7 @@ header{position:fixed;left:0;right:0;top:0;width:100%;z-index:30;background:#061
 @media(max-width:760px){.pollAdminOptions{grid-template-columns:1fr}}
 #resetPasswordModal{z-index:140;background:#000e}#resetPasswordModal .box{width:min(460px,100%)}
 </style>
-<!-- cache v92: chat unread solo al estar desplazado arriba -->
+<!-- cache v93: limpieza final de textos de prototipo -->
 </head>
 <body>
 <header><div class="top">
@@ -200,7 +200,7 @@ header{position:fixed;left:0;right:0;top:0;width:100%;z-index:30;background:#061
 <section class="page active" id="inicio">
 <div class="hero">
 <div class="card heroMain"><div class="eyebrow">Cartas · Comunidad · Pasión</div><h1>Vive el <span>TCG</span></h1><p class="muted">Compra, puja, participa en rifas y forma parte de la comunidad GPokeTCG.</p><div class="actions"><button class="btn" data-go="tienda">Explorar tienda</button><button class="btn blue" data-go="rifas">Ver rifas</button></div></div>
-<div class="card"><span class="badge">PRÓXIMA RIFA · DEMO</span><h2 id="homeRaffleTitle"></h2><p id="homeRaffleMeta" class="muted"></p><button class="btn" data-go="rifas">Ver rifa</button></div>
+<div class="card"><span class="badge">PRÓXIMA RIFA</span><h2 id="homeRaffleTitle"></h2><p id="homeRaffleMeta" class="muted"></p><button class="btn" data-go="rifas">Ver rifa</button></div>
 </div>
 <div class="homeCommunityGrid">
   <div class="card"><div class="title"><h3 style="margin:0">📢 Últimas noticias</h3><button class="btn dark" data-open-community-room="news">Ver todas</button></div><div id="homeNews"></div></div>
@@ -408,8 +408,8 @@ header{position:fixed;left:0;right:0;top:0;width:100%;z-index:30;background:#061
 <div class="legalGrid" style="margin-top:12px">
 <div class="card"><h3>Privacidad</h3><p>GPokeTCG utiliza los datos de cuenta, contacto y entrega para gestionar usuarios, pedidos, subastas, soporte y envíos. Los datos de pago no se almacenarán en esta web: serán tratados por la pasarela de pago que se conecte.</p><p class="muted">Contacto: gpoketcg@gmail.com</p></div>
 <div class="card"><h3>Cookies</h3><p>La web utiliza almacenamiento local y servicios técnicos necesarios para mantener la sesión y el funcionamiento de la cuenta. Antes de producción se añadirá el aviso de cookies correspondiente si incorporamos analítica, publicidad u otras cookies no esenciales.</p></div>
-<div class="card"><h3>Compras, envíos y devoluciones</h3><p>El precio y el estado de cada producto se muestran antes de comprar. El comprador deberá facilitar una dirección válida. El panel de usuario mostrará el estado del pedido: Pendiente, Pagado, Preparando, Enviado, Entregado o Cancelado.</p><p class="muted">Los plazos, costes de envío y política definitiva de devoluciones se completarán antes del lanzamiento.</p></div>
-<div class="card"><h3>Subastas</h3><p>La puja más alta al finalizar el contador queda como ganadora. La subasta se bloquea al finalizar y el ganador debe completar sus datos de envío y abonar el importe final cuando el sistema de pago esté activo.</p><p class="muted">Las rifas no se cobrarán mediante la web. La participación se gestiona de forma separada del sistema de pago del mercado y las subastas, manteniendo pendiente la revisión legal definitiva antes del lanzamiento.</p></div>
+<div class="card"><h3>Compras, envíos y devoluciones</h3><p>El precio y el estado de cada producto se muestran antes de comprar. El comprador deberá facilitar una dirección válida. El panel de usuario mostrará el estado del pedido: Pendiente, Pagado, Preparando, Enviado, Entregado o Cancelado.</p></div>
+<div class="card"><h3>Subastas</h3><p>La puja más alta al finalizar el contador queda como ganadora. La subasta se bloquea al finalizar y el ganador debe completar sus datos de envío y abonar el importe final según las instrucciones de pago indicadas por GPokeTCG.</p><p class="muted">Las rifas no se cobran mediante la web. La participación y el pago se gestionan de forma externa.</p></div>
 </div></section>
 
 <section class="page" id="adminPage"><div class="title"><h2>Panel Admin</h2><span class="badge">SOLO ADMIN</span></div><div class="card">
@@ -467,7 +467,7 @@ header{position:fixed;left:0;right:0;top:0;width:100%;z-index:30;background:#061
 </div></section>
 </main>
 
-<div class="auth open" id="authGate"><div class="box"><h1>GPokeTCG</h1><p class="muted">Debes iniciar sesión para usar el prototipo.</p><div class="tabs"><button class="tab active" data-auth="loginPane">Iniciar sesión</button><button class="tab" data-auth="registerPane">Crear cuenta</button></div>
+<div class="auth open" id="authGate"><div class="box"><h1>GPokeTCG</h1><p class="muted">Debes iniciar sesión para acceder a GPokeTCG.</p><div class="tabs"><button class="tab active" data-auth="loginPane">Iniciar sesión</button><button class="tab" data-auth="registerPane">Crear cuenta</button></div>
 <div class="authPane active" id="loginPane"><input id="loginEmail" type="email" placeholder="Correo"><input id="loginPassword" type="password" placeholder="Contraseña" style="margin-top:8px"><button class="btn" id="loginBtn" style="width:100%;margin-top:10px">Entrar</button><button class="btn dark" id="forgotPasswordBtn" style="width:100%;margin-top:8px">He olvidado mi contraseña</button><p class="muted" style="font-size:12px">Acceso seguro mediante Supabase.</p></div>
 <div class="authPane" id="registerPane"><input id="regName" placeholder="Nombre de usuario"><input id="regEmail" type="email" placeholder="Correo" style="margin-top:8px"><input id="regPassword" type="password" placeholder="Contraseña segura" autocomplete="new-password" style="margin-top:8px"><input id="regPassword2" type="password" placeholder="Repite la contraseña" autocomplete="new-password" style="margin-top:8px"><p class="muted" style="font-size:12px;margin:8px 0 0">Mínimo 8 caracteres, con mayúscula, minúscula y número.</p><button class="btn blue" id="registerBtn" style="width:100%;margin-top:10px">Crear cuenta</button></div>
 </div></div>
@@ -516,7 +516,7 @@ header{position:fixed;left:0;right:0;top:0;width:100%;z-index:30;background:#061
 document.addEventListener('DOMContentLoaded',function(){
 const q=s=>document.querySelector(s), qa=s=>Array.from(document.querySelectorAll(s));
 
-const save=(k,v)=>{try{localStorage.setItem(k,JSON.stringify(v));return true}catch(e){console.error(e);alert('No se pudo guardar. He reducido las fotos para evitar que el almacenamiento de la demo se llene. Prueba de nuevo.');return false}};
+const save=(k,v)=>{try{localStorage.setItem(k,JSON.stringify(v));return true}catch(e){console.error(e);alert('No se pudo guardar. Inténtalo de nuevo.');return false}};
 const load=(k,f)=>{try{const v=JSON.parse(localStorage.getItem(k));return v==null?f:v}catch(e){return f}};
 const rawAuthUrl=location.href;
 const rawHash=new URLSearchParams(location.hash.replace(/^#/,''));
