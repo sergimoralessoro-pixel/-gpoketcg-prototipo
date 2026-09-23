@@ -127,17 +127,8 @@ header{position:fixed;left:0;right:0;top:0;width:100%;z-index:30;background:#061
 .marketMoreToggle{margin-top:8px}
 .marketAdvanced{display:none;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-top:8px}
 .marketAdvanced.open{display:grid}
-.instagramFeatureCard{position:relative;overflow:hidden;min-height:170px;background:radial-gradient(circle at 75% 30%,#4b1a79 0,#24112f 38%,#0a1825 72%);border-color:#6b3c8d;text-decoration:none;color:#fff}
-.instagramFeatureCard:before{content:"";position:absolute;inset:-35%;background:conic-gradient(from 0deg,transparent 0 68%,rgba(255,255,255,.08) 73%,transparent 79%);animation:instaGlow 7s linear infinite;pointer-events:none}
+.instagramFeatureCard{position:relative;overflow:hidden;min-height:170px;background:linear-gradient(135deg,#7024c4 0%,#b52a8b 42%,#df1d78 68%,#f48b2e 100%);border-color:#8f3aa7;text-decoration:none;color:#fff}
 .instagramFeatureCard h3,.instagramFeatureCard p,.instagramFeatureCard small{position:relative;z-index:2}
-.trainerThrowScene{position:absolute;right:12px;top:16px;width:120px;height:88px;opacity:.92}
-.trainerFigure{position:absolute;left:12px;bottom:5px;width:42px;height:68px}
-.trainerHead{position:absolute;width:20px;height:20px;border-radius:50%;background:#111;left:10px;top:0}
-.trainerBody{position:absolute;width:20px;height:38px;border-radius:11px 11px 5px 5px;background:#111;left:10px;top:18px;transform:rotate(-8deg)}
-.trainerArm{position:absolute;width:28px;height:7px;border-radius:5px;background:#111;left:24px;top:27px;transform:rotate(-24deg);transform-origin:left center}
-.throwOrb{position:absolute;width:22px;height:22px;border-radius:50%;right:10px;top:9px;background:linear-gradient(#e84a4a 0 47%,#1b1b1b 48% 56%,#f7f7f7 57%);box-shadow:0 0 14px rgba(255,255,255,.45);animation:orbThrow 2.4s ease-in-out infinite}
-.throwOrb:after{content:"";position:absolute;left:8px;top:8px;width:6px;height:6px;border-radius:50%;background:#fff;border:1px solid #222}
-.throwTrail{position:absolute;right:22px;top:31px;width:62px;height:2px;background:linear-gradient(90deg,transparent,#ffd84e,transparent);transform:rotate(-17deg);filter:drop-shadow(0 0 5px #ffd84e);animation:trailFlash 2.4s ease-in-out infinite}
 .captureCart{gap:5px}
 .captureOrbMini{display:inline-block;width:21px;height:21px;border-radius:50%;position:relative;background:linear-gradient(#e84848 0 46%,#151515 47% 56%,#f3f3f3 57%);box-shadow:0 0 7px #0007}
 .captureOrbMini:after{content:"";position:absolute;width:6px;height:6px;border-radius:50%;background:#fff;border:1px solid #222;left:7px;top:7px}
@@ -148,12 +139,12 @@ header{position:fixed;left:0;right:0;top:0;width:100%;z-index:30;background:#061
 .btn:hover,.icon:hover{transform:translateY(-1px);filter:brightness(1.08)}
 .heroMain{position:relative;overflow:hidden}
 .heroMain:after{content:"⚡";position:absolute;right:18px;top:13px;font-size:34px;opacity:.13;transform:rotate(10deg);animation:heroSpark 3.8s ease-in-out infinite}
-@keyframes orbThrow{0%,100%{transform:translate(-58px,35px) scale(.72) rotate(-30deg);opacity:.45}48%{transform:translate(0,0) scale(1) rotate(300deg);opacity:1}62%{transform:translate(4px,4px) scale(.92) rotate(360deg);opacity:.9}}
-@keyframes trailFlash{0%,100%{opacity:0}30%,56%{opacity:1}70%{opacity:0}}
-@keyframes instaGlow{to{transform:rotate(360deg)}}
+
+
+}
 @keyframes heroSpark{0%,100%{opacity:.08;transform:scale(.85) rotate(8deg)}50%{opacity:.2;transform:scale(1.08) rotate(14deg)}}
-@media(prefers-reduced-motion:reduce){.instagramFeatureCard:before,.throwOrb,.throwTrail,.heroMain:after{animation:none!important}.nav,.drawer .nav,.btn,.icon,.card{transition:none}}
-@media(max-width:760px){.marketAdvanced{grid-template-columns:1fr}.trainerThrowScene{transform:scale(.86);transform-origin:right top}}
+@media(prefers-reduced-motion:reduce){.heroMain:after{animation:none!important}.nav,.drawer .nav,.btn,.icon,.card{transition:none}}
+@media(max-width:760px){.marketAdvanced{grid-template-columns:1fr}}
 .pollFeed{display:grid;gap:12px;padding:12px}
 .chatPollCard{padding:14px;border:1px solid #214967;border-radius:13px;background:#081724}
 .chatPollCard h3{margin:0 0 10px}
@@ -215,7 +206,7 @@ header{position:fixed;left:0;right:0;top:0;width:100%;z-index:30;background:#061
   <button class="chatChannelChoice" data-home-room="events"><span>📅 Eventos</span></button>
 </div></div>
 <div class="card"><h3>Vende tus cartas</h3><p class="muted">Envía una oferta privada al administrador.</p><button class="btn dark" data-go="vender">Ofrecer carta</button></div>
-<a class="card instagramFeatureCard" href="https://www.instagram.com/gpoketcg?stkn=cWw4d3ZjdmNnZnNt" target="_blank" rel="noopener"><div class="trainerThrowScene" aria-hidden="true"><div class="trainerFigure"><span class="trainerHead"></span><span class="trainerBody"></span><span class="trainerArm"></span></div><span class="throwOrb"></span><span class="throwTrail"></span></div><h3>📸 Instagram</h3><p>@gpoketcg</p><small>Síguenos para cartas, novedades y sorteos de comunidad.</small></a>
+<a class="card instagramFeatureCard" href="https://www.instagram.com/gpoketcg?stkn=cWw4d3ZjdmNnZnNt" target="_blank" rel="noopener"><h3>📸 Instagram</h3><p>@gpoketcg</p><small>Síguenos para cartas, novedades y sorteos de comunidad.</small></a>
 </div>
 
 </section>
