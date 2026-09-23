@@ -456,7 +456,14 @@ header{position:fixed;left:0;right:0;top:0;width:100%;z-index:30;background:#061
   <textarea id="pollAdminDesc" placeholder="Descripción"></textarea>
   <div class="upload"><b>Foto</b><input id="pollAdminPhoto" type="file" accept="image/*"></div>
 </div>
-<button class="btn blue" id="createRafflePoll" style="margin-top:10px">Publicar encuesta</button><div id="adminRafflePollList" style="margin-top:12px"></div>
+<button class="btn blue" id="createRafflePoll" style="margin-top:10px">Publicar encuesta</button>
+<div class="card" id="adminPollParticipantsBox" style="margin-top:12px;padding:12px">
+  <h4 style="margin:0 0 8px">Añadir participante a la encuesta</h4>
+  <div class="formgrid"><input id="pollParticipantAlias" placeholder="Nombre / alias del participante"></div>
+  <button class="btn dark" id="addPollParticipant" style="margin-top:8px">Añadir participante</button>
+  <div id="adminPollParticipants" style="margin-top:10px"></div>
+</div>
+<div id="adminRafflePollList" style="margin-top:12px"></div>
 <hr style="margin:20px 0;border:0;border-top:1px solid #2b3a4a">
 <h3>Editar rifa</h3><div class="formgrid"><input id="rTitle" placeholder="Carta que se rifa"><input id="rPrice" type="number" step="0.01" placeholder="Precio por número"><input id="rSlots" type="number" min="1" placeholder="Plazas"><textarea id="rDesc" placeholder="Descripción"></textarea><div class="upload"><b>Foto de la carta rifada</b><input id="rPhoto" type="file" accept="image/*"></div></div><button class="btn" id="saveRaffle" style="margin-top:10px">Crear / actualizar rifa</button><div id="adminCurrentRaffle" style="margin-top:12px"></div></div>
 <div class="adminPane" id="adminPeople"><h3>Participantes</h3><div class="formgrid"><input id="aAlias" placeholder="Alias"><input id="aQty" type="number" min="1" value="1"><select id="aStatus"><option value="paid">Confirmado</option><option value="pending">Pendiente</option></select></div><button class="btn" id="addParticipant" style="margin-top:10px">Añadir participante</button><div id="adminParticipants"></div></div>
@@ -684,6 +691,12 @@ function renderRafflePoll(){
  const pb=q('#pollImageBox');pb.innerHTML=rafflePoll.photo?'<img src="'+rafflePoll.photo+'" alt="">':'🃏';
  const btn=q('#votePollBtn');const joined=pollVoters.some(v=>v.user_id===session?.id);btn.disabled=!rafflePoll.id||rafflePoll.status!=='open';btn.classList.toggle('blue',!joined);btn.classList.toggle('dark',joined);btn.textContent=joined?'Quitarme de la encuesta':rafflePoll.status==='converted'?'Encuesta completada':'Me apunto a esta rifa';
  const adminBox=q('#adminRafflePollList');
+ const adminParticipants=q('#adminPollParticipants'),adminParticipantsBox=q('#adminPollParticipantsBox');
+ if(adminParticipantsBox)adminParticipantsBox.style.display=rafflePoll.id&&rafflePoll.status==='open'?'block':'none';
+ if(adminParticipants){
+   adminParticipants.innerHTML=rafflePoll.id&&pollVoters.length?pollVoters.map(v=>'<div class="adminItem itemRow"><span>✅ '+esc(v.username)+(v.user_id?'':' · añadido por admin')+'</span>'+(v.user_id?'':'<button class="trashBtn delPollParticipant" data-id="'+v.id+'" title="Eliminar participante">🗑️</button>')+'</div>').join(''):'<p class="muted">No hay participantes añadidos.</p>';
+   qa('.delPollParticipant').forEach(b=>b.onclick=async()=>{if(!isAdmin())return;const {error}=await sb.rpc('admin_delete_raffle_poll_participant',{p_vote_id:Number(b.dataset.id)});if(error)return toast('No se pudo eliminar');await loadRafflePoll();toast('Participante eliminado')});
+ }
  if(adminBox){
    adminBox.innerHTML=rafflePoll.id?'<div class="adminItem"><div class="itemRow"><span><b>'+esc(rafflePoll.title)+'</b><br><small>'+money(rafflePoll.price)+' · objetivo '+rafflePoll.target+' · '+pollVoters.length+' votos · '+esc(rafflePoll.status)+'</small></span><span><button class="btn dark" id="editRafflePoll">Editar</button> <button class="btn dark" id="deleteRafflePoll">Eliminar</button></span></div></div>':'<p class="muted">No hay encuesta creada.</p>';
    const eb=q('#editRafflePoll'),db=q('#deleteRafflePoll');
@@ -694,6 +707,19 @@ function renderRafflePoll(){
 q('#togglePollPeople').onclick=()=>{q('#pollVotersWrap').classList.toggle('open');q('#togglePollPeople').textContent=q('#pollVotersWrap').classList.contains('open')?'👥 Ocultar votantes':'👥 Ver quién ha votado'};
 q('#toggleRafflePeople').onclick=()=>{q('#rafflePeopleWrap').classList.toggle('open');q('#toggleRafflePeople').textContent=q('#rafflePeopleWrap').classList.contains('open')?'👥 Ocultar participantes':'👥 Ver participantes'};
 q('#votePollBtn').onclick=async()=>{if(!rafflePoll.id)return toast('No hay encuesta activa');if(rafflePoll.status!=='open')return toast('La encuesta ya no está abierta');const btn=q('#votePollBtn'),joined=pollVoters.some(v=>v.user_id===session?.id);btn.disabled=true;if(joined){const {data,error}=await sb.rpc('leave_raffle_poll',{p_poll_id:rafflePoll.id});if(error){btn.disabled=false;return toast(error.message)}await loadRafflePoll();toast(data?.removed?'Te has quitado de la encuesta':'No estabas apuntado')}else{const {data,error}=await sb.rpc('vote_raffle_poll',{p_poll_id:rafflePoll.id});if(error){btn.disabled=false;return toast(error.message)}await Promise.all([loadRafflePoll(),loadRaffle()]);toast(data?.opened?'¡Encuesta completa! La rifa ya está abierta':'Te has apuntado a la encuesta')}};
+q('#addPollParticipant').onclick=async()=>{
+ if(!isAdmin())return toast('Solo administrador');
+ if(!rafflePoll.id)return toast('Primero crea una encuesta');
+ if(rafflePoll.status!=='open')return toast('La encuesta ya no está abierta');
+ const alias=q('#pollParticipantAlias').value.trim();if(!alias)return toast('Pon un nombre');
+ const btn=q('#addPollParticipant');btn.disabled=true;
+ const {data,error}=await sb.rpc('admin_add_raffle_poll_participant',{p_poll_id:rafflePoll.id,p_username:alias});
+ btn.disabled=false;
+ if(error)return toast(error.message||'No se pudo añadir');
+ q('#pollParticipantAlias').value='';
+ await Promise.all([loadRafflePoll(),loadRaffle()]);
+ toast(data?.opened?'Participante añadido · encuesta completada':'Participante añadido');
+};
 q('#createRafflePoll').onclick=async()=>{if(!isAdmin())return toast('Solo administrador');const title=q('#pollAdminTitle').value.trim(),price=Number(q('#pollAdminPrice').value),target=Number(q('#pollAdminTarget').value),editId=Number(q('#createRafflePoll').dataset.editId||0);if(!title||price<=0||target<=0)return toast('Completa carta, precio y personas necesarias');const photo=await fileData(q('#pollAdminPhoto'));let error;if(editId){const payload={title,price_per_slot:price,target_votes:Math.max(1,target),description:q('#pollAdminDesc').value.trim()};if(photo)payload.photo_url=photo;({error}=await sb.from('raffle_polls').update(payload).eq('id',editId))}else{({error}=await sb.from('raffle_polls').insert({title,price_per_slot:price,target_votes:Math.max(1,target),description:q('#pollAdminDesc').value.trim(),photo_url:photo||null,status:'open'}))}if(error)return toast(editId?'No se pudo editar la encuesta':'No se pudo publicar la encuesta');q('#pollAdminTitle').value='';q('#pollAdminPrice').value='';q('#pollAdminTarget').value='';q('#pollAdminDesc').value='';q('#pollAdminPhoto').value='';delete q('#createRafflePoll').dataset.editId;q('#createRafflePoll').textContent='Publicar encuesta';await loadRafflePoll();toast(editId?'Encuesta actualizada':'Encuesta publicada')};
 async function loadCommunityData(){
  if(!logged())return;
