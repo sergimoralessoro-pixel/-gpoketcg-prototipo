@@ -91,7 +91,13 @@ header{position:fixed;left:0;right:0;top:0;width:100%;z-index:30;background:#061
 .pollRoomHead{padding:13px 15px;background:#081724;border-bottom:1px solid #214967}
 .pollRoomHead h3{margin:0}
 .pollAdminBox{padding:12px;border-bottom:1px solid #214967;background:#071724}
-.pollAdminOptions{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px}
+.pollAdminToggle{width:100%;display:flex;align-items:center;justify-content:space-between;gap:8px;padding:10px 12px;border:1px solid #214967;border-radius:10px;background:#0b2234;color:#fff;font-weight:900;cursor:pointer}
+.pollAdminEditor{display:none;margin-top:10px}
+.pollAdminBox.open .pollAdminEditor{display:block}
+.pollAdminOptions{display:grid;grid-template-columns:1fr;gap:8px;margin-top:8px}
+.pollOptionEditorRow{display:flex;gap:7px;align-items:center}
+.pollOptionEditorRow .chatPollOptionInput{flex:1}
+.pollOptionDelete{width:38px;height:38px;min-width:38px;border-radius:9px;border:1px solid #7d2634;background:#3a1119;color:#ff7388;font-size:17px;cursor:pointer}
 .pollFeed{display:grid;gap:12px;padding:12px}
 .chatPollCard{padding:14px;border:1px solid #214967;border-radius:13px;background:#081724}
 .chatPollCard h3{margin:0 0 10px}
@@ -226,15 +232,18 @@ header{position:fixed;left:0;right:0;top:0;width:100%;z-index:30;background:#061
   <div class="pollRoomShell">
     <div class="pollRoomHead"><h3>📊 Encuestas GPokeTCG</h3><small class="muted">Los administradores publican. La comunidad puede votar y ver quién ha votado y qué opción eligió.</small></div>
     <div class="pollAdminBox" id="chatPollAdminBox" style="display:none">
-      <input id="chatPollQuestion" maxlength="240" placeholder="Pregunta de la encuesta">
-      <textarea id="chatPollDescription" maxlength="800" placeholder="Texto o explicación de la encuesta (opcional)" style="margin-top:8px;min-height:82px"></textarea>
-      <div class="pollAdminOptions" id="chatPollAdminOptions">
-        <input class="chatPollOptionInput" placeholder="Opción 1">
-        <input class="chatPollOptionInput" placeholder="Opción 2">
-      </div>
-      <div class="actions" style="margin-top:9px">
-        <button class="btn dark" id="addChatPollOption">＋ Añadir opción</button>
-        <button class="btn blue" id="createChatPoll">Publicar encuesta</button>
+      <button class="pollAdminToggle" id="chatPollAdminToggle"><span>➕ Crear encuesta</span><span id="chatPollAdminChevron">⌄</span></button>
+      <div class="pollAdminEditor" id="chatPollAdminEditor">
+        <input id="chatPollQuestion" maxlength="240" placeholder="Pregunta de la encuesta">
+        <textarea id="chatPollDescription" maxlength="800" placeholder="Texto o explicación de la encuesta (opcional)" style="margin-top:8px;min-height:82px"></textarea>
+        <div class="pollAdminOptions" id="chatPollAdminOptions">
+          <div class="pollOptionEditorRow"><input class="chatPollOptionInput" placeholder="Opción 1"><button class="pollOptionDelete" type="button" title="Borrar opción">🗑️</button></div>
+          <div class="pollOptionEditorRow"><input class="chatPollOptionInput" placeholder="Opción 2"><button class="pollOptionDelete" type="button" title="Borrar opción">🗑️</button></div>
+        </div>
+        <div class="actions" style="margin-top:9px">
+          <button class="btn dark" id="addChatPollOption">＋ Añadir opción</button>
+          <button class="btn blue" id="createChatPoll">Publicar encuesta</button>
+        </div>
       </div>
     </div>
     <div class="pollFeed" id="chatPollFeed"></div>
@@ -931,20 +940,40 @@ qa('.chatChannelChoice[data-chat-room]').forEach(b=>b.onclick=()=>openChatChanne
 q('#homeCommunityToggle').onclick=()=>q('#homeCommunityMenu').classList.toggle('open');
 qa('[data-home-room]').forEach(b=>b.onclick=()=>{q('#homeCommunityMenu').classList.remove('open');activeChatRoom=b.dataset.homeRoom;go('chat');setTimeout(()=>openChatChannel(activeChatRoom),80)});
 qa('[data-open-community-room]').forEach(b=>b.onclick=()=>{activeChatRoom=b.dataset.openCommunityRoom;go('chat');setTimeout(()=>openChatChannel(activeChatRoom),80)});
+function renumberChatPollOptionPlaceholders(){
+ qa('#chatPollAdminOptions .chatPollOptionInput').forEach((input,i)=>input.placeholder='Opción '+(i+1)+(i>1?' (opcional)':''));
+}
+function bindChatPollOptionDeletes(){
+ qa('#chatPollAdminOptions .pollOptionDelete').forEach(btn=>btn.onclick=()=>{
+   const rows=qa('#chatPollAdminOptions .pollOptionEditorRow');
+   if(rows.length<=2)return toast('La encuesta necesita al menos dos opciones');
+   btn.closest('.pollOptionEditorRow')?.remove();
+   renumberChatPollOptionPlaceholders();
+ });
+}
+q('#chatPollAdminToggle').onclick=()=>{
+ const box=q('#chatPollAdminBox');box.classList.toggle('open');
+ q('#chatPollAdminChevron').textContent=box.classList.contains('open')?'⌃':'⌄';
+};
 q('#addChatPollOption').onclick=()=>{
  if(!isAdmin())return;
  const box=q('#chatPollAdminOptions'),count=qa('#chatPollAdminOptions .chatPollOptionInput').length;
  if(count>=10)return toast('Máximo 10 opciones');
- const input=document.createElement('input');input.className='chatPollOptionInput';input.placeholder='Opción '+(count+1)+' (opcional)';box.appendChild(input);input.focus();
+ const row=document.createElement('div');row.className='pollOptionEditorRow';
+ row.innerHTML='<input class="chatPollOptionInput" placeholder="Opción '+(count+1)+' (opcional)"><button class="pollOptionDelete" type="button" title="Borrar opción">🗑️</button>';
+ box.appendChild(row);bindChatPollOptionDeletes();row.querySelector('input').focus();
 };
+bindChatPollOptionDeletes();
 q('#createChatPoll').onclick=async()=>{
  if(!isAdmin())return toast('Solo administrador');
- const question=q('#chatPollQuestion').value.trim(),description=q('#chatPollDescription').value.trim(),options=qa('.chatPollOptionInput').map(i=>i.value.trim()).filter(Boolean);
+ const question=q('#chatPollQuestion').value.trim(),description=q('#chatPollDescription').value.trim(),options=qa('#chatPollAdminOptions .chatPollOptionInput').map(i=>i.value.trim()).filter(Boolean);
  if(!question)return toast('Escribe la pregunta');if(options.length<2)return toast('Pon al menos dos opciones');
  const {error}=await sb.from('chat_polls').insert({question,description,options,created_by:session.id});
  if(error)return toast('No se pudo publicar la encuesta');
  q('#chatPollQuestion').value='';q('#chatPollDescription').value='';
- const box=q('#chatPollAdminOptions');box.innerHTML='<input class="chatPollOptionInput" placeholder="Opción 1"><input class="chatPollOptionInput" placeholder="Opción 2">';
+ const box=q('#chatPollAdminOptions');box.innerHTML='<div class="pollOptionEditorRow"><input class="chatPollOptionInput" placeholder="Opción 1"><button class="pollOptionDelete" type="button" title="Borrar opción">🗑️</button></div><div class="pollOptionEditorRow"><input class="chatPollOptionInput" placeholder="Opción 2"><button class="pollOptionDelete" type="button" title="Borrar opción">🗑️</button></div>';
+ bindChatPollOptionDeletes();
+ q('#chatPollAdminBox').classList.remove('open');q('#chatPollAdminChevron').textContent='⌄';
  await loadChatExtras();toast('Encuesta publicada');
 };
 q('#raffleChatSend').onclick=async()=>{const m=q('#raffleChatInput').value.trim();if(!m)return;if(!raffle.id)return toast('No hay rifa activa');const {error}=await sb.from('chat_messages').insert({channel:'raffle',raffle_id:raffle.id,message:m});if(error)return toast(error.message||'No se pudo enviar');q('#raffleChatInput').value='';await loadChatsOnly()};
